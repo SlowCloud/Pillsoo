@@ -5,12 +5,14 @@ import BottomTabsNavigator from './BottomTabNavigator';
 import HomeNavigator, {HomeStackParamList} from './HomeNavigator';
 import RecommendScreen from '../screens/Recommend/RecommendScreen';
 import MoreRecommendScreen from '../screens/Recommend/MoreRecommendScreen';
+import MoreRecommendResultScreen from '../screens/Recommend/MoreRecommendResultScreen';
 
 export type AppStackParamList = {
   Auth: undefined;
   Main: undefined;
   Recommend: undefined;
   MoreRecommend: undefined;
+  MoreRecommendResult: undefined;
   Home: {
     screen: keyof HomeStackParamList;
   };
@@ -39,7 +41,12 @@ const AppNavigator = () => {
       <Stack.Screen
         name="MoreRecommend"
         component={MoreRecommendScreen}
-        options={{ headerTitle: '더 많은 영양제 추천 받기' }}
+        options={{ headerTitle: '' }}
+      />
+      <Stack.Screen
+        name="MoreRecommendResult"
+        component={MoreRecommendResultScreen}
+        options={{ headerTitle: '' }}
       />
       <Stack.Screen
         name="Home"
