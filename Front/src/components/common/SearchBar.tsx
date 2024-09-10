@@ -1,19 +1,74 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, {useRef, useEffect} from 'react';
+import {View, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const SearchBar = () => {
+interface SearchBarProps {
+  placeholder: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  onSearch: () => void;
+}
+
+const SearchBar = ({
+  placeholder,
+  value,
+  onChangeText,
+  onSearch,
+}: SearchBarProps) => {
+  const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
+  const handleKeyPress = (event: any) => {
+    if (event.nativeEvent.key === 'Enter') {
+      onSearch();
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text>SearchBar</Text>
+      <View style={styles.inputContainer}>
+        <TextInput
+          ref={inputRef}
+          style={styles.input}
+          placeholder={placeholder}
+          value={value}
+          onChangeText={onChangeText}
+          onSubmitEditing={handleKeyPress}
+        />
+        <TouchableOpacity onPress={onSearch} style={styles.button}>
+          <Icon name="search" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
+    width: '100%',
+    flexDirection: 'row',
     alignItems: 'center',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: 'black',
+    borderRadius: 15,
+    width: '100%',
+    backgroundColor: 'lightgray',
+  },
+  input: {
+    height: 40,
+    flex: 1,
+    paddingHorizontal: 8,
+  },
+  button: {
+    padding: 8,
   },
 });
 
