@@ -21,14 +21,14 @@ const AppNavigator = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Recommend"
+        name="Recommend" 
         component={RecommendScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
         name="MoreRecommend"
         component={MoreRecommendScreen}
-        // options={{ headerShown: false }}
+        options={{ headerTitle: '더 많은 영양제 추천 받기' }}
       />
     </Stack.Navigator>
   );
