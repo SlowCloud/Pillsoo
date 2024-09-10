@@ -1,11 +1,22 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import AuthNavigator from './AuthNavigator';
 import BottomTabsNavigator from './BottomTabNavigator';
+import HomeNavigator, {HomeStackParamList} from './HomeNavigator';
 import RecommendScreen from '../screens/Recommend/RecommendScreen';
 import MoreRecommendScreen from '../screens/Recommend/MoreRecommendScreen';
 
-const Stack = createStackNavigator();
+export type AppStackParamList = {
+  Auth: undefined;
+  Main: undefined;
+  Recommend: undefined;
+  MoreRecommend: undefined;
+  Home: {
+    screen: keyof HomeStackParamList;
+  };
+};
+
+const Stack = createStackNavigator<AppStackParamList>();
 
 const AppNavigator = () => {
   return (
@@ -13,22 +24,27 @@ const AppNavigator = () => {
       <Stack.Screen
         name="Auth"
         component={AuthNavigator}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="Main"
         component={BottomTabsNavigator}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="Recommend" 
         component={RecommendScreen}
-        options={{ headerShown: false }}
+        options={{headerShown: false}}
       />
       <Stack.Screen
         name="MoreRecommend"
         component={MoreRecommendScreen}
         options={{ headerTitle: '더 많은 영양제 추천 받기' }}
+      />
+      <Stack.Screen
+        name="Home"
+        component={HomeNavigator}
+        options={{headerTitle: ''}}
       />
     </Stack.Navigator>
   );

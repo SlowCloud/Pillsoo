@@ -1,11 +1,23 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Button} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 const SupplementInputScreen = () => {
+  const navigation = useNavigation();
+
   return (
-    <View style={styles.container}>
-      <Text>SupplementInputScreen</Text>
-    </View>
+    <>
+      <View style={styles.container}>
+        <Button
+          title="스캔해서 입력하기"
+          onPress={() =>
+            navigation.navigate('Home', {
+              screen: 'OCR',
+            })
+          }
+        />
+      </View>
+    </>
   );
 };
 
