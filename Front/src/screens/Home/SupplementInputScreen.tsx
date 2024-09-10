@@ -8,7 +8,6 @@ const SupplementInputScreen = () => {
   return (
     <>
       <View style={styles.container}>
-        <Text>SupplementInputScreen</Text>
         <Button
           title="스캔해서 입력하기"
           onPress={() =>
