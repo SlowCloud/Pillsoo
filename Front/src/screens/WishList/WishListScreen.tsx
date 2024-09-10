@@ -1,11 +1,14 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-
+import Header from '../../components/common/Header';
 const NotificationsScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text>WishList Screen</Text>
-    </View>
+    <>
+      <Header />
+      <View style={styles.container}>
+        <Text>WishList Screen</Text>
+      </View>
+    </>
   );
 };
 
