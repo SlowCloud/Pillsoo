@@ -12,6 +12,7 @@ const Header = () => {
 const styles = StyleSheet.create({
   container: {
     height: 50,
+    backgroundColor: 'tomato'
   },
 });
 

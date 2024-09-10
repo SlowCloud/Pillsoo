@@ -17,7 +17,7 @@ const LoginScreen = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
   const handleLogin = () => {
-    navigation.replace('Main');
+    navigation.navigate('Main');
   };
 
   return (
