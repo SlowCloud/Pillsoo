@@ -1,18 +1,25 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Image, StyleSheet} from 'react-native';
 
 const Header = () => {
   return (
-    <View>
-      <Text style={styles.container}>Logo</Text>
+    <View style={styles.container}>
+      <Image source={require('../../assets/Logo.png')} style={styles.logo} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: 50,
+    paddingLeft: 20,
     height: 50,
-    backgroundColor: 'tomato'
+  },
+  logo: {
+    height: 150,
+    width: 100,
   },
 });
 

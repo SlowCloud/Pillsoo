@@ -20,16 +20,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 0.1,
     alignItems: 'flex-start',
-    borderWidth: 1,
-    borderColor: 'black',
     padding: 20,
   },
 
   kit: {
     flex: 1,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'black',
   },
 });
 

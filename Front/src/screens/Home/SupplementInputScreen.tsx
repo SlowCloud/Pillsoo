@@ -41,8 +41,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    borderColor: 'black',
-    borderWidth: 1,
     paddingTop: 50,
     paddingLeft: 10,
     paddingRight: 10,
