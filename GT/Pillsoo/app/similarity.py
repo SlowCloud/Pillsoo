@@ -3,7 +3,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 def calculate_similarity(input_text, db_items):
-    db_texts = [item[2] for item in db_items]  # FUNCTIONALITY 열만 추출
+    db_texts = [f"{item[2]} {item[1]}" for item in db_items]  # FUNCTIONALITY와 PILL_NAME 결합
+
     texts = [input_text] + db_texts
     vectorizer = TfidfVectorizer().fit_transform(texts)
     vectors = vectorizer.toarray()
