@@ -63,7 +63,7 @@ const RecommendScreen:React.FC<Props> = ({navigation}) => {
         activeOpacity={0.7}
         onPress={() => navigation.navigate('MoreRecommend')}
         >
-          <Text>더 많은 영양제 추천받기</Text>
+          <Text style={styles.moreRecommendText}>더 많은 영양제 추천받기</Text>
         </TouchableOpacity>
       </View>
     </>
@@ -78,21 +78,22 @@ const styles = StyleSheet.create({
   },
   recommendText: {
     fontSize: 15,
-  },
-  genderRecommendText: {
-    marginTop: 30
+    color: 'black',
   },
   recommendBox: {
     height: '80%',
     marginTop: 10,
   },
-  recommendBtn : {
+  recommendBtn: {
     marginTop: 25,
     height: '25%',
     borderRadius: 8,
     backgroundColor: '#D3EBCD',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  moreRecommendText: {
+    color: 'black',
   }
 });
 
