@@ -1,10 +1,11 @@
 package org.sos.pillsoo.mykit.service;
 
+import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.mykit.dto.CabinetDto;
 import org.sos.pillsoo.mykit.entity.Cabinet;
 import org.sos.pillsoo.mykit.repository.CabinetRepository;
 import org.sos.pillsoo.supplement.entity.Supplement;
-import your.user.package.User;
+import org.sos.pillsoo.auth.repository.UserRepository; // UserRepository import
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,9 @@ public class CabinetService {
     @Autowired
     private CabinetRepository cabinetRepository;
 
+    @Autowired
+    private UserRepository userRepository; // UserRepository 추가
+
     // 복용 중인 영양제 목록 조회
     public List<CabinetDto> getCabinetByUserSeq(int userSeq) {
         List<Cabinet> cabinets = cabinetRepository.findByUser_UserSeq(userSeq);
@@ -25,9 +29,16 @@ public class CabinetService {
 
     // 복용 중인 영양제 추가
     public void addSupplementToCabinet(int userSeq, int supplementSeq) {
+        // User 객체를 데이터베이스에서 조회
+        User user = userRepository.findById(userSeq)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
+
+        Supplement supplement = new Supplement(supplementSeq);
+
         Cabinet cabinet = new Cabinet();
-        cabinet.setUser(new User(userSeq));
-        cabinet.setSupplement(new Supplement(supplementSeq));
+        cabinet.setUser(user);
+        cabinet.setSupplement(supplement);
+
         cabinetRepository.save(cabinet);
     }
 

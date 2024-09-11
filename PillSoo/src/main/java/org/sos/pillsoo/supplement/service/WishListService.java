@@ -1,10 +1,11 @@
 package org.sos.pillsoo.supplement.service;
 
+import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.supplement.dto.WishListDto;
 import org.sos.pillsoo.supplement.entity.WishList;
 import org.sos.pillsoo.supplement.repository.WishListRepository;
 import org.sos.pillsoo.supplement.entity.Supplement;
-import your.user.package.User;
+import org.sos.pillsoo.auth.repository.UserRepository; // UserRepository 추가
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,10 @@ public class WishListService {
     @Autowired
     private WishListRepository wishListRepository;
 
+    @Autowired
+    private UserRepository userRepository; // UserRepository 추가
+
+    // 유저 시퀀스로 위시리스트 조회
     public List<WishListDto> getWishListByUserSeq(int userSeq) {
         List<WishList> wishLists = wishListRepository.findByUser_UserSeq(userSeq);
         return wishLists.stream()
@@ -30,13 +35,22 @@ public class WishListService {
                 .collect(Collectors.toList());
     }
 
+    // 위시리스트에 영양제 추가
     public void addToWishList(int userSeq, int supplementSeq) {
+        // User 객체를 데이터베이스에서 조회
+        User user = userRepository.findById(userSeq)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
+
+        Supplement supplement = new Supplement(supplementSeq);
+
         WishList wishList = new WishList();
-        wishList.setUser(new User(userSeq));  // 유저와 연결 (User는 다른 패키지에 존재)
-        wishList.setSupplement(new Supplement(supplementSeq));  // 영양제와 연결
+        wishList.setUser(user);  // 조회된 User 객체를 설정
+        wishList.setSupplement(supplement);
+
         wishListRepository.save(wishList);
     }
 
+    // 위시리스트에서 영양제 제거
     public void removeFromWishList(int userSeq, int supplementSeq) {
         wishListRepository.deleteByUser_UserSeqAndSupplement_SupplementSeq(userSeq, supplementSeq);
     }

@@ -3,7 +3,7 @@ package org.sos.pillsoo.supplement.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import your.user.package.User;  // User class from the separate package
+import org.sos.pillsoo.auth.entity.User;
 
 @Entity
 @Getter
