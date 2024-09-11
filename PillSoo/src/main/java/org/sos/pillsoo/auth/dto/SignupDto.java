@@ -11,5 +11,7 @@ public class SignupDto {
     private String password;
     private String name;
     private int age;
-    private String gender;
+//    private String gender;
+    private boolean gender;
 }
+

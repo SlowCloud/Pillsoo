@@ -36,11 +36,16 @@ public class SignupService {
         user.setPassword(bCryptPasswordEncoder.encode(userPassword));
         user.setUserName(signupDto.getName());
         user.setAge(signupDto.getAge());
-        user.setGender(signupDto.getGender());
+//        user.setGender(signupDto.getGender());
         user.setCreatedAt(timestamp);
+        if(signupDto.isGender()){
+            user.setGender("F");
+        } else {
+            user.setGender("M");
+        }
 
         userRepository.save(user);
 
-        System.out.println(user + "가 회원가입 함");
+        System.out.println(user.getUserName() + "가 회원가입 함");
     }
 }
