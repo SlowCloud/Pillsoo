@@ -7,5 +7,4 @@ RUN gradle bootJar
 FROM openjdk:17-slim
 COPY --from=build /builder/build/libs/*.jar ./app.jar
 ENTRYPOINT java -jar ./app.jar
-
 EXPOSE 8080
