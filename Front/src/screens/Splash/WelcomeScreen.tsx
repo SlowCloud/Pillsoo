@@ -7,7 +7,7 @@ const WelcomeScreen = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.navigate('Login');
+      navigation.navigate('AuthHome');
     }, 3000);
 
     return () => clearTimeout(timer);
