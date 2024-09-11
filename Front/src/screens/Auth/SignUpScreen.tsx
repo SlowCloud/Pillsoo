@@ -5,12 +5,13 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {StackScreenProps} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {authNavigations} from '../../constants/navigations';
-
+import axios from 'axios';
 type SignUpScreenProps = StackScreenProps<
   AuthStackParamList,
   typeof authNavigations.SIGNUP
@@ -19,9 +20,10 @@ type SignUpScreenProps = StackScreenProps<
 type Gender = 'Male' | 'Female';
 
 const SignUpScreen = ({navigation}: SignUpScreenProps) => {
-  const [username, setUsername] = useState<string>('');
+  const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [userName, setUserName] = useState<string>('');
   const [age, setAge] = useState<string>('');
   const [gender, setGender] = useState<Gender>('Male');
   const [error, setError] = useState<string | null>(null);
@@ -29,15 +31,34 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
   const passwordRef = useRef<TextInput>(null);
   const confirmPasswordRef = useRef<TextInput>(null);
   const ageRef = useRef<TextInput>(null);
+  const userNameRef = useRef<TextInput>(null);
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (password !== confirmPassword) {
       setError('비밀번호가 일치하지 않습니다.');
       return;
     }
+
     setError(null);
-    console.log({username, password, confirmPassword, age, gender});
-    navigation.navigate(authNavigations.LOGIN);
+
+    const genderValue = gender === 'Male' ? 0 : 1;
+
+    try {
+      const response = await axios.post('http://10.0.2.2:8080/api/v1/signup', {
+        userId: userId,
+        password: password,
+        name: userName,
+        age: age,
+        gender: genderValue,
+      });
+      if (response.status === 200) {
+        Alert.alert('회원가입 성공', '로그인 페이지로 이동합니다.');
+        navigation.navigate(authNavigations.LOGIN);
+        console.log(response);
+      }
+    } catch (error) {
+      Alert.alert('회원가입 실패');
+    }
   };
 
   return (
@@ -46,8 +67,8 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
       <TextInput
         style={styles.input}
         placeholder="아이디"
-        value={username}
-        onChangeText={setUsername}
+        value={userId}
+        onChangeText={setUserId}
         returnKeyType="next"
         blurOnSubmit={false}
         onSubmitEditing={() => passwordRef.current?.focus()}
@@ -70,6 +91,16 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
         secureTextEntry
         value={confirmPassword}
         onChangeText={setConfirmPassword}
+        returnKeyType="next"
+        blurOnSubmit={false}
+        onSubmitEditing={() => userNameRef.current?.focus()}
+      />
+      <TextInput
+        ref={userNameRef}
+        style={styles.input}
+        placeholder="닉네임"
+        value={userName}
+        onChangeText={setUserName}
         returnKeyType="next"
         blurOnSubmit={false}
         onSubmitEditing={() => ageRef.current?.focus()}
