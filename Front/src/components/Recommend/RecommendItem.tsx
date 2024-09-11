@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 export type RecommendItemParamList = {
   RecommendItem: undefined;
-  Detail: { id: number;};
+  Detail: { id: number};
 }
 
 export type RecommendItemScreenNavigationProp = StackNavigationProp<
