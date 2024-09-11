@@ -19,8 +19,8 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    String signup(SignupDto signupDto) {
+    public ResponseEntity<String> signup(@RequestBody SignupDto signupDto) {
         signupService.SignupProcess(signupDto);
-        return "회원가입 완료";
+        return ResponseEntity.ok("회원가입 완료");
     }
 }
