@@ -5,12 +5,14 @@ import BottomTabsNavigator from './BottomTabNavigator';
 import HomeNavigator, {HomeStackParamList} from './HomeNavigator';
 import RecommendScreen from '../screens/Recommend/RecommendScreen';
 import MoreRecommendScreen from '../screens/Recommend/MoreRecommendScreen';
+import MoreRecommendResultScreen from '../screens/Recommend/MoreRecommendResultScreen';
 
 export type AppStackParamList = {
   Auth: undefined;
   Main: undefined;
   Recommend: undefined;
   MoreRecommend: undefined;
+  MoreRecommendResult: undefined;
   Home: {
     screen: keyof HomeStackParamList;
   };
@@ -32,14 +34,19 @@ const AppNavigator = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="Recommend"
+        name="Recommend" 
         component={RecommendScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen
         name="MoreRecommend"
         component={MoreRecommendScreen}
-        // options={{ headerShown: false }}
+        options={{ headerTitle: '' }}
+      />
+      <Stack.Screen
+        name="MoreRecommendResult"
+        component={MoreRecommendResultScreen}
+        options={{ headerTitle: '' }}
       />
       <Stack.Screen
         name="Home"
