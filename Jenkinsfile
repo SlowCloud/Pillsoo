@@ -28,7 +28,10 @@ spec:
 
     environment {
         DOCKERHUB_USERNAME = "slowcloud"
-        IMAGE_NAME = "test"
+        DOCKER_IMAGES = '''[
+        {"image": "pillsoo-spring", "context": "./PillSoo"},
+        {"image": "pillsoo-python", "context": "./GT/Pillsoo"},
+        ]'''
     }
 
     stages {
@@ -36,11 +39,13 @@ spec:
             steps {
                 container("kaniko") {
                     script {
-                        def dockerfile = "Dockerfile"
-                        def context = "./PillSoo"
-                        def image = "${DOCKERHUB_USERNAME}/${IMAGE_NAME}:latest"
-
-                        sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
+                        def dockerImages = readJSON(text: env.DOCKER_IMAGES)
+                        for (dockerImage in dockerImages) {
+                          def dockerfile = "Dockerfile"
+                          def context = dockerImage.context
+                          def image = "${DOCKERHUB_USERNAME}/${dockerImage.image}:latest"
+                          sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
+                        }
                     }
                 }
             }
