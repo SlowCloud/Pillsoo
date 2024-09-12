@@ -35,16 +35,17 @@ spec:
             steps {
                 container("kaniko") {
                     script {
-                        def dockerImages = [
-                            [imagename: "pillsoo-spring", context: "./PillSoo"],
-                            [imagename: "pillsoo-python", context: "./GT/Pillsoo"]
-                        ]
-                        for (dockerImage in dockerImages) {
-                          def dockerfile = "Dockerfile"
-                          def context = dockerImage.context
-                          def image = "${DOCKERHUB_USERNAME}/${dockerImage.imagename}:latest"
-                          sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
-                        }
+                        def dockerfile = "Dockerfile"
+                        def context = "./PillSoo"
+                        def image = "${DOCKERHUB_USERNAME}/pillsoo-spring:latest"
+                        sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
+                    }
+                }
+                container("kaniko") {
+                        def dockerfile = "Dockerfile"
+                        def context = "./GT/Pillsoo"
+                        def image = "${DOCKERHUB_USERNAME}/pillsoo-python:latest"
+                        sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
                     }
                 }
             }
