@@ -20,7 +20,7 @@ spec:
           mountPath: /kaniko/.docker/
   volumes:
     - name: docker-config
-      secret
+      secret:
         secretName: docker-config
             """
         }
