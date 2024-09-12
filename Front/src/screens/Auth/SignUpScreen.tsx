@@ -12,6 +12,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {authNavigations} from '../../constants/navigations';
 import axios from 'axios';
+
 type SignUpScreenProps = StackScreenProps<
   AuthStackParamList,
   typeof authNavigations.SIGNUP
@@ -34,6 +35,16 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
   const userNameRef = useRef<TextInput>(null);
 
   const handleSignUp = async () => {
+    if (!userId || !password || !confirmPassword || !userName || !age) {
+      setError('모든 칸을 입력해주세요.');
+      return;
+    }
+
+    if (password.length < 8) {
+      setError('비밀번호는 8자 이상이어야 합니다.');
+      return;
+    }
+
     if (password !== confirmPassword) {
       setError('비밀번호가 일치하지 않습니다.');
       return;
