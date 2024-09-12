@@ -94,6 +94,7 @@ const MyPageScreen:React.FC<Props> = ({navigation}) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.eachMenuBox}
+              onPress={() => navigation.navigate('UserUpdate')}
             >
               <Text style={styles.eachMenuText}>회원정보 수정</Text>
               <Text>{'>'}</Text>
