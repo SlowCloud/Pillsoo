@@ -21,7 +21,7 @@ function AuthHomeScreen({navigation}: AuthHomeScreenProps) {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>Pill Soo</Text>
+          <Text style={styles.title}>PillSoo</Text>
         </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity

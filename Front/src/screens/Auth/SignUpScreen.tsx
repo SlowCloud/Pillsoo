@@ -67,13 +67,14 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
       const response = await axios.post('http://10.0.2.2:8080/api/v1/signup', {
         userId,
         password,
-        name: userName,
+        nickname: userName,
         age,
         gender: genderValue,
       });
       if (response.status === 200) {
         Alert.alert('회원가입 성공', '로그인 페이지로 이동합니다.');
         navigation.navigate(authNavigations.LOGIN);
+        console.log(userId, password, userName, age, genderValue);
       }
     } catch (error) {
       Alert.alert('회원가입 실패', '다시 시도해주세요.');
