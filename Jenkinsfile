@@ -10,7 +10,15 @@ metadata:
   namespace: jenkins
 spec:
   containers:
-    - name: kaniko
+    - name: kaniko-spring
+      image: gcr.io/kaniko-project/executor:debug
+      command:
+        - /busybox/cat
+      tty: true
+      volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker/
+    - name: kaniko-python
       image: gcr.io/kaniko-project/executor:debug
       command:
         - /busybox/cat
@@ -31,9 +39,10 @@ spec:
     }
 
     stages {
-        stage("Build Docker Image & Push to Docker Hub") {
+        parallel {
+          stage("build spring and push") {
             steps {
-                container("kaniko") {
+                container("kaniko-spring") {
                     script {
                         def dockerfile = "Dockerfile"
                         def context = "./PillSoo"
@@ -41,15 +50,20 @@ spec:
                         sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
                     }
                 }
-                container("kaniko") {
-                    script {
-                        def dockerfile = "Dockerfile"
-                        def context = "./GT/Pillsoo"
-                        def image = "${DOCKERHUB_USERNAME}/pillsoo-python:latest"
-                        sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
-                    }
-                }
             }
+          }
+          stage("build python and push") {
+              steps {
+                  container("kaniko-python") {
+                      script {
+                          def dockerfile = "Dockerfile"
+                          def context = "./GT/Pillsoo"
+                          def image = "${DOCKERHUB_USERNAME}/pillsoo-python:latest"
+                          sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
+                      }
+                  }
+              }
+          }
         }
     }
 
