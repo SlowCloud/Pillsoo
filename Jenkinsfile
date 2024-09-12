@@ -14,13 +14,13 @@ spec:
       command:
         - /busybox/cat
       tty: true
-//       volumeMounts:
-//         - name: docker-config
-//           mountPath: /kaniko/.docker/
-//   volumes:
-//     - name: docker-config
-//       secret:
-//         secretName: docker-config
+      volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker/
+  volumes:
+    - name: docker-config
+      secret
+        secretName: docker-config
             """
         }
     }
