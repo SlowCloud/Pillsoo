@@ -9,9 +9,8 @@ public class SignupDto {
 
     private String userId;
     private String password;
-    private String name;
+    private String nickname;
     private int age;
-//    private String gender;
     private boolean gender;
 }
 

@@ -19,10 +19,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int userSeq;
     private String userId;
-    private String userName;
+    private String nickname;
     private int age;
     private String password;
     private String gender;
     private Timestamp createdAt;
     private Timestamp withdrawalAt;
+    private String role;
 }
