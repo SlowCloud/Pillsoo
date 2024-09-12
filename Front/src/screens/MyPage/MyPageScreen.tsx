@@ -1,8 +1,15 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import Header from '../../components/common/Header';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { navigations } from '../../constants/navigations';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {navigations} from '../../constants/navigations';
 
 const images = [
   require('../../assets/profile/0.png'),
@@ -21,40 +28,34 @@ export type MyPageParamList = {
   MyPage: undefined;
   MyPageReviewList: undefined;
   UserUpdate: undefined;
-}
+};
 
 export type MyPageReviewScreenNavigationProp = StackNavigationProp<
   MyPageParamList,
   'MyPage'
->
+>;
 
 export type Props = {
   navigation: MyPageReviewScreenNavigationProp;
-}
+};
 
-const MyPageScreen:React.FC<Props> = ({navigation}) => {
+const MyPageScreen: React.FC<Props> = ({navigation}) => {
   // 유저 정보 받기
-  const myInfo = [
-    {id:445674, name: '현우'}
-  ];
+  const myInfo = [{id: 445674, name: '현우'}];
 
   const imageNumber = myInfo[0].id % 10;
 
   const goLogout = () => {
-    Alert.alert(
-      '로그아웃',
-      '로그아웃하시겠습니까?',
-      [
-        {
-          text: '예',
-        },
-        {
-          text: '아니요',
-          style: 'cancel'
-        }
-      ]
-    )
-  }
+    Alert.alert('로그아웃', '로그아웃하시겠습니까?', [
+      {
+        text: '예',
+      },
+      {
+        text: '아니요',
+        style: 'cancel',
+      },
+    ]);
+  };
 
   const goDeleteAccount = () => {
     Alert.alert(
@@ -66,55 +67,49 @@ const MyPageScreen:React.FC<Props> = ({navigation}) => {
         },
         {
           text: '아니요',
-          style: 'cancel'
-        }
-      ]
-    )
-  }
+          style: 'cancel',
+        },
+      ],
+    );
+  };
 
   return (
     <>
       <Header />
       <View style={styles.container}>
-          <Image 
-            // source={images[imageNumber]}
-            source={require('../../assets/profile/메타츄.png')}
-            style={styles.ProfileImage}
-          />
-          <View style={styles.profileNameBox}>
-            <Text style={styles.profileName}>{myInfo[0].name}</Text>
-          </View>
-          <View style={styles.myPageMenuBox}>
-            <TouchableOpacity
-              style={styles.eachMenuBox}
-              onPress={() => navigation.navigate('MyPageReviewList')}
-            >
-              <Text style={styles.eachMenuText}>내 리뷰 보러가기</Text>
-              <Text>{'>'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.eachMenuBox}
-              onPress={() => navigation.navigate('UserUpdate')}
-            >
-              <Text style={styles.eachMenuText}>회원정보 수정</Text>
-              <Text>{'>'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.eachMenuBox}
-              onPress={goLogout}
-            >
-              <Text style={styles.eachMenuText}>로그아웃</Text>
-              <Text>{'>'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.eachMenuBox}
-              onPress={goDeleteAccount}
-            >
-              <Text style={styles.eachMenuText}>회원탈퇴</Text>
-              <Text>{'>'}</Text>
-            </TouchableOpacity>
-          </View>
-          </View>
+        <Image
+          // source={images[imageNumber]}
+          source={require('../../assets/profile/메타츄.png')}
+          style={styles.ProfileImage}
+        />
+        <View style={styles.profileNameBox}>
+          <Text style={styles.profileName}>{myInfo[0].name}</Text>
+        </View>
+        <View style={styles.myPageMenuBox}>
+          <TouchableOpacity
+            style={styles.eachMenuBox}
+            onPress={() => navigation.navigate('MyPageReviewList')}>
+            <Text style={styles.eachMenuText}>내 리뷰 보러가기</Text>
+            <Text>{'>'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.eachMenuBox}
+            onPress={() => navigation.navigate('UserUpdate')}>
+            <Text style={styles.eachMenuText}>회원정보 수정</Text>
+            <Text>{'>'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.eachMenuBox} onPress={goLogout}>
+            <Text style={styles.eachMenuText}>로그아웃</Text>
+            <Text>{'>'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.eachMenuBox}
+            onPress={goDeleteAccount}>
+            <Text style={styles.eachMenuText}>회원탈퇴</Text>
+            <Text>{'>'}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </>
   );
 };
@@ -153,11 +148,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#D3EBCD',
     paddingHorizontal: 10,
     justifyContent: 'space-between',
-
   },
   eachMenuText: {
     color: 'black',
-  }
+  },
 });
 
 export default MyPageScreen;
