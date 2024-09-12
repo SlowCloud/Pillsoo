@@ -34,10 +34,10 @@ public class SignupService {
         User user = new User();
         user.setUserId(userId);
         user.setPassword(bCryptPasswordEncoder.encode(userPassword));
-        user.setUserName(signupDto.getName());
+        user.setNickname(signupDto.getNickname());
         user.setAge(signupDto.getAge());
-//        user.setGender(signupDto.getGender());
         user.setCreatedAt(timestamp);
+        user.setRole("ROLE_USER");
         if(signupDto.isGender()){
             user.setGender("F");
         } else {
@@ -46,6 +46,6 @@ public class SignupService {
 
         userRepository.save(user);
 
-        System.out.println(user.getUserName() + "가 회원가입 함");
+        System.out.println(user.getNickname() + "가 회원가입 함");
     }
 }
