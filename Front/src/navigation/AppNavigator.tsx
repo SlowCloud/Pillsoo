@@ -7,6 +7,8 @@ import RecommendScreen from '../screens/Recommend/RecommendScreen';
 import MoreRecommendScreen from '../screens/Recommend/MoreRecommendScreen';
 import MoreRecommendResultScreen from '../screens/Recommend/MoreRecommendResultScreen';
 import DetailScreen from '../screens/Detail/DetailScreen';
+import MyPageReviewListScreen from '../screens/MyPage/MyPageReviewListScreen';
+import UserUpdateScreen from '../screens/MyPage/UserUpdateScreen';
 
 export type AppStackParamList = {
   Auth: undefined;
@@ -18,6 +20,8 @@ export type AppStackParamList = {
   Home: {
     screen: keyof HomeStackParamList;
   };
+  MyPageReviewList: undefined;
+  UserUpdate: undefined;
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -58,6 +62,16 @@ const AppNavigator = () => {
       <Stack.Screen
         name="Detail"
         component={DetailScreen}
+        options={{headerTitle: ''}}
+      />
+      <Stack.Screen
+        name="MyPageReviewList"
+        component={MyPageReviewListScreen}
+        options={{headerTitle: ''}}
+      />
+      <Stack.Screen
+        name="UserUpdate"
+        component={UserUpdateScreen}
         options={{headerTitle: ''}}
       />
     </Stack.Navigator>

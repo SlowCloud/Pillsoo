@@ -1,6 +1,8 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import Header from '../../components/common/Header';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { navigations } from '../../constants/navigations';
 
 const images = [
   require('../../assets/profile/0.png'),
@@ -15,8 +17,22 @@ const images = [
   require('../../assets/profile/9.png'),
 ];
 
+export type MyPageParamList = {
+  MyPage: undefined;
+  MyPageReviewList: undefined;
+  UserUpdate: undefined;
+}
 
-const MyPageScreen = () => {
+export type MyPageReviewScreenNavigationProp = StackNavigationProp<
+  MyPageParamList,
+  'MyPage'
+>
+
+export type Props = {
+  navigation: MyPageReviewScreenNavigationProp;
+}
+
+const MyPageScreen:React.FC<Props> = ({navigation}) => {
   // 유저 정보 받기
   const myInfo = [
     {id:445674, name: '현우'}
@@ -61,15 +77,17 @@ const MyPageScreen = () => {
       <Header />
       <View style={styles.container}>
           <Image 
-            source={images[imageNumber]}
+            // source={images[imageNumber]}
+            source={require('../../assets/profile/메타츄.png')}
             style={styles.ProfileImage}
-          ></Image>
+          />
           <View style={styles.profileNameBox}>
             <Text style={styles.profileName}>{myInfo[0].name}</Text>
           </View>
           <View style={styles.myPageMenuBox}>
             <TouchableOpacity
               style={styles.eachMenuBox}
+              onPress={() => navigation.navigate('MyPageReviewList')}
             >
               <Text style={styles.eachMenuText}>내 리뷰 보러가기</Text>
               <Text>{'>'}</Text>
