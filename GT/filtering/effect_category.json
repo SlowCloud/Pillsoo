@@ -1,0 +1,140 @@
+[
+  {
+    "pk": 1,
+    "fields": {
+      "effect_category": "피로감"
+    }
+  },
+  {
+    "pk": 2,
+    "fields": {
+      "effect_category": "눈 건강"
+    }
+  },
+  {
+    "pk": 3,
+    "fields": {
+      "effect_category": "피부 건강"
+    }
+  },
+  {
+    "pk": 4,
+    "fields": {
+      "effect_category": "체지방"
+    }
+  },
+  {
+    "pk": 5,
+    "fields": {
+      "effect_category": "혈관"
+    }
+  },
+  {
+    "pk": 6,
+    "fields": {
+      "effect_category": "혈액 순환"
+    }
+  },
+  {
+    "pk": 7,
+    "fields": {
+      "effect_category": "간 건강"
+    }
+  },
+  {
+    "pk": 8,
+    "fields": {
+      "effect_category": "장 건강"
+    }
+  },
+  {
+    "pk": 9,
+    "fields": {
+      "effect_category": "스트레스"
+    }
+  },
+  {
+    "pk": 10,
+    "fields": {
+      "effect_category": "수면"
+    }
+  },
+  {
+    "pk": 11,
+    "fields": {
+      "effect_category": "면역"
+    }
+  },
+  {
+    "pk": 12,
+    "fields": {
+      "effect_category": "콜레스테롤"
+    }
+  },
+  {
+    "pk": 13,
+    "fields": {
+      "effect_category": "뼈 건강"
+    }
+  },
+  {
+    "pk": 14,
+    "fields": {
+      "effect_category": "노화"
+    }
+  },
+  {
+    "pk": 15,
+    "fields": {
+      "effect_category": "항산화"
+    }
+  },
+  {
+    "pk": 16,
+    "fields": {
+      "effect_category": "소화"
+    }
+  },
+  {
+    "pk": 17,
+    "fields": {
+      "effect_category": "혈압"
+    }
+  },
+  {
+    "pk": 18,
+    "fields": {
+      "effect_category": "혈당"
+    }
+  },
+  {
+    "pk": 19,
+    "fields": {
+      "effect_category": "치아"
+    }
+  },
+  {
+    "pk": 20,
+    "fields": {
+      "effect_category": "잇몸"
+    }
+  },
+  {
+    "pk": 21,
+    "fields": {
+      "effect_category": "관절"
+    }
+  },
+  {
+    "pk": 22,
+    "fields": {
+      "effect_category": "호흡기"
+    }
+  },
+  {
+    "pk": 23,
+    "fields": {
+      "effect_category": "갑상선"
+    }
+  }
+]
