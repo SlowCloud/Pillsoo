@@ -20,17 +20,19 @@ function AuthHomeScreen({navigation}: AuthHomeScreenProps) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Text style={styles.title}>Pill Soo</Text>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Pill Soo</Text>
+        </View>
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate(authNavigations.LOGIN)}>
-            <Text style={styles.buttonText}>로그인 하기</Text>
+            <Text style={styles.buttonText}>로그인</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate(authNavigations.SIGNUP)}>
-            <Text style={styles.buttonText}>회원가입 하기</Text>
+            <Text style={styles.buttonText}>회원가입</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -43,6 +45,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+
+  titleContainer: {
+    bottom: 150,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -54,8 +60,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 40,
     fontWeight: 'bold',
+    color: '#a4f87b',
   },
   buttonContainer: {
+    position: 'absolute',
+    bottom: 100,
     width: '100%',
     alignItems: 'center',
   },
