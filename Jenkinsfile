@@ -7,6 +7,7 @@ kind: Pod
 metadata:
   labels:
     jenkins/agent-type: kaniko
+  namespace: jenkins
 spec:
   containers:
     - name: kaniko
