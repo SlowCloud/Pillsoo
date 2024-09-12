@@ -39,31 +39,33 @@ spec:
     }
 
     stages {
-        parallel {
-          stage("build spring and push") {
-            steps {
-                container("kaniko-spring") {
-                    script {
-                        def dockerfile = "Dockerfile"
-                        def context = "./PillSoo"
-                        def image = "${DOCKERHUB_USERNAME}/pillsoo-spring:latest"
-                        sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
+        stage("build and push") {
+            parallel {
+                stage("build spring and push") {
+                    steps {
+                        container("kaniko-spring") {
+                            script {
+                                def dockerfile = "Dockerfile"
+                                def context = "./PillSoo"
+                                def image = "${DOCKERHUB_USERNAME}/pillsoo-spring:latest"
+                                sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
+                            }
+                        }
+                    }
+                }
+                stage("build python and push") {
+                    steps {
+                        container("kaniko-python") {
+                            script {
+                                def dockerfile = "Dockerfile"
+                                def context = "./GT/Pillsoo"
+                                def image = "${DOCKERHUB_USERNAME}/pillsoo-python:latest"
+                                sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
+                            }
+                        }
                     }
                 }
             }
-          }
-          stage("build python and push") {
-              steps {
-                  container("kaniko-python") {
-                      script {
-                          def dockerfile = "Dockerfile"
-                          def context = "./GT/Pillsoo"
-                          def image = "${DOCKERHUB_USERNAME}/pillsoo-python:latest"
-                          sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
-                      }
-                  }
-              }
-          }
         }
     }
 
