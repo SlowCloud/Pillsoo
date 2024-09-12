@@ -1,13 +1,13 @@
-import React, {useState, useRef} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Image,
   Alert,
 } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
 import {StackScreenProps} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {authNavigations} from '../../constants/navigations';
@@ -21,6 +21,7 @@ type SignUpScreenProps = StackScreenProps<
 type Gender = 'Male' | 'Female';
 
 const SignUpScreen = ({navigation}: SignUpScreenProps) => {
+  const [step, setStep] = useState<number>(1); // 현재 단계
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -29,167 +30,252 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
   const [gender, setGender] = useState<Gender>('Male');
   const [error, setError] = useState<string | null>(null);
 
-  const passwordRef = useRef<TextInput>(null);
-  const confirmPasswordRef = useRef<TextInput>(null);
-  const ageRef = useRef<TextInput>(null);
-  const userNameRef = useRef<TextInput>(null);
-
-  const handleSignUp = async () => {
-    if (!userId || !password || !confirmPassword || !userName || !age) {
-      setError('모든 칸을 입력해주세요.');
+  const handleNextStep = () => {
+    if (step === 1 && !userId) {
+      setError('아이디를 입력해주세요.');
       return;
-    }
-
-    if (password.length < 8) {
-      setError('비밀번호는 8자 이상이어야 합니다.');
+    } else if (
+      step === 2 &&
+      (password.length < 8 || password !== confirmPassword)
+    ) {
+      setError(
+        '비밀번호는 8자 이상이어야 하며, 확인 비밀번호와 일치해야 합니다.',
+      );
       return;
-    }
-
-    if (password !== confirmPassword) {
-      setError('비밀번호가 일치하지 않습니다.');
+    } else if (step === 3 && !userName) {
+      setError('닉네임을 입력해주세요.');
+      return;
+    } else if (step === 4 && !age) {
+      setError('나이를 입력해주세요.');
       return;
     }
 
     setError(null);
+    setStep(step + 1);
+  };
 
+  const handlePreviousStep = () => {
+    if (step > 1) {
+      setStep(step - 1);
+    }
+  };
+
+  const handleSignUp = async () => {
     const genderValue = gender === 'Male' ? 0 : 1;
 
     try {
       const response = await axios.post('http://10.0.2.2:8080/api/v1/signup', {
-        userId: userId,
-        password: password,
+        userId,
+        password,
         name: userName,
-        age: age,
+        age,
         gender: genderValue,
       });
       if (response.status === 200) {
         Alert.alert('회원가입 성공', '로그인 페이지로 이동합니다.');
         navigation.navigate(authNavigations.LOGIN);
-        console.log(response);
       }
     } catch (error) {
-      Alert.alert('회원가입 실패');
+      Alert.alert('회원가입 실패', '다시 시도해주세요.');
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>회원가입</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="아이디"
-        value={userId}
-        onChangeText={setUserId}
-        returnKeyType="next"
-        blurOnSubmit={false}
-        onSubmitEditing={() => passwordRef.current?.focus()}
-      />
-      <TextInput
-        ref={passwordRef}
-        style={styles.input}
-        placeholder="비밀번호"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        returnKeyType="next"
-        blurOnSubmit={false}
-        onSubmitEditing={() => confirmPasswordRef.current?.focus()}
-      />
-      <TextInput
-        ref={confirmPasswordRef}
-        style={styles.input}
-        placeholder="비밀번호 확인"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        returnKeyType="next"
-        blurOnSubmit={false}
-        onSubmitEditing={() => userNameRef.current?.focus()}
-      />
-      <TextInput
-        ref={userNameRef}
-        style={styles.input}
-        placeholder="닉네임"
-        value={userName}
-        onChangeText={setUserName}
-        returnKeyType="next"
-        blurOnSubmit={false}
-        onSubmitEditing={() => ageRef.current?.focus()}
-      />
-      <TextInput
-        ref={ageRef}
-        style={styles.input}
-        placeholder="나이"
-        keyboardType="numeric"
-        value={age}
-        onChangeText={setAge}
-        returnKeyType="done"
-      />
-      <View style={styles.pickerContainer}>
-        <Text style={styles.label}>성별</Text>
-        <Picker
-          selectedValue={gender}
-          style={styles.picker}
-          onValueChange={(itemValue: Gender) => setGender(itemValue)}>
-          <Picker.Item label="남성" value="Male" />
-          <Picker.Item label="여성" value="Female" />
-        </Picker>
+    <>
+      <View style={styles.container}>
+        {step > 1 && (
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={handlePreviousStep}>
+            <Text style={styles.backButtonText}>{'<'}</Text>
+          </TouchableOpacity>
+        )}
+        <View style={styles.form}>
+          {step === 1 && (
+            <View style={styles.inputContainer}>
+              <Text style={styles.subtitle}>아이디를 입력해주세요</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="아이디"
+                value={userId}
+                onChangeText={setUserId}
+              />
+            </View>
+          )}
+          {step === 2 && (
+            <View style={styles.inputContainer}>
+              <Text style={styles.subtitle}>비밀번호를 입력해주세요</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="비밀번호"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="비밀번호 확인"
+                secureTextEntry
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+            </View>
+          )}
+          {step === 3 && (
+            <View style={styles.inputContainer}>
+              <Text style={styles.subtitle}>
+                가입을 축하드려요 ! {'\n'}어떻게 불러드리면 될까요 ?
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder="이름"
+                value={userName}
+                onChangeText={setUserName}
+              />
+            </View>
+          )}
+          {step === 4 && (
+            <View style={styles.inputContainer}>
+              <Text style={styles.subtitle}>나이를 입력해주세요</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="나이"
+                keyboardType="numeric"
+                value={age}
+                onChangeText={setAge}
+              />
+            </View>
+          )}
+          {step === 5 && (
+            <View style={styles.inputContainer}>
+              <Text style={styles.subtitle}>성별을 선택해주세요</Text>
+              <View style={styles.genderContainer}>
+                <TouchableOpacity
+                  style={[
+                    styles.genderOption,
+                    gender === 'Male' && styles.selectedGender,
+                  ]}
+                  onPress={() => setGender('Male')}>
+                  <Image
+                    source={require('../../assets/001.png')}
+                    style={styles.genderImage}
+                  />
+                  <Text style={styles.genderText}>남성</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    styles.genderOption,
+                    gender === 'Female' && styles.selectedGender,
+                  ]}
+                  onPress={() => setGender('Female')}>
+                  <Image
+                    source={require('../../assets/002.png')}
+                    style={styles.genderImage}
+                  />
+                  <Text style={styles.genderText}>여성</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+
+          {error && <Text style={styles.errorText}>{error}</Text>}
+        </View>
       </View>
-      {error && <Text style={styles.errorText}>{error}</Text>}
-      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-        <Text style={styles.buttonText}>회원가입</Text>
-      </TouchableOpacity>
-    </View>
+
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={step < 5 ? handleNextStep : handleSignUp}>
+          <Text style={styles.buttonText}>
+            {step < 5 ? '다음' : '회원가입 완료'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
+    width: '100%',
   },
-  title: {
-    fontSize: 24,
+  form: {
+    width: '100%',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  inputContainer: {
+    marginBottom: 100,
+  },
+  subtitle: {
+    fontSize: 20,
+    marginBottom: 10,
     fontWeight: 'bold',
-    marginBottom: 20,
   },
   input: {
-    width: '100%',
+    marginVertical: 8,
+  },
+  genderContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  genderOption: {
+    alignItems: 'center',
     padding: 10,
-    marginVertical: 8,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#ddd',
-    borderRadius: 5,
+    borderRadius: 10,
   },
-  pickerContainer: {
-    width: '100%',
-    marginVertical: 8,
+  selectedGender: {
+    borderColor: '#a4f87b',
   },
-  label: {
-    fontSize: 16,
-    marginBottom: 20,
+  genderImage: {
+    width: 130,
+    height: 130,
+    resizeMode: 'contain',
   },
-  picker: {
-    height: 50,
-    width: '100%',
+  genderText: {
+    marginTop: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   errorText: {
     color: 'red',
     marginVertical: 10,
-    fontSize: 16,
+  },
+  footer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    position: 'absolute',
+    bottom: 40,
   },
   button: {
-    width: '100%',
+    width: '90%',
     padding: 15,
     backgroundColor: '#a4f87b',
-    borderRadius: 5,
+    borderRadius: 10,
     alignItems: 'center',
   },
   buttonText: {
     color: 'white',
     fontSize: 18,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+  },
+  backButtonText: {
+    fontSize: 24,
+    color: 'black',
   },
 });
 
