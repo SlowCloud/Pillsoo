@@ -36,8 +36,8 @@ spec:
             steps {
                 container("kaniko") {
                     script {
-                        def dockerfile = "./PillSoo/Dockerfile"
-                        def context = "."
+                        def dockerfile = "Dockerfile"
+                        def context = "./PillSoo"
                         def image = "${DOCKERHUB_USERNAME}/${IMAGE_NAME}:latest"
 
                         sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
