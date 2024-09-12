@@ -42,6 +42,7 @@ spec:
                     }
                 }
                 container("kaniko") {
+                    script {
                         def dockerfile = "Dockerfile"
                         def context = "./GT/Pillsoo"
                         def image = "${DOCKERHUB_USERNAME}/pillsoo-python:latest"
