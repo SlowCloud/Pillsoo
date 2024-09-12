@@ -24,6 +24,7 @@ public class MyPageService {
     private ReviewDto convertToDto(Review review) {
         ReviewDto dto = new ReviewDto();
         dto.setReviewSeq(review.getReviewSeq());
+        dto.setSupplementSeq(review.getSupplementSeq());
         dto.setUserSeq(review.getUserSeq());
         dto.setContent(review.getContent());
         dto.setCreatedAt(review.getCreatedAt());

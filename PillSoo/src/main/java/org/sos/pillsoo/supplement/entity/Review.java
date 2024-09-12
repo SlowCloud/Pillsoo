@@ -20,6 +20,7 @@ public class Review {
     private Supplement supplement;
 
     private int userSeq;
+    private int supplementSeq;
     private String content;
     private Timestamp createdAt;
     private int rating;
