@@ -20,10 +20,12 @@ public class CabinetController {
     // 복용 중인 영양제 목록 조회
     @GetMapping
     public List<CabinetDto> getCabinet() {
-        // JWT 토큰에서 userSeq를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        int userSeq = userDetails.getUserSeq(); // JWT 토큰에서 추출한 userSeq
+        int userSeq = userDetails.getUserSeq();
+
+        // 디버그 로그 추가
+        System.out.println("Extracted userSeq from JWT: " + userSeq);
 
         return cabinetService.getCabinetByUserSeq(userSeq);
     }
@@ -31,10 +33,12 @@ public class CabinetController {
     // 복용 중인 영양제 추가
     @PostMapping
     public void addSupplement(@RequestBody CabinetDto cabinetDto) {
-        // JWT 토큰에서 userSeq를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        int userSeq = userDetails.getUserSeq(); // JWT 토큰에서 추출한 userSeq
+        int userSeq = userDetails.getUserSeq();
+
+        // 디버그 로그 추가
+        System.out.println("Extracted userSeq from JWT: " + userSeq);
 
         cabinetService.addSupplementToCabinet(userSeq, cabinetDto.getSupplementSeq());
     }
@@ -42,10 +46,12 @@ public class CabinetController {
     // 복용 중인 영양제 제거
     @DeleteMapping
     public void removeSupplement(@RequestParam int supplementSeq) {
-        // JWT 토큰에서 userSeq를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        int userSeq = userDetails.getUserSeq(); // JWT 토큰에서 추출한 userSeq
+        int userSeq = userDetails.getUserSeq();
+
+        // 디버그 로그 추가
+        System.out.println("Extracted userSeq from JWT: " + userSeq);
 
         cabinetService.removeSupplementFromCabinet(userSeq, supplementSeq);
     }

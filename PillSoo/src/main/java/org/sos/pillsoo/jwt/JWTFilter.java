@@ -22,7 +22,9 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+
         String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
@@ -30,25 +32,39 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = authorizationHeader.split(" ")[1];
+        String token = authorizationHeader.substring(7);  // "Bearer " 이후의 토큰 추출
 
-        if (jwtUtil.isExpired(token)) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        try {
+            if (jwtUtil.isExpired(token)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("JWT expired. Please refresh your token.");
+                return;
+            }
+
+            // JWT에서 userSeq와 userId 추출
+            int userSeq = jwtUtil.getUserSeq(token);
+            String userId = jwtUtil.getUserId(token);
+            String role = jwtUtil.getRole(token);
+
+            System.out.println("Extracted userSeq from JWT: " + userSeq);  // 디버그 로그
+
+            // User 객체 생성
+            User userEntity = new User();
+            userEntity.setUserSeq(userSeq);
+            userEntity.setUserId(userId);
+            userEntity.setRole(role);
+
+            // CustomUserDetails에 User 정보 저장
+            CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
+            Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+        } catch (Exception e) {
+            System.out.println("JWT parsing error: " + e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        String role = jwtUtil.getRole(token);
-        String userId = jwtUtil.getUserId(token);
-
-        User userEntity = new User();
-        userEntity.setRole(role);
-        userEntity.setUserId(userId);
-        userEntity.setPassword("temppassword");
-
-        CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-
-        SecurityContextHolder.getContext().setAuthentication(authToken);
         filterChain.doFilter(request, response);
     }
 }

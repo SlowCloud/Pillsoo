@@ -10,8 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.Collection;
-
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final JWTUtil jwtUtil;
@@ -36,8 +34,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
         String userId = customUserDetails.getUsername();
         String role = customUserDetails.getAuthorities().iterator().next().getAuthority();
+        int userSeq = customUserDetails.getUserSeq();  // userSeq를 가져옴
 
-        String token = jwtUtil.createJwt(role, userId, 60 * 60 * 10 * 1000L);
+        // userSeq를 포함한 JWT 생성
+        String token = jwtUtil.createJwt(role, userId, userSeq, 60 * 60 * 10 * 1000L);  // 유효기간 10시간
         response.addHeader("Authorization", "Bearer " + token);
     }
 
