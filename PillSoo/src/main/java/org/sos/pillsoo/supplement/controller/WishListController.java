@@ -21,8 +21,11 @@ public class WishListController {
     private int getUserSeqFromJWT() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return userDetails.getUserSeq();
+        int userSeq = userDetails.getUserSeq();
+        System.out.println("Extracted userSeq from JWT: " + userSeq); // 디버깅 로그 추가
+        return userSeq;
     }
+
 
     // 위시리스트 조회 (JWT에서 userSeq 추출)
     @GetMapping

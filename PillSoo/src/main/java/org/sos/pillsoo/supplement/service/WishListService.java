@@ -5,7 +5,7 @@ import org.sos.pillsoo.supplement.dto.WishListDto;
 import org.sos.pillsoo.supplement.entity.WishList;
 import org.sos.pillsoo.supplement.repository.WishListRepository;
 import org.sos.pillsoo.supplement.entity.Supplement;
-import org.sos.pillsoo.auth.repository.UserRepository; // UserRepository 추가
+import org.sos.pillsoo.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +20,7 @@ public class WishListService {
     private WishListRepository wishListRepository;
 
     @Autowired
-    private UserRepository userRepository; // UserRepository 추가
+    private UserRepository userRepository;
 
     // 유저 시퀀스로 위시리스트 조회
     public List<WishListDto> getWishListByUserSeq(int userSeq) {
@@ -28,6 +28,7 @@ public class WishListService {
         return wishLists.stream()
                 .map(wishList -> {
                     WishListDto dto = new WishListDto();
+                    dto.setUserSeq(userSeq);
                     dto.setSupplementSeq(wishList.getSupplement().getSupplementSeq());
                     dto.setPillName(wishList.getSupplement().getPillName());
                     dto.setFunctionality(wishList.getSupplement().getFunctionality());
