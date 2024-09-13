@@ -21,13 +21,13 @@ public class Review {
     private Supplement supplement;  // Supplement와의 관계 정의
 
     private int userSeq;
-
-    // supplementSeq는 ManyToOne 관계로 이미 매핑되었으므로 제거
-    // private int supplementSeq; -> 제거
-
     private String content;
     private Timestamp createdAt;
     private int rating;
 
-    // Getters and Setters
+    // 자동으로 createdAt 필드를 현재 시간으로 설정하는 로직
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Timestamp(System.currentTimeMillis());
+    }
 }
