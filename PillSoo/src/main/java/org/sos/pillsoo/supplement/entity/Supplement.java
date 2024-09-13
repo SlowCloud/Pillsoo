@@ -12,20 +12,36 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor  // 기본 생성자
-@Table(name = "Supplement")
+@Table(name = "Supplement")  // DB 테이블 이름 (대문자)
 public class Supplement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "supplementSeq")
     private int supplementSeq;
 
+    @Column(name = "PILL_NAME")  // 대문자 컬럼 이름
     private String pillName;
-    private Date expirationDate;
+
+    @Column(name = "EXPIRATION_DATE")  // 대문자 컬럼 이름
+    private String expirationDate;
+
+    @Column(name = "appearance")
     private String appearance;
+
+    @Column(name = "DOSE_AMOUNT")  // 대문자 컬럼 이름
     private String doseAmount;
+
+    @Column(name = "STORAGE_METHOD")  // 대문자 컬럼 이름
     private String storageMethod;
+
+    @Column(name = "DOSE_GUIDE")  // 대문자 컬럼 이름
     private String doseGuide;
+
+    @Column(name = "functionality")
     private String functionality;
+
+    @Column(name = "IMAGE_URL")  // 대문자 컬럼 이름
     private String imageUrl;
 
     @OneToMany(mappedBy = "supplement")

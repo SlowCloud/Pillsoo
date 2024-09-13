@@ -16,11 +16,11 @@ public class Cabinet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int mykitSeq;
 
+    @ManyToOne(fetch = FetchType.EAGER)  // 즉시 로딩으로 설정
+    @JoinColumn(name = "supplementSeq")
+    private Supplement supplement;
+
     @ManyToOne
     @JoinColumn(name = "userSeq")
     private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "supplementSeq")
-    private Supplement supplement;
 }

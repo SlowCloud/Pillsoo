@@ -17,14 +17,19 @@ public class CabinetController {
     @Autowired
     private CabinetService cabinetService;
 
+    // JWT 토큰에서 userSeq 추출하는 메서드
+    private int getUserSeqFromJWT() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUserSeq();
+    }
+
     // 복용 중인 영양제 목록 조회
     @GetMapping
     public List<CabinetDto> getCabinet() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        int userSeq = userDetails.getUserSeq();
+        int userSeq = getUserSeqFromJWT();  // JWT에서 userSeq 추출
 
-        // 디버그 로그 추가
+        // 디버그 로그
         System.out.println("Extracted userSeq from JWT: " + userSeq);
 
         return cabinetService.getCabinetByUserSeq(userSeq);
@@ -33,11 +38,9 @@ public class CabinetController {
     // 복용 중인 영양제 추가
     @PostMapping
     public void addSupplement(@RequestBody CabinetDto cabinetDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        int userSeq = userDetails.getUserSeq();
+        int userSeq = getUserSeqFromJWT();  // JWT에서 userSeq 추출
 
-        // 디버그 로그 추가
+        // 디버그 로그
         System.out.println("Extracted userSeq from JWT: " + userSeq);
 
         cabinetService.addSupplementToCabinet(userSeq, cabinetDto.getSupplementSeq());
@@ -46,11 +49,9 @@ public class CabinetController {
     // 복용 중인 영양제 제거
     @DeleteMapping
     public void removeSupplement(@RequestParam int supplementSeq) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        int userSeq = userDetails.getUserSeq();
+        int userSeq = getUserSeqFromJWT();  // JWT에서 userSeq 추출
 
-        // 디버그 로그 추가
+        // 디버그 로그
         System.out.println("Extracted userSeq from JWT: " + userSeq);
 
         cabinetService.removeSupplementFromCabinet(userSeq, supplementSeq);
