@@ -2,7 +2,10 @@ package org.sos.pillsoo.supplement.controller;
 
 import org.sos.pillsoo.supplement.dto.WishListDto;
 import org.sos.pillsoo.supplement.service.WishListService;
+import org.sos.pillsoo.auth.dto.CustomUserDetails;  // JWT에서 userSeq 가져오기
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,21 +17,31 @@ public class WishListController {
     @Autowired
     private WishListService wishListService;
 
-    // 위시리스트 조회
+    // JWT에서 userSeq 추출하는 메서드
+    private int getUserSeqFromJWT() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUserSeq();
+    }
+
+    // 위시리스트 조회 (JWT에서 userSeq 추출)
     @GetMapping
-    public List<WishListDto> getWishList(@RequestParam int userSeq) {
+    public List<WishListDto> getWishList() {
+        int userSeq = getUserSeqFromJWT();  // JWT에서 userSeq 추출
         return wishListService.getWishListByUserSeq(userSeq);
     }
 
-    // 위시리스트 추가
+    // 위시리스트 추가 (JWT에서 userSeq 추출)
     @PostMapping
     public void addToWishList(@RequestBody WishListDto wishListDto) {
-        wishListService.addToWishList(wishListDto.getUserSeq(), wishListDto.getSupplementSeq());
+        int userSeq = getUserSeqFromJWT();  // JWT에서 userSeq 추출
+        wishListService.addToWishList(userSeq, wishListDto.getSupplementSeq());
     }
 
-    // 위시리스트 삭제
+    // 위시리스트 삭제 (JWT에서 userSeq 추출)
     @DeleteMapping
-    public void removeFromWishList(@RequestParam int userSeq, @RequestParam int supplementSeq) {
+    public void removeFromWishList(@RequestParam int supplementSeq) {
+        int userSeq = getUserSeqFromJWT();  // JWT에서 userSeq 추출
         wishListService.removeFromWishList(userSeq, supplementSeq);
     }
 }

@@ -8,6 +8,7 @@ import org.sos.pillsoo.supplement.entity.Supplement;
 import org.sos.pillsoo.auth.repository.UserRepository; // UserRepository 추가
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,6 +52,7 @@ public class WishListService {
     }
 
     // 위시리스트에서 영양제 제거
+    @Transactional
     public void removeFromWishList(int userSeq, int supplementSeq) {
         wishListRepository.deleteByUser_UserSeqAndSupplement_SupplementSeq(userSeq, supplementSeq);
     }
