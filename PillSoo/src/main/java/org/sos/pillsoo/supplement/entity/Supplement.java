@@ -26,19 +26,19 @@ public class Supplement {
     @Column(name = "EXPIRATION_DATE")  // 대문자 컬럼 이름
     private String expirationDate;
 
-    @Column(name = "appearance")
+    @Column(name = "appearance", columnDefinition = "TEXT")
     private String appearance;
 
-    @Column(name = "DOSE_AMOUNT")  // 대문자 컬럼 이름
+    @Column(name = "DOSE_AMOUNT", columnDefinition = "TEXT")  // 대문자 컬럼 이름
     private String doseAmount;
 
-    @Column(name = "STORAGE_METHOD")  // 대문자 컬럼 이름
+    @Column(name = "STORAGE_METHOD", columnDefinition = "TEXT")  // 대문자 컬럼 이름
     private String storageMethod;
 
-    @Column(name = "DOSE_GUIDE")  // 대문자 컬럼 이름
+    @Column(name = "DOSE_GUIDE", columnDefinition = "TEXT")  // 대문자 컬럼 이름
     private String doseGuide;
 
-    @Column(name = "functionality")
+    @Column(name = "functionality", columnDefinition = "TEXT")
     private String functionality;
 
     @Column(name = "IMAGE_URL")  // 대문자 컬럼 이름
