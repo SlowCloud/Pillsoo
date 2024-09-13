@@ -40,6 +40,8 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+    implementation 'javax.servlet:javax.servlet-api:4.0.1' // 또는 필요한 버전
 }
 
 tasks.named('test') {

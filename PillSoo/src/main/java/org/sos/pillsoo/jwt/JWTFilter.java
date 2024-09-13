@@ -23,24 +23,17 @@ public class JWTFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-        System.out.println("doFilterInternal start");
         String authorizationHeader = request.getHeader("Authorization");
 
-        if(authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            System.out.println("JWT 토큰 없음 -> 종료");
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
-            System.out.println("filterChain.doFilter end");
-
-            return ;
+            return;
         }
 
         String token = authorizationHeader.split(" ")[1];
 
-        if(jwtUtil.isExpired(token)) {
-            System.out.println("토큰 만료됨");
-            filterChain.doFilter(request, response);
-
+        if (jwtUtil.isExpired(token)) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
 
@@ -52,11 +45,10 @@ public class JWTFilter extends OncePerRequestFilter {
         userEntity.setUserId(userId);
         userEntity.setPassword("temppassword");
 
-        CustomUserDetails customUserDetails =new CustomUserDetails(userEntity);
+        CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 
-        SecurityContextHolder .getContext().setAuthentication(authToken);
+        SecurityContextHolder.getContext().setAuthentication(authToken);
         filterChain.doFilter(request, response);
     }
 }
-

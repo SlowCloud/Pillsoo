@@ -2,7 +2,10 @@ package org.sos.pillsoo.mykit.controller;
 
 import org.sos.pillsoo.mykit.dto.AlarmDto;
 import org.sos.pillsoo.mykit.service.AlarmService;
+import org.sos.pillsoo.auth.dto.CustomUserDetails; // CustomUserDetails에서 userSeq 가져오기
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,13 +19,23 @@ public class AlarmController {
 
     // 알람 목록 조회
     @GetMapping
-    public List<AlarmDto> getAlarms(@RequestParam int userSeq) {
+    public List<AlarmDto> getAlarms() {
+        // JWT 토큰에서 userSeq를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal(); // 사용자 정보에서 userSeq를 가져옴
+        int userSeq = userDetails.getUserSeq(); // userSeq를 userDetails에서 가져옴
+
         return alarmService.getAlarmsByUserSeq(userSeq);
     }
 
     // 알람 추가
     @PostMapping
-    public void addAlarm(@RequestParam int userSeq, @RequestBody AlarmDto alarmDto) {
+    public void addAlarm(@RequestBody AlarmDto alarmDto) {
+        // JWT 토큰에서 userSeq를 가져옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal(); // 사용자 정보에서 userSeq를 가져옴
+        int userSeq = userDetails.getUserSeq();
+
         alarmService.addAlarm(userSeq, alarmDto.getSupplementSeq(), alarmDto);
     }
 
