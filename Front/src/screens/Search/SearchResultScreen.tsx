@@ -7,23 +7,20 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  TouchableOpacity,
 } from 'react-native';
-// import {useRoute, RouteProp} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native'; // 네비게이션 훅 임포트
 import SearchBar from '../../components/common/SearchBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {API_URL} from '@env';
 
-// type HomeStackParamList = {
-//   SearchResult: {query: string};
-// };
-
 const SearchResultScreen = () => {
+  const navigation = useNavigation(); // 네비게이션 객체 가져오기
   const [token, setToken] = useState<string | null>(null);
-  // const route = useRoute<RouteProp<HomeStackParamList, 'SearchResult'>>();
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(' ');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -36,13 +33,12 @@ const SearchResultScreen = () => {
 
   const fetchResults = async () => {
     if (!searchQuery.trim() || !token) return;
-    // 검색어가 비어 있거나, 토큰이 없으면 함수를 종료한다.
 
     setLoading(true);
     try {
       const response = await axios.get(
-        // 'http://10.0.2.2:8080/api/v1/supplement/search',
-        `${API_URL}/api/v1/supplement/search`,
+        'http://10.0.2.2:8080/api/v1/supplement/search',
+        // `${API_URL}/api/v1/supplement/search`
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -72,11 +68,12 @@ const SearchResultScreen = () => {
   }, [searchQuery]);
 
   const renderItem = ({item}: {item: any}) => (
-    <View style={styles.resultItem}>
+    <TouchableOpacity
+      style={styles.resultItem}
+      onPress={() => navigation.navigate('Detail', {id: item.supplementSeq})}>
       <Image source={{uri: item.imageUrl}} style={styles.image} />
-      {/* 이미지를 가져올 url을 지정 */}
       <Text style={styles.pillName}>{item.pillName}</Text>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -127,10 +124,6 @@ const styles = StyleSheet.create({
   pillName: {
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  functionality: {
-    fontSize: 14,
-    color: '#555',
   },
   noResultsText: {
     textAlign: 'center',

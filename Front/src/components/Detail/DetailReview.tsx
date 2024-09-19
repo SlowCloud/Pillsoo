@@ -1,33 +1,72 @@
-import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, StyleSheet} from 'react-native';
 import DetailReviewInput from './DetailReviewInput';
 import DetailReviewItems from './DetailReviewItems';
+import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
-export type DetailReviewProps = {
+interface Review {
   id: number;
+  name: string;
+  content: string;
 }
-const DetailReview: React.FC<DetailReviewProps> = ({id}) => {
-  // 백한테 아이디 보내기
-  // 그럼 리뷰 목록을 받을 수 있겠지
-  // const [reviewList, setReviewList] = useState<>
-  const reviewList = [
-    {id:1, name: 'name1', content: 'goodgoodgoodgoodgoodgoodgoodgoodgoodgoodgoodgoodgoodgoodgood'},
-    {id:2, name: 'name2', content: 'bad'},
-  ]
+
+const DetailReview: React.FC = () => {
+  const route = useRoute<DetailScreenRouteProp>();
+  const {id} = route.params;
+  const [token, setToken] = useState<string | null>(null);
+  const [reviewList, setReviewList] = useState<Review[]>([]);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await AsyncStorage.getItem('jwt_token');
+      setToken(storedToken);
+    };
+
+    fetchToken();
+  }, []);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      if (!token) return;
+
+      try {
+        const response = await axios.get(
+          `http://10.0.2.2:8080/api/v1/supplement/${id}/reviews`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (response.status === 200) {
+          setReviewList(response.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchReviews();
+  }, [id, token, reviewList]);
 
   return (
     <View style={styles.container}>
       <View style={styles.reviewContents}>
-      {reviewList.map((reviewItem) => (
-        <DetailReviewItems 
-          key={reviewItem.id}
-          name={reviewItem.name}
-          content={reviewItem.content}
-        />
-      ))}
+        {reviewList.map(reviewItem => (
+          <DetailReviewItems
+            key={reviewItem.id}
+            name={reviewItem.name}
+            content={reviewItem.content}
+          />
+        ))}
+        <DetailReviewInput />
       </View>
-      <DetailReviewInput />
     </View>
   );
 };
@@ -41,7 +80,7 @@ const styles = StyleSheet.create({
     width: '90%',
     marginTop: 25,
     marginLeft: 15,
-  }
+  },
 });
 
 export default DetailReview;
