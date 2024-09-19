@@ -1,22 +1,68 @@
-import React, {useState} from 'react';
-import {View, Text, TextInput, StyleSheet, TouchableOpacity} from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
 
+type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
-const DetailReviewInput = () => {
-  // 리뷰를 백엔드로 전송
+const DetailReviewInput: React.FC = () => {
   const [review, setReview] = useState<string>('');
+  const [token, setToken] = useState<string | null>(null);
+  const route = useRoute<DetailScreenRouteProp>();
+  const {id} = route.params;
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await AsyncStorage.getItem('jwt_token');
+      setToken(storedToken);
+    };
+
+    fetchToken();
+  }, []);
 
   const handleTextChange = (inputText: string) => {
     setReview(inputText);
   };
 
-  const clickedSubmitBtn = () => {
-      setReview('')
-      // 백엔드로 리뷰 보내라
-  }
+  const clickedSubmitBtn = async () => {
+    if (!token) return;
+
+    try {
+      const response = await axios.post(
+        `http://10.0.2.2:8080/api/v1/supplement/${id}/reviews`,
+        {content: review},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (response.status === 200) {
+        console.log(response);
+        setReview('');
+      } else {
+        Alert.alert('리뷰 작성 실패');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View>
+      <TouchableOpacity style={styles.inputBtn} onPress={clickedSubmitBtn}>
+        <Text style={styles.inputBtnText}>입력</Text>
+      </TouchableOpacity>
       <KeyboardAwareScrollView>
         <TextInput
           autoCorrect={false}
@@ -26,19 +72,13 @@ const DetailReviewInput = () => {
           onChangeText={handleTextChange}
         />
       </KeyboardAwareScrollView>
-      <TouchableOpacity
-        style={styles.inputBtn}
-        onPress={clickedSubmitBtn}
-      >
-        <Text style={styles.inputBtnText}>입력</Text>
-      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   inputBox: {
-    height: '100%',
+    height: 100,
     width: '95%',
     backgroundColor: 'white',
     borderWidth: 1,
@@ -51,14 +91,14 @@ const styles = StyleSheet.create({
   },
   inputBtn: {
     width: '20%',
-    height: '6%',
+    // height: 40,
     borderRadius: 5,
     backgroundColor: '#0B2F9F',
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: '76%',
-    marginBottom: '80%'
-  }
+    marginBottom: 20,
+  },
 });
 
 export default DetailReviewInput;

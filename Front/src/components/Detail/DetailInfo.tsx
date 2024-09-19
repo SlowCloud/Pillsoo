@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import { PillData } from '../../screens/Detail/DetailScreen';
+import {PillData} from '../../screens/Detail/DetailScreen';
 
 export type DetailInfoProps = {
   pillData: PillData;
@@ -11,15 +11,15 @@ const DetailInfo: React.FC<DetailInfoProps> = ({pillData}) => {
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Text style={styles.contentText}>💊효능</Text>
-        <Text style={styles.contentText}>{pillData.description}</Text>
+        <Text style={styles.contentText}>{pillData.functionality}</Text>
       </View>
       <View style={styles.contentContainer}>
         <Text style={styles.contentText}>💊주의할 점</Text>
-        <Text style={styles.contentText}>{pillData.guide}</Text>
+        <Text style={styles.contentText}>{pillData.doseGuide}</Text>
       </View>
       <View style={styles.contentContainer}>
-      <Text style={styles.contentText}>💊무언가</Text>
-      <Text style={styles.contentText}>{pillData.functionality}</Text>
+        <Text style={styles.contentText}>💊유통기한</Text>
+        <Text style={styles.contentText}>{pillData.expirationDate}</Text>
       </View>
     </View>
   );
@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
     width: '90%',
     height: '25%',
   },
-  contentText : {
-    color: 'black'
+  contentText: {
+    color: 'black',
   },
 });
 
