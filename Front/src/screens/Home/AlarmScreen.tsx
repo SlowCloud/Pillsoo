@@ -8,12 +8,12 @@ import {
   Linking,
   Platform,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import PushNotification from 'react-native-push-notification';
 
 const AlarmScreen = () => {
   const [date, setDate] = useState(new Date());
-  const [mode, setMode] = useState('time');
+  const [mode, setMode] = useState<'time' | 'date' | 'datetime'>('time');
   const [show, setShow] = useState(false);
   const [alarmTime, setAlarmTime] = useState('');
 
@@ -25,13 +25,15 @@ const AlarmScreen = () => {
   };
 
   // 시간 선택이 변경될 때 실행되는 함수
-  const onChange = (event, selectedDate) => {
+  const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate || date;
     setShow(false);
     setDate(currentDate);
-
+    
     const hours = currentDate.getHours();
     const minutes = currentDate.getMinutes();
+    console.log('설정한 시간', hours)
+    console.log('설정한 분', minutes)
     setAlarmTime(`${hours}:${minutes < 10 ? `0${minutes}` : minutes}`);
   };
 
@@ -44,7 +46,7 @@ const AlarmScreen = () => {
   // 알람 설정 함수
   const setAlarm = async () => {
     if (!alarmTime) {
-      alert('알람 시간을 선택해 주세요.');
+      Alert.alert('알람 시간을 선택해 주세요.');
       return;
     }
 
@@ -53,7 +55,7 @@ const AlarmScreen = () => {
     const timeToAlarm = new Date(date);
 
     if (timeToAlarm <= currentTime) {
-      alert('현재 시간보다 나중 시간을 선택해 주세요.');
+      Alert.alert('현재 시간보다 나중 시간을 선택해 주세요.');
       return;
     }
 
@@ -68,7 +70,7 @@ const AlarmScreen = () => {
       allowWhileIdle: true, // 앱이 비활성 상태일 때도 알람
     });
 
-    alert(`알람이 ${alarmTime}에 설정되었습니다.`);
+    Alert.alert(`알람이 ${alarmTime}에 설정되었습니다.`);
   };
 
   return (
@@ -89,7 +91,7 @@ const AlarmScreen = () => {
           <DateTimePicker
             value={date}
             mode={mode}
-            is24Hour={true}
+            // is24Hour={true}
             display="default"
             onChange={onChange}
           />

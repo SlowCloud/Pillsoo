@@ -3,12 +3,13 @@ import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import Header from '../../components/common/Header';
 import RecommendItem from '../../components/Recommend/RecommendItem';
-import SelectPillItems from './SelectPillItems';
+import SelectPillItems from '../../components/Recommend/SelectPillItems';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export type RecommendParamList = {
   Recommend: undefined;
   MoreRecommend: undefined;
+  RecommendCategory: { category: string };
 }
 
 export type RecommendScreenNavigationProp = StackNavigationProp<
@@ -30,12 +31,11 @@ const RecommendScreen: React.FC<Props> = ({ navigation }) => {
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
 
   const categories: string[] = [
-    '눈 건강', '피부 건강', '체지방', '혈관 & 혈액순환',  '호흡기 건강',
-    '간 건강', '면역 기능', '혈압',  '탈모 & 손톱 건강', '여성 건강',
-    '뼈 건강', '노화 & 항산화', '남성 건강', '빈혈',  '스트레스 & 수명', 
-    '운동 능력 & 근육량', '두뇌활동', '혈당', '피로감', '치아 & 칫몸',
-    '갑상선 건강', '관절 건강', '여성 갱년기', '장 건강', '혈중 중성지방', 
-    '혈중 콜레스테롤', '소화 & 위식도 건강', '임산부 & 태아 건강',
+    '간 건강','갑상선','관절', '노화',  
+    '눈 건강','면역', '뼈 건강', '소화', 
+    '수면', '스트레스', '장 건강', '체지방', 
+    '치아', '콜레스테롤', '피부 건강', '항산화', 
+    '혈관',  '혈당', '혈압'
   ];
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const RecommendScreen: React.FC<Props> = ({ navigation }) => {
     return result;
   };
 
-  const chunkedCategories = chunkArray(categories, 5);
+  const chunkedCategories = chunkArray(categories, 4);
   const lastRow = chunkedCategories.pop();
 
   return (
@@ -81,6 +81,7 @@ const RecommendScreen: React.FC<Props> = ({ navigation }) => {
                   <SelectPillItems
                     key={category}
                     category={category}
+                    navigation={navigation}
                   />
                 ))}
               </View>
@@ -89,21 +90,18 @@ const RecommendScreen: React.FC<Props> = ({ navigation }) => {
           />
           {lastRow && (
             <View style={styles.lastRow}>
-              <View style={styles.leftAligned}>
-                {lastRow.slice(0, 1).map((category) => (
-                  <SelectPillItems key={category} category={category} />
-                ))}
+              <View style={styles.categoryFirstItem}>
+                <SelectPillItems category={lastRow[0]} navigation={navigation} />
               </View>
-              <View style={styles.centerAligned}>
-                {lastRow.slice(1, 2).map((category) => (
-                  <SelectPillItems key={category} category={category} />
-                ))}
+              <View style={styles.categorySecondItem}>
+                <SelectPillItems category={lastRow[1]} navigation={navigation} />
               </View>
-              <View style={styles.rightAligned}>
-                {lastRow.slice(2).map((category) => (
-                  <SelectPillItems key={category} category={category} />
-                ))}
+              <View style={styles.categoryThirdItem}>
+                <SelectPillItems category={lastRow[2]} navigation={navigation} />
               </View>
+              {/* <View style={styles.categoryFourthItem}>
+                <SelectPillItems category={lastRow[3]} navigation={navigation} />
+              </View> */}
             </View>
           )}
         </View>
@@ -137,7 +135,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   pillCategoryBox: {
-    width: '100%',
     marginTop: 70,
   },
   categoryRow: {
@@ -150,20 +147,26 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
   },
-  leftAligned: {
+  categoryFirstItem: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-  },
-  centerAligned: {
-    marginRight: 10,
+    marginLeft: -75,
+    marginRight: -60,
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  rightAligned: {
+  categorySecondItem: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    marginLeft: -110,
+    alignItems: 'center',
+  },
+  categoryThirdItem: {
+    flex: 1,
+    marginLeft: -160,
+    alignItems: 'center',
+  },
+  categoryFourthItem: {
+    flex: 1,
+    marginLeft: -170,
+    alignItems: 'center',
   },
   recommendBtn: {
     marginTop: 85,
