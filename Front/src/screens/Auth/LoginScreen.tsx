@@ -12,6 +12,7 @@ import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {authNavigations} from '../../constants/navigations';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {API_URL} from '@env';
 
 type LoginScreenProps = StackScreenProps<
   AuthStackParamList,
@@ -21,12 +22,11 @@ type LoginScreenProps = StackScreenProps<
 const LoginScreen = ({navigation}: LoginScreenProps) => {
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-
   const passwordRef = useRef<TextInput>(null);
-
   const handleLogin = async () => {
     try {
       const response = await axios.post(
+        // `${API_URL}/api/v1/signin`,
         'http://10.0.2.2:8080/api/v1/signin',
         {
           username: userId,
@@ -40,13 +40,15 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
         const token = response.headers['authorization']?.split(' ')[1];
+        console.log('res', response);
         if (token) {
           await AsyncStorage.setItem('jwt_token', token);
+
           navigation.navigate('Main');
           Alert.alert('로그인 성공');
         } else {
+          console.log(AsyncStorage);
           Alert.alert('토큰이 없습니다. 로그인 실패');
         }
       }
