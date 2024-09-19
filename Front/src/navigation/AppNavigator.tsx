@@ -6,6 +6,7 @@ import HomeNavigator, {HomeStackParamList} from './HomeNavigator';
 import RecommendScreen from '../screens/Recommend/RecommendScreen';
 import MoreRecommendScreen from '../screens/Recommend/MoreRecommendScreen';
 import MoreRecommendResultScreen from '../screens/Recommend/MoreRecommendResultScreen';
+import RecommendCategoryScreen from '../screens/Recommend/RecommendCategoryScreen';
 import DetailScreen from '../screens/Detail/DetailScreen';
 import MyPageReviewListScreen from '../screens/MyPage/MyPageReviewListScreen';
 import UserUpdateScreen from '../screens/MyPage/UserUpdateScreen';
@@ -16,6 +17,7 @@ export type AppStackParamList = {
   Recommend: undefined;
   MoreRecommend: undefined;
   MoreRecommendResult: undefined;
+  RecommendCategory: undefined;
   Detail: undefined;
   Home: {
     screen: keyof HomeStackParamList;
@@ -52,6 +54,11 @@ const AppNavigator = () => {
       <Stack.Screen
         name="MoreRecommendResult"
         component={MoreRecommendResultScreen}
+        options={{ headerTitle: '' }}
+      />
+      <Stack.Screen
+        name="RecommendCategory"
+        component={RecommendCategoryScreen}
         options={{ headerTitle: '' }}
       />
       <Stack.Screen

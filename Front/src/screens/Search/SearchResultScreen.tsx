@@ -55,7 +55,6 @@ const SearchResultScreen = () => {
       );
 
       if (response.status === 200) {
-        console.log(response.data);
         setResults(response.data);
       } else {
         Alert.alert('검색 실패');
