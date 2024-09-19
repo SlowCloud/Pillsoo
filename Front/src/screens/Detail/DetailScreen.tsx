@@ -4,6 +4,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { RecommendItemParamList } from '../../components/Recommend/RecommendItem';
 import DetailInfo from '../../components/Detail/DetailInfo';
 import DetailReview from '../../components/Detail/DetailReview';
+import { CardStyleInterpolators } from '@react-navigation/stack';
 
 
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
@@ -82,6 +83,7 @@ const DetailScreen: React.FC = () => {
         }>
             상세 정보
           </Text>
+          <View style={selectedTab === 'info' ? styles.selectedCheck : null}></View>
         </TouchableOpacity>
         <TouchableOpacity
           style={selectedTab === 'review' ? (
@@ -97,6 +99,7 @@ const DetailScreen: React.FC = () => {
             styles.notSelectedText
           )
           }>리뷰</Text>
+        <View style={selectedTab === 'review' ? styles.selectedCheck : null}></View>
         </TouchableOpacity>
       </View>
       <View style={styles.selectedContent}>
@@ -114,7 +117,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginHorizontal: 15,
     marginVertical: 45,
   },
   infoBox: {
@@ -124,6 +126,7 @@ const styles = StyleSheet.create({
   image: {
     width: '40%',
     height: '80%',
+    marginHorizontal: 15,
     marginTop: 10,
     resizeMode: 'contain',
   },
@@ -140,41 +143,48 @@ const styles = StyleSheet.create({
   },
   canSelectMenu: {
     flexDirection: 'row',
-    marginTop: 25,
+    marginTop: 20,
     justifyContent: 'center',
   },
   selectedTextBox: {
     width: '50%',
-    height: '40%',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    backgroundColor: '#D3EBCD',
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#939185',
     justifyContent: 'center',
     alignItems: 'center',
   },
   notSelectedTextBox: {
     width: '50%',
-    height: '40%',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    backgroundColor: '#EEEDEB',
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#939185',
     justifyContent: 'center',
     alignItems: 'center',
   },
+  selectedText: {
+    fontSize: 20,
+    color: 'black'
+  },
   notSelectedText: {
-    fontSize: 17,
+    fontSize: 20,
     color: '#939185',
   },
-  selectedText: {
-    fontSize: 17,
-    color: 'black',
+  selectedCheck: {
+    width: 40,
+    height: 10,
+    marginTop: 11,
+    backgroundColor: '#D3EBCD',
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
   },
   selectedContent: {
-    height: '70%',
-    marginTop: '-22%',
-    backgroundColor: '#D3EBCD',
-    borderRadius: 5,
-  }
+    height: '65%',
+    borderWidth: 1,
+    borderColor: '#939185',
+    borderBlockStartColor: '#F7F7F7'
+    
+  },
 });
 
 export default DetailScreen;
