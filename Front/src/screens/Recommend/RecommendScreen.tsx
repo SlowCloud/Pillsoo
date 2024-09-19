@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import Header from '../../components/common/Header';
-import RecommendItem from '../../components/Recommend/RecommendItem'
+import RecommendItem from '../../components/Recommend/RecommendItem';
+import SelectPillItems from './SelectPillItems';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export type RecommendParamList = {
@@ -21,47 +22,95 @@ export type Props = {
 
 type RecommendPill = {
   id: number;
-  name: string;
-  description: string;
+  imageUrl: any;
 }
 
-const RecommendScreen:React.FC<Props> = ({navigation}) => {
+const RecommendScreen: React.FC<Props> = ({ navigation }) => {
   const [age, setAge] = useState<number>(0);
-  const [gender, setGender] = useState<string>('');
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
 
+  const categories: string[] = [
+    '눈 건강', '피부 건강', '체지방', '혈관 & 혈액순환',  '호흡기 건강',
+    '간 건강', '면역 기능', '혈압',  '탈모 & 손톱 건강', '여성 건강',
+    '뼈 건강', '노화 & 항산화', '남성 건강', '빈혈',  '스트레스 & 수명', 
+    '운동 능력 & 근육량', '두뇌활동', '혈당', '피로감', '치아 & 칫몸',
+    '갑상선 건강', '관절 건강', '여성 갱년기', '장 건강', '혈중 중성지방', 
+    '혈중 콜레스테롤', '소화 & 위식도 건강', '임산부 & 태아 건강',
+  ];
+
   useEffect(() => {
-    // 로그인 정보에서 나이랑 성별 가지고 오기
     setAge(20);
-    setGender('남성');
-    // 백이랑 연결해서 유저에게 추천하는 영양제 정보 가져오기
     setRecommendPills([
-      {id: 1, name: 'pill1', description: '이 약은 어쩌구저쩌구~~~`'},
-      {id: 2, name: 'pill2', description: '이 약은 어쩌구저쩌구~~~`'},
-      {id: 3, name: 'pill3', description: '이 약은 어쩌구저쩌구~~~`'},
+      { id: 1, imageUrl: require('../../assets/profile/3.png') },
+      { id: 2, imageUrl: require('../../assets/profile/3.png') },
+      { id: 3, imageUrl: require('../../assets/profile/3.png') },
     ]);
   }, []);
 
+  const chunkArray = (array: string[], size: number) => {
+    const result: string[][] = [];
+    for (let i = 0; i < array.length; i += size) {
+      result.push(array.slice(i, i + size));
+    }
+    return result;
+  };
+
+  const chunkedCategories = chunkArray(categories, 5);
+  const lastRow = chunkedCategories.pop();
 
   return (
     <>
       <Header />
       <View style={styles.container}>
-        <Text style={styles.recommendText}>{age}대 {gender}에게 맞는 영양제 추천</Text>
+        <Text style={styles.recommendText}>{age}대에게 맞는 영양제 추천</Text>
         <View style={styles.recommendBox}>
           {recommendPills.map((recommendPill) => (
-            <RecommendItem 
+            <RecommendItem
               key={recommendPill.id}
               id={recommendPill.id}
-              name={recommendPill.name}
-              description={recommendPill.description}
+              imageUrl={recommendPill.imageUrl}
             />
           ))}
         </View>
-        <TouchableOpacity 
-        style={styles.recommendBtn}
-        activeOpacity={0.7}
-        onPress={() => navigation.navigate('MoreRecommend')}
+        <View style={styles.pillCategoryBox}>
+          <FlatList
+            data={chunkedCategories}
+            renderItem={({ item }) => (
+              <View style={styles.categoryRow}>
+                {item.map((category) => (
+                  <SelectPillItems
+                    key={category}
+                    category={category}
+                  />
+                ))}
+              </View>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+          {lastRow && (
+            <View style={styles.lastRow}>
+              <View style={styles.leftAligned}>
+                {lastRow.slice(0, 1).map((category) => (
+                  <SelectPillItems key={category} category={category} />
+                ))}
+              </View>
+              <View style={styles.centerAligned}>
+                {lastRow.slice(1, 2).map((category) => (
+                  <SelectPillItems key={category} category={category} />
+                ))}
+              </View>
+              <View style={styles.rightAligned}>
+                {lastRow.slice(2).map((category) => (
+                  <SelectPillItems key={category} category={category} />
+                ))}
+              </View>
+            </View>
+          )}
+        </View>
+        <TouchableOpacity
+          style={styles.recommendBtn}
+          activeOpacity={0.7}
+          onPress={() => navigation.navigate('MoreRecommend')}
         >
           <Text style={styles.moreRecommendText}>더 많은 영양제 추천받기</Text>
         </TouchableOpacity>
@@ -74,19 +123,51 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginHorizontal: 15,
-    marginVertical: 40,
+    marginVertical: 50,
   },
   recommendText: {
     fontSize: 15,
     color: 'black',
+    marginBottom: 10,
   },
   recommendBox: {
-    height: '80%',
-    marginTop: 10,
+    marginTop: 25,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  pillCategoryBox: {
+    width: '100%',
+    marginTop: 70,
+  },
+  categoryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  lastRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  leftAligned: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  centerAligned: {
+    marginRight: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rightAligned: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
   recommendBtn: {
-    marginTop: 25,
-    height: '25%',
+    marginTop: 85,
+    height: 50,
     borderRadius: 8,
     backgroundColor: '#D3EBCD',
     justifyContent: 'center',
@@ -94,7 +175,8 @@ const styles = StyleSheet.create({
   },
   moreRecommendText: {
     color: 'black',
-  }
+    fontSize: 16,
+  },
 });
 
 export default RecommendScreen;
