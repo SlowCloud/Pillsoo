@@ -31,10 +31,11 @@ const RecommendScreen: React.FC<Props> = ({ navigation }) => {
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
 
   const categories: string[] = [
-    '피부 건강', '체지방', '혈관', '갑상선', '소화',
-    '장 건강', '스트레스', '수면', '면역', '뼈 건강', 
-    '노화', '항산화', '콜레스테롤', '간 건강', '혈압',
-    '혈당', '치아', '눈 건강', '관절'
+    '간 건강','갑상선','관절', '노화',  
+    '눈 건강','면역', '뼈 건강', '소화', 
+    '수면', '스트레스', '장 건강', '체지방', 
+    '치아', '콜레스테롤', '피부 건강', '항산화', 
+    '혈관',  '혈당', '혈압'
   ];
 
   useEffect(() => {
