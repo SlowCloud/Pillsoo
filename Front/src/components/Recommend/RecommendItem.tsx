@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 
@@ -15,11 +15,10 @@ export type RecommendItemScreenNavigationProp = StackNavigationProp<
 
 type Props = {
   id: number;
-  name: string;
-  description: string;
+  imageUrl: any;
 }
 
-const RecommendItem: React.FC<Props> = ({ id, name, description }) => {
+const RecommendItem: React.FC<Props> = ({ id, imageUrl }) => {
   const navigation = useNavigation<RecommendItemScreenNavigationProp>();
 
   // 클릭하면 백한테 영양제 id 보내서
@@ -29,14 +28,19 @@ const RecommendItem: React.FC<Props> = ({ id, name, description }) => {
   }
 
   return (
-    <TouchableOpacity style={styles.container}
+    <TouchableOpacity 
+      style={styles.container}
       onPress={goDetail}
     >
       <View>
-      <Text>{id}</Text>
-      <Text>{name}</Text>
+      <Image 
+        // source={require('../../assets/profile/3.png')}
+        // Props로 받은 이미지 주소가 안 맞음
+        // 파일 존재X
+        source={imageUrl}
+        style={styles.pillImage}
+      />
       </View>
-      <Text style={styles.pillDescription}>{description}</Text>
     </TouchableOpacity>
   );
 };
@@ -48,8 +52,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  pillDescription: {
-    marginLeft: 20,
+  pillImage: {
+    width: 100,
+    height: 100,
   }
 });
 
