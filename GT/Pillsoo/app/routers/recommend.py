@@ -18,7 +18,9 @@ def recommend_supplements(client_text: str = Query(..., description="Client inpu
         {
             "supplementSeq": item[0],
             "pill_name": item[1],
-            "functionality": item[2]
+            "functionality": item[2],
+            "dose_guide": item[4]
+            
         }
         for item in top_matches
     ]
@@ -36,7 +38,8 @@ def recommend_supplements_by_age(age: int, db: Session = Depends(get_db)):
             "supplementSeq": item.supplementSeq,
             "pill_name": item.pill_name,
             "functionality": item.functionality,
-            "image_url": item.image_url
+            "image_url": item.image_url,
+            "dose_guide": item.dose_guide
         }
         for item in db_items
     ]

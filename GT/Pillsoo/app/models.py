@@ -9,6 +9,7 @@ class Supplement(Base):
     functionality = Column(String, index=True)
     preprocessed_text = Column(Text)
     image_url = Column(String, index=True)
+    dose_guide = Column(String, index=True)
 
 class Age_Prefer(Base):
     __tablename__ = 'Age_Prefer'
@@ -16,3 +17,4 @@ class Age_Prefer(Base):
     prefer_seq = Column(Integer, primary_key=True, index=True)
     PILL_pk = Column(Integer, ForeignKey('Supplement.supplementSeq'))
     AGE_GROUPS = Column(String(50))
+    dose_guide = Column(String, index=True)
