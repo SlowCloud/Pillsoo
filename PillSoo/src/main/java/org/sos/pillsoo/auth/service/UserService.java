@@ -1,22 +1,24 @@
 package org.sos.pillsoo.auth.service;
 
 import org.sos.pillsoo.auth.dto.SignupDto;
+import org.sos.pillsoo.auth.dto.UserUpdateDto;
 import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.auth.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 
 @Service
-public class SignupService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-    public SignupService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
@@ -47,5 +49,16 @@ public class SignupService {
         userRepository.save(user);
 
         System.out.println(user.getNickname() + "가 회원가입 함");
+    }
+
+    @Transactional
+    public void updateProcess (String userId, UserUpdateDto userUpdateDto) {
+        User user = userRepository.findByUserId(userId);
+        user.setNickname(userUpdateDto.getNickname());
+        user.setAge(userUpdateDto.getAge());
+        user.setGender(userUpdateDto.getGender());
+        user.setPassword(bCryptPasswordEncoder.encode(userUpdateDto.getPassword()));
+
+        userRepository.save(user);
     }
 }

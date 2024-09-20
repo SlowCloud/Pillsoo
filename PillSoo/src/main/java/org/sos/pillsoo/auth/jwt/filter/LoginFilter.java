@@ -44,19 +44,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String userId = customUserDetails.getUsername();
         String role = customUserDetails.getAuthorities().iterator().next().getAuthority();
         int userSeq = customUserDetails.getUserSeq();  // userSeq를 가져옴
-//
-//        // userSeq를 포함한 JWT 생성
-//        String token = jwtUtil.createJwt(role, userId, userSeq, 60 * 60 * 10 * 1000L);  // 유효기간 10시간
-//        response.addHeader("Authorization", "Bearer " + token);
+        String nickname = customUserDetails.getUserNickname();
+        String gender = customUserDetails.getUserGender();
+        int age = customUserDetails.getUserAge();
 
-
-//        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-//        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-//        GrantedAuthority grantedAuthority = iterator.next();
-//        String role = grantedAuthority.getAuthority();
-
-        String accessToken = jwtUtil.createJwt("access", role, userId, userSeq, 600000L);
-        String refreshToken = jwtUtil.createJwt("refresh", role, userId, userSeq, 100000000L);
+        String accessToken = jwtUtil.createJwt("access", role, userId, userSeq, nickname, gender, age, 600000L);
+        String refreshToken = jwtUtil.createJwt("refresh", role, userId, userSeq, nickname, gender, age, 100000000L);
 
         addRefreshEntity(userId, refreshToken, 86400000L);
 
