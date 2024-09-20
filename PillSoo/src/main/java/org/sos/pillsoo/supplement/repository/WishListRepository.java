@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface WishListRepository extends JpaRepository<WishList, Long> {
     List<WishList> findByUser_UserSeq(int userSeq);
+
     boolean existsByUser_UserSeqAndSupplement_SupplementSeq(int userSeq, int supplementSeq);
+
     void deleteByUser_UserSeqAndSupplement_SupplementSeq(int userSeq, int supplementSeq);
 }

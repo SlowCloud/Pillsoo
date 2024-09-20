@@ -1,4 +1,4 @@
-package org.sos.pillsoo.jwt;
+package org.sos.pillsoo.auth.jwt.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.auth.entity.RefreshEntity;
+import org.sos.pillsoo.auth.jwt.JWTUtil;
 import org.sos.pillsoo.auth.repository.RefreshRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -55,7 +56,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 //        String role = grantedAuthority.getAuthority();
 
         String accessToken = jwtUtil.createJwt("access", role, userId, userSeq, 600000L);
-        String refreshToken = jwtUtil.createJwt("refresh",  role, userId, userSeq, 100000000L);
+        String refreshToken = jwtUtil.createJwt("refresh", role, userId, userSeq, 100000000L);
 
         addRefreshEntity(userId, refreshToken, 86400000L);
 

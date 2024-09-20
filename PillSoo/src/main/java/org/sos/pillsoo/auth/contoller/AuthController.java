@@ -42,7 +42,7 @@ public class AuthController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends  GrantedAuthority> iterator = authorities.iterator();
+        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 

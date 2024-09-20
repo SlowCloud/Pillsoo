@@ -1,5 +1,4 @@
-
-package org.sos.pillsoo.jwt;
+package org.sos.pillsoo.auth.jwt.filter;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -9,6 +8,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.sos.pillsoo.auth.jwt.JWTUtil;
 import org.sos.pillsoo.auth.repository.RefreshRepository;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -26,7 +26,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        if(servletRequest instanceof HttpServletRequest httpServletRequest && servletResponse instanceof  HttpServletResponse httpServletResponse) {
+        if (servletRequest instanceof HttpServletRequest httpServletRequest && servletResponse instanceof HttpServletResponse httpServletResponse) {
             doFilter(httpServletRequest, httpServletResponse);
         }
         filterChain.doFilter(servletRequest, servletResponse);
