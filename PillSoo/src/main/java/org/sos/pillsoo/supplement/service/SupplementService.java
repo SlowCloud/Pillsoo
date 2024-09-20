@@ -1,7 +1,9 @@
 package org.sos.pillsoo.supplement.service;
 
 import org.sos.pillsoo.supplement.dto.SupplementDto;
+import org.sos.pillsoo.supplement.entity.EffectCategories;
 import org.sos.pillsoo.supplement.entity.Supplement;
+import org.sos.pillsoo.supplement.repository.EffectCategoriesRepository;
 import org.sos.pillsoo.supplement.repository.SupplementRepository;
 import org.sos.pillsoo.supplement.repository.WishListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,9 @@ public class SupplementService {
 
     @Autowired
     private SupplementRepository supplementRepository;
+
+    @Autowired
+    private EffectCategoriesRepository effectCategoriesRepository;
 
     @Autowired
     private WishListRepository wishListRepository;
@@ -33,9 +38,14 @@ public class SupplementService {
         dto.setDoseGuide(supplement.getDoseGuide());
         dto.setFunctionality(supplement.getFunctionality());
         dto.setImageUrl(supplement.getImageUrl());
-        dto.setInWishlist(isInWishlist);  // 올바른 setter 메서드를 사용
+        dto.setInWishlist(isInWishlist);
 
         return dto;
+    }
+
+    public List<EffectCategories> getSupplementsByEffectName(String effectName) {
+        // effect_name에 해당하는 영양제 목록을 조회
+        return effectCategoriesRepository.findByEffectName(effectName);
     }
 
     public List<SupplementDto> searchSupplements(String searchtext, String type) {

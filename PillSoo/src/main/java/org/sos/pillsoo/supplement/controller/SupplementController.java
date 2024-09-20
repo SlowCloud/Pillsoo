@@ -2,6 +2,7 @@ package org.sos.pillsoo.supplement.controller;
 
 import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.supplement.dto.SupplementDto;
+import org.sos.pillsoo.supplement.entity.EffectCategories;
 import org.sos.pillsoo.supplement.service.SupplementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -27,6 +28,12 @@ public class SupplementController {
 
         // 서비스에 userSeq와 supplementSeq 전달
         return supplementService.getSupplementById(supplementSeq, userSeq);
+    }
+
+    // 카테고리별 영양제 조회 (effect_name에 따른 조회)
+    @GetMapping("/effect/{effect_name}")
+    public List<EffectCategories> getSupplementsByEffectName(@PathVariable String effect_name) {
+        return supplementService.getSupplementsByEffectName(effect_name);
     }
 
     // 영양제 검색 (JWT를 사용하지 않고 그대로 유지)
