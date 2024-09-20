@@ -2,6 +2,7 @@ package org.sos.pillsoo.auth.config;
 
 import org.sos.pillsoo.auth.jwt.JWTUtil;
 import org.sos.pillsoo.auth.jwt.JwtLogoutHandler;
+import org.sos.pillsoo.auth.jwt.JwtLogoutSuccessHandler;
 import org.sos.pillsoo.auth.jwt.filter.CustomLogoutFilter;
 import org.sos.pillsoo.auth.jwt.filter.JWTFilter;
 import org.sos.pillsoo.auth.jwt.filter.LoginFilter;
@@ -51,20 +52,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, RefreshTokenFilter refreshTokenFilter, JwtLogoutHandler jwtLogoutHandler) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, RefreshTokenFilter refreshTokenFilter, JwtLogoutHandler jwtLogoutHandler, JwtLogoutSuccessHandler jwtLogoutSuccessHandler) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(basic -> basic.disable())
                 .logout(logout->logout
                                 .logoutUrl("/api/v1/signout")
                                 .addLogoutHandler(jwtLogoutHandler)
-                                .logoutSuccessUrl("/api/v1/logout-success")
-//                        .addLogoutHandler(new CookieClearingLogoutHandler("refresh"))
+                                .logoutSuccessHandler(jwtLogoutSuccessHandler)
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/signin", "/api/v1/signup").permitAll()
-                        .requestMatchers("/api/v1/reissue").permitAll()
-                        .requestMatchers("/api/v1/signout").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)

@@ -27,11 +27,6 @@ public class AuthController {
         return ResponseEntity.ok("회원가입 완료");
     }
 
-    @PostMapping("/logout-success")
-    public ResponseEntity<Void> logoutSuccess() {
-        return ResponseEntity.ok(null);
-    }
-
     // 권한 확인용 role user or admin
     @GetMapping("/admin")
     public String adminP() {
