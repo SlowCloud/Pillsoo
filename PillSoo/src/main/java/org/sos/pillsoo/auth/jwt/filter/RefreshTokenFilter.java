@@ -52,10 +52,13 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         String userId = jwtUtil.getUserId(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
         int userSeq = jwtUtil.getUserSeq(refreshToken);
+        String nickname = jwtUtil.getNickname(refreshToken);
+        String gender = jwtUtil.getGender(refreshToken);
+        int age = jwtUtil.getAge(refreshToken);
 
         //make new JWT
-        String newAccess = jwtUtil.createJwt("access", role, userId, userSeq, 600000L);
-        String newRefresh = jwtUtil.createJwt("refresh", role, userId, userSeq, 100000000L);
+        String newAccess = jwtUtil.createJwt("access",  role, userId, userSeq, nickname, gender, age, 600000L);
+        String newRefresh = jwtUtil.createJwt("refresh", role, userId, userSeq, nickname, gender, age, 100000000L);
 
 //        refreshRepository.deleteByRefreshToken(refreshToken);
 //        addRefreshEntity(userId, newRefresh, 8640000L);

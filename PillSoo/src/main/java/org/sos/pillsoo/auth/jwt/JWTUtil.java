@@ -46,6 +46,24 @@ public class JWTUtil {
         return getPayload(token).get("role", String.class);  // role 추출
     }
 
+    // JWT에서 nickname 추출
+    public String getNickname(String token) {
+        return getPayload(token).get("nickname", String.class);  // role 추출
+    }
+
+    // JWT에서 age 추출
+    public int getAge(String token) {
+        var payload = getPayload(token);
+        return payload.get("age", Integer.class);  // role 추출
+
+    }
+
+    // JWT에서 gender 추출
+    public String getGender(String token) {
+        return getPayload(token).get("gender", String.class);  // role 추출
+    }
+
+
     // JWT 만료 여부 확인
     public boolean isExpired(String token) {
         Date expiration = getPayload(token)
@@ -54,12 +72,15 @@ public class JWTUtil {
     }
 
     // JWT 생성 메서드 (userSeq 포함)
-    public String createJwt(String category, String role, String userId, int userSeq, long expiredMs) {
+    public String createJwt(String category, String role, String userId, int userSeq, String nickname, String gender, int age, long expiredMs) {
         return Jwts.builder()
                 .claim("category", category)
                 .claim("role", role)
                 .claim("userId", userId)
                 .claim("userSeq", userSeq)  // userSeq 포함
+                .claim("nickname", nickname)
+                .claim("gender", gender)
+                .claim("age", age)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))  // 만료 시간 설정
                 .signWith(secretKey)  // 서명 생성

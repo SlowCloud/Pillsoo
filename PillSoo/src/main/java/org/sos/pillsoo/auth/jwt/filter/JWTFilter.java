@@ -44,6 +44,10 @@ public class JWTFilter extends OncePerRequestFilter {
             int userSeq = jwtUtil.getUserSeq(token);
             String userId = jwtUtil.getUserId(token);
             String role = jwtUtil.getRole(token);
+            String nickname = jwtUtil.getNickname(token);
+            String gender = jwtUtil.getGender(token);
+            int age = jwtUtil.getAge(token);
+
 
             System.out.println("Extracted userSeq from JWT: " + userSeq);  // 디버그 로그
 
@@ -52,6 +56,9 @@ public class JWTFilter extends OncePerRequestFilter {
             userEntity.setUserSeq(userSeq);
             userEntity.setUserId(userId);
             userEntity.setRole(role);
+            userEntity.setNickname(nickname);
+            userEntity.setGender(gender);
+            userEntity.setAge(age);
 
             // CustomUserDetails에 User 정보 저장
             CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);

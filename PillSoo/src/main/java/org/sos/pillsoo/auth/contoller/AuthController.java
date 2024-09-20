@@ -1,11 +1,15 @@
 package org.sos.pillsoo.auth.contoller;
 
+import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.auth.dto.SignupDto;
-import org.sos.pillsoo.auth.service.SignupService;
+import org.sos.pillsoo.auth.dto.UserUpdateDto;
+import org.sos.pillsoo.auth.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -15,15 +19,15 @@ import java.util.Iterator;
 @RequestMapping("/api/v1")
 public class AuthController {
 
-    private final SignupService signupService;
+    private final UserService userService;
 
-    public AuthController(SignupService signupService) {
-        this.signupService = signupService;
+    public AuthController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupDto signupDto) {
-        signupService.SignupProcess(signupDto);
+        userService.SignupProcess(signupDto);
         return ResponseEntity.ok("회원가입 완료");
     }
 
@@ -46,6 +50,12 @@ public class AuthController {
         String role = auth.getAuthority();
 
         return "Main Contoller " + username + " " + role;
+    }
+
+    @PatchMapping("/update")
+    public ResponseEntity<?> update(@AuthenticationPrincipal CustomUserDetails customUserDetails, @RequestBody UserUpdateDto userUpdateDto) {
+        userService.updateProcess(customUserDetails.getUsername(), userUpdateDto);
+        return ResponseEntity.ok().build();
     }
 
 }
