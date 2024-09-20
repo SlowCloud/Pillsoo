@@ -26,7 +26,7 @@ public class SupplementService {
         SupplementDto dto = new SupplementDto();
         dto.setSupplementSeq(supplement.getSupplementSeq());
         dto.setPillName(supplement.getPillName());
-        dto.setExpirationDate(supplement.getExpirationDate().toString());
+        dto.setExpirationDate(supplement.getExpirationDate());
         dto.setAppearance(supplement.getAppearance());
         dto.setDoseAmount(supplement.getDoseAmount());
         dto.setStorageMethod(supplement.getStorageMethod());
@@ -47,7 +47,7 @@ public class SupplementService {
         SupplementDto dto = new SupplementDto();
         dto.setSupplementSeq(supplement.getSupplementSeq());
         dto.setPillName(supplement.getPillName());
-        dto.setExpirationDate(supplement.getExpirationDate().toString());
+        dto.setExpirationDate(supplement.getExpirationDate());
         dto.setAppearance(supplement.getAppearance());
         dto.setDoseAmount(supplement.getDoseAmount());
         dto.setStorageMethod(supplement.getStorageMethod());

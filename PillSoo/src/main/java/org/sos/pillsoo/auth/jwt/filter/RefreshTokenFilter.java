@@ -1,4 +1,4 @@
-package org.sos.pillsoo.jwt;
+package org.sos.pillsoo.auth.jwt.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.auth.entity.User;
+import org.sos.pillsoo.auth.jwt.JWTUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -53,8 +54,8 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         int userSeq = jwtUtil.getUserSeq(refreshToken);
 
         //make new JWT
-        String newAccess = jwtUtil.createJwt("access",  role, userId, userSeq,  600000L);
-        String newRefresh = jwtUtil.createJwt("refresh", role, userId, userSeq,  100000000L);
+        String newAccess = jwtUtil.createJwt("access", role, userId, userSeq, 600000L);
+        String newRefresh = jwtUtil.createJwt("refresh", role, userId, userSeq, 100000000L);
 
 //        refreshRepository.deleteByRefreshToken(refreshToken);
 //        addRefreshEntity(userId, newRefresh, 8640000L);

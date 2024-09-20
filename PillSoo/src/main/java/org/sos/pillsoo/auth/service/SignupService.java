@@ -25,10 +25,10 @@ public class SignupService {
         String userId = signupDto.getUserId();
         String userPassword = signupDto.getPassword();
 
-        Boolean isExist =userRepository.existsByUserId(userId);
+        Boolean isExist = userRepository.existsByUserId(userId);
         if (isExist) {
             System.out.println("이미 존재하는 유저 아이디입니다.");
-            return ;
+            return;
         }
 
         User user = new User();
@@ -38,7 +38,7 @@ public class SignupService {
         user.setAge(signupDto.getAge());
         user.setCreatedAt(timestamp);
         user.setRole("ROLE_USER");
-        if(signupDto.isGender()){
+        if (signupDto.isGender()) {
             user.setGender("F");
         } else {
             user.setGender("M");

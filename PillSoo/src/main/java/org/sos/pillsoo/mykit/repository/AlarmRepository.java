@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface AlarmRepository extends JpaRepository<Alarm, Long> {
     List<Alarm> findByCabinet_User_UserSeq(int userSeq);
+
     void deleteById(long alarmSeq);
 }
