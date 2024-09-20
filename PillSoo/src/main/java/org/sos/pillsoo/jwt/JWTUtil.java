@@ -19,16 +19,10 @@ public class JWTUtil {
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
     }
 
-    // JWT 생성 메서드 (userSeq 포함)
-    public String createJwt(String role, String userId, int userSeq, long expiredMs) {
-        return Jwts.builder()
-                .claim("role", role)
-                .claim("userId", userId)
-                .claim("userSeq", userSeq)  // userSeq 포함
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiredMs))  // 만료 시간 설정
-                .signWith(SignatureAlgorithm.HS256, secretKey)  // 서명 생성
-                .compact();
+
+
+    public String getCategory(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
     }
 
     // JWT에서 userSeq 추출
@@ -70,5 +64,18 @@ public class JWTUtil {
                 .getBody()
                 .getExpiration();
         return expiration.before(new Date());
+    }
+
+    // JWT 생성 메서드 (userSeq 포함)
+    public String createJwt(String category, String role, String userId, int userSeq, long expiredMs) {
+        return Jwts.builder()
+                .claim("category", category)
+                .claim("role", role)
+                .claim("userId", userId)
+                .claim("userSeq", userSeq)  // userSeq 포함
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expiredMs))  // 만료 시간 설정
+                .signWith(SignatureAlgorithm.HS256, secretKey)  // 서명 생성
+                .compact();
     }
 }
