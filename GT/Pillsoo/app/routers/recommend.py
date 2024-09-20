@@ -169,8 +169,8 @@ def recommend_supplements(client_text: str = Query(..., description="Client inpu
         for item in top_matches
     ]
     
-    # 결과를 Redis에 캐시 (10분 동안)
-    r.set(cache_key, json.dumps(result), ex=600)
+    # 결과를 Redis에 캐시 (100분 동안)
+    r.set(cache_key, json.dumps(result), ex=60000)
     
     return result
 
