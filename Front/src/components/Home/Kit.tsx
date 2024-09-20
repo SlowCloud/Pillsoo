@@ -1,5 +1,11 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableNativeFeedback} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableNativeFeedback,
+  Image,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AppStackParamList} from '../../navigation/AppNavigator';
@@ -17,9 +23,11 @@ const Kit = () => {
             screen: 'SupplementInput',
           })
         }>
-        <View style={styles.button}>
-          <Text style={styles.buttonText}>복용 영양제 목록 보기</Text>
-        </View>
+        <Image
+          source={require('../../assets/Pill.png')}
+          style={styles.buttonImage}
+        />
+        {/* <Text style={styles.buttonText}>복용 영양제 목록 보기</Text> */}
       </TouchableNativeFeedback>
     </View>
   );
@@ -31,18 +39,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-  },
-  button: {
-    backgroundColor: '#a4f870',
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 5,
-    elevation: 2,
+    backgroundColor: 'white',
+    borderTopEndRadius: 50,
+    borderTopStartRadius: 50,
   },
   buttonText: {
-    color: 'white',
+    color: 'black',
     fontSize: 16,
     textAlign: 'center',
+  },
+  buttonImage: {
+    width: 200,
+    height: 200,
   },
 });
 
