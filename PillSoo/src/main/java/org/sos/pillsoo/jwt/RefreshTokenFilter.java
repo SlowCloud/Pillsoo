@@ -8,8 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.auth.entity.User;
-import org.sos.pillsoo.auth.repository.RefreshRepository;
-import org.sos.pillsoo.auth.service.CustomUserDetailsService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,8 +22,6 @@ import java.util.Arrays;
 public class RefreshTokenFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
-    private final RefreshRepository refreshRepository;
-    private final CustomUserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
