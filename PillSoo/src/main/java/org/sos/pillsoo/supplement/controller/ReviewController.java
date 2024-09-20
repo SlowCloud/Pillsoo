@@ -1,8 +1,8 @@
 package org.sos.pillsoo.supplement.controller;
 
+import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.supplement.dto.ReviewDto;
 import org.sos.pillsoo.supplement.service.ReviewService;
-import org.sos.pillsoo.auth.dto.CustomUserDetails;  // JWT에서 userSeq 가져오기
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

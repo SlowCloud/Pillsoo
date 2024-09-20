@@ -19,16 +19,8 @@ public class JWTUtil {
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 
-    // JWT 생성 메서드 (userSeq 포함)
-    public String createJwt(String role, String userId, int userSeq, long expiredMs) {
-        return Jwts.builder()
-                .claim("role", role)
-                .claim("userId", userId)
-                .claim("userSeq", userSeq)  // userSeq 포함
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))  // 만료 시간 설정
-                .signWith(secretKey)  // 서명 생성
-                .compact();
+    public String getCategory(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
     }
 
     private Claims getPayload(String token) {
@@ -59,5 +51,18 @@ public class JWTUtil {
         Date expiration = getPayload(token)
                 .getExpiration();
         return expiration.before(new Date());
+    }
+
+    // JWT 생성 메서드 (userSeq 포함)
+    public String createJwt(String category, String role, String userId, int userSeq, long expiredMs) {
+        return Jwts.builder()
+                .claim("category", category)
+                .claim("role", role)
+                .claim("userId", userId)
+                .claim("userSeq", userSeq)  // userSeq 포함
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expiredMs))  // 만료 시간 설정
+                .signWith(secretKey)  // 서명 생성
+                .compact();
     }
 }
