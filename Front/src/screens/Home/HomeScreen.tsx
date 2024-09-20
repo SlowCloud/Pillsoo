@@ -1,22 +1,22 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import Kit from '../../components/Home/Kit';
 import Header from '../../components/common/Header';
 import {useNavigation} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useSelector} from 'react-redux';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const Id = useSelector((state: {userId: string | null}) => state.userId);
 
   return (
-    <>
+    <LinearGradient
+      colors={['#ffffff', '#a4f870', '#ffffff']}
+      style={styles.screenContainer}>
       <Header />
       <View style={styles.container}>
-        <Text style={{fontSize: 25}}>현우님 안녕하세요 !</Text>
-      </View>
-
-      <View style={styles.kit}>
-        <Kit />
+        <Text style={{fontSize: 25}}>{Id}님 안녕하세요 !</Text>
       </View>
 
       <View style={styles.alarm}>
@@ -30,29 +30,35 @@ const HomeScreen = () => {
             source={require('../../assets/Alarm.png')}
             style={styles.alarmImage}
           />
-          {/* <Text>알람설정</Text> */}
         </TouchableOpacity>
       </View>
-    </>
+
+      <View style={styles.kit}>
+        <Kit />
+      </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+  },
   container: {
     flex: 0.1,
     alignItems: 'flex-start',
     padding: 30,
   },
   kit: {
-    flex: 1,
+    flex: 1.5,
     alignItems: 'center',
   },
   alarm: {
     flex: 0.25,
     alignItems: 'flex-end',
-    bottom: 50,
+    justifyContent: 'center',
+    bottom: 20,
   },
-
   alarmImage: {
     width: 100,
     height: 100,

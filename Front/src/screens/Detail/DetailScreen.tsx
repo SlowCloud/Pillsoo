@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {RouteProp, useRoute} from '@react-navigation/native';
 import axios from 'axios';
-import { API_URL } from '@env';
-import { RecommendItemParamList } from '../../components/Recommend/RecommendItem';
+import {API_URL} from '@env';
+import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
 import DetailInfo from '../../components/Detail/DetailInfo';
 import DetailReview from '../../components/Detail/DetailReview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
@@ -28,11 +28,13 @@ const DetailScreen: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<'info' | 'review'>('info');
   const [pillData, setPillData] = useState<PillData | null>(null);
   const route = useRoute<DetailScreenRouteProp>();
-  const { id } = route.params;
+  const {id} = route.params;
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<boolean>(false);
-  
-  const userSeq = useSelector((state: { userSeq: number | null }) => state.userSeq);
+
+  const userSeq = useSelector(
+    (state: {userSeq: number | null}) => state.userSeq,
+  );
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -92,7 +94,7 @@ const DetailScreen: React.FC = () => {
     try {
       await axios.post(
         'http://10.0.2.2:8080/api/v1/wishlist',
-        { userSeq, supplementSeq: id },
+        {userSeq, supplementSeq: id},
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -107,18 +109,15 @@ const DetailScreen: React.FC = () => {
 
   const handleNotWishListBtn = async () => {
     try {
-      await axios.delete(
-        'http://10.0.2.2:8080/api/v1/wishlist',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            userSeq,
-            supplementSeq: id,
-          },
+      await axios.delete('http://10.0.2.2:8080/api/v1/wishlist', {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+        params: {
+          userSeq,
+          supplementSeq: id,
+        },
+      });
       setMyWishList(false);
     } catch (error) {
       console.log(error);
@@ -128,34 +127,64 @@ const DetailScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.infoBox}>
-        <Image source={{ uri: pillData.imageUrl }} style={styles.image} />
+        <Image source={{uri: pillData.imageUrl}} style={styles.image} />
         <View style={styles.infoContainer}>
           <Text style={styles.pillName}>{pillData.name}</Text>
-          <TouchableOpacity onPress={myWishList ? handleNotWishListBtn : handleWishListBtn}>
-            <Image
-              source={myWishList ? require('../../assets/heart1.png') : require('../../assets/heart2.png')}
-              style={styles.wishListBtn}
-              resizeMode="contain"
-            />
+          <TouchableOpacity onPress={handleWishListBtn}>
+            {myWishList ? (
+              <Image
+                source={require('../../assets/heart1.png')}
+                style={styles.wishListBtn}
+                resizeMode="contain"
+              />
+            ) : (
+              <Image
+                source={require('../../assets/heart2.png')}
+                style={styles.wishListBtn}
+                resizeMode="contain"
+              />
+            )}
           </TouchableOpacity>
         </View>
       </View>
       <View style={styles.canSelectMenu}>
         <TouchableOpacity
-          style={selectedTab === 'info' ? styles.selectedTextBox : styles.notSelectedTextBox}
+          style={
+            selectedTab === 'info'
+              ? styles.selectedTextBox
+              : styles.notSelectedTextBox
+          }
           onPress={() => setSelectedTab('info')}>
-          <Text style={selectedTab === 'info' ? styles.selectedText : styles.notSelectedText}>
+          <Text
+            style={
+              selectedTab === 'info'
+                ? styles.selectedText
+                : styles.notSelectedText
+            }>
             상세 정보
           </Text>
-          <View style={selectedTab === 'info' ? styles.selectedCheck : null}></View>
+          <View
+            style={selectedTab === 'info' ? styles.selectedCheck : null}></View>
         </TouchableOpacity>
         <TouchableOpacity
-          style={selectedTab === 'review' ? styles.selectedTextBox : styles.notSelectedTextBox}
+          style={
+            selectedTab === 'review'
+              ? styles.selectedTextBox
+              : styles.notSelectedTextBox
+          }
           onPress={() => setSelectedTab('review')}>
-          <Text style={selectedTab === 'review' ? styles.selectedText : styles.notSelectedText}>
+          <Text
+            style={
+              selectedTab === 'review'
+                ? styles.selectedText
+                : styles.notSelectedText
+            }>
             리뷰
           </Text>
-          <View style={selectedTab === 'review' ? styles.selectedCheck : null}></View>
+          <View
+            style={
+              selectedTab === 'review' ? styles.selectedCheck : null
+            }></View>
         </TouchableOpacity>
       </View>
       <View style={styles.selectedContent}>

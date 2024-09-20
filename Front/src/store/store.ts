@@ -1,5 +1,5 @@
 // store.ts
-import { createStore, Action } from 'redux';
+import {createStore, Action} from 'redux';
 
 // 초기 상태
 const initialState = {
@@ -12,7 +12,6 @@ const initialState = {
 const SET_USER_ID = 'SET_USER_ID';
 const SET_USER_SEQ = 'SET_USER_SEQ';
 const SET_ROLE = 'SET_ROLE';
-
 // 액션 생성자
 export const setUserId = (userId: string | null) => ({
   type: SET_USER_ID,
@@ -52,11 +51,11 @@ type MyActionTypes = setUserIdAction | SetUserSeqAction | SetRoleAction;
 const reducer = (state = initialState, action: MyActionTypes) => {
   switch (action.type) {
     case SET_USER_ID:
-      return { ...state, userId: action.payload };
+      return {...state, userId: action.payload};
     case SET_USER_SEQ:
-      return { ...state, userSeq: action.payload };
+      return {...state, userSeq: action.payload};
     case SET_ROLE:
-      return { ...state, role: action.payload };
+      return {...state, role: action.payload};
     default:
       return state;
   }
