@@ -1,13 +1,13 @@
 package org.sos.pillsoo.jwt;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
@@ -16,52 +16,39 @@ public class JWTUtil {
     private final SecretKey secretKey;
 
     public JWTUtil(@Value("${spring.jwt.secret}") String secret) {
-        this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS256.getJcaName());
+        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 
-
+    private Claims getPayload(String token) {
+        return Jwts.parser()  // parser() 사용
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
 
     public String getCategory(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
+        return getPayload(token).get("category", String.class);
     }
 
     // JWT에서 userSeq 추출
     public int getUserSeq(String token) {
-        return Jwts.parser()  // parser() 사용
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("userSeq", Integer.class);  // userSeq 추출
+        return getPayload(token).get("userSeq", Integer.class);  // userSeq 추출
     }
 
     // JWT에서 userId 추출
     public String getUserId(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("userId", String.class);  // userId 추출
+        return getPayload(token).get("userId", String.class);  // userId 추출
     }
 
     // JWT에서 role 추출
     public String getRole(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .get("role", String.class);  // role 추출
+        return getPayload(token).get("role", String.class);  // role 추출
     }
 
     // JWT 만료 여부 확인
     public boolean isExpired(String token) {
-        Date expiration = Jwts.parser()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
+        Date expiration = getPayload(token)
                 .getExpiration();
         return expiration.before(new Date());
     }
@@ -73,9 +60,9 @@ public class JWTUtil {
                 .claim("role", role)
                 .claim("userId", userId)
                 .claim("userSeq", userSeq)  // userSeq 포함
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiredMs))  // 만료 시간 설정
-                .signWith(SignatureAlgorithm.HS256, secretKey)  // 서명 생성
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + expiredMs))  // 만료 시간 설정
+                .signWith(secretKey)  // 서명 생성
                 .compact();
     }
 }
