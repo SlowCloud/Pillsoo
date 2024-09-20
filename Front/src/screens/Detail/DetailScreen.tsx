@@ -7,6 +7,7 @@ import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
 import DetailInfo from '../../components/Detail/DetailInfo';
 import DetailReview from '../../components/Detail/DetailReview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSelector } from 'react-redux';
 
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
@@ -29,6 +30,10 @@ const DetailScreen: React.FC = () => {
   const route = useRoute<DetailScreenRouteProp>();
   const {id} = route.params;
   const [token, setToken] = useState<string | null>(null);
+  const [myWishList, setMyWishList] = useState<boolean>(false);
+
+  const userSeq = useSelector((state: { userSeq: number | null }) => state.userSeq);
+
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -87,14 +92,62 @@ const DetailScreen: React.FC = () => {
     );
   }
 
+  const handleWishListBtn = async () => {
+    setMyWishList((prev) => !prev)
+    // if (myWishList === true) {
+    //   try {
+    //     const response = await axios.post(
+    //       'http://10.0.2.2:8080/api/v1/wishlist',
+    //       { "userSeq": userSeq, "supplementSeq": id },
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${token}`,
+    //         },
+    //       },
+    //     )
+    //   } catch(error) {
+    //     console.log(error)
+    //   }
+    // } else {
+    //     try {
+    //       const response = await axios.delete(
+    //         'http://10.0.2.2:8080/api/v1/wishlist',
+    //         { "userSeq": userSeq, "supplementSeq": id },
+    //         {
+    //           headers: {
+    //             Authorization: `Bearer ${token}`,
+    //           },
+    //         },
+    //       )
+    //     } catch(error) {
+    //       console.log(error)
+    //     }
+    // }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.infoBox}>
         <Image source={{uri: pillData.imageUrl}} style={styles.image} />
         <View style={styles.infoContainer}>
           <Text style={styles.pillName}>{pillData.name}</Text>
-          <TouchableOpacity>
-            <Text>♥</Text>
+          <TouchableOpacity
+            onPress={handleWishListBtn}
+          >
+            {myWishList ? (
+                <Image 
+                  source={require('../../assets/heart1.png')} 
+                  style={styles.wishListBtn}
+                  resizeMode="contain"
+                />
+              ) : (
+                <Image 
+                  source={require('../../assets/heart2.png')} 
+                  style={styles.wishListBtn}
+                  resizeMode="contain"
+                />
+              )
+          }
           </TouchableOpacity>
         </View>
       </View>
@@ -223,6 +276,9 @@ const styles = StyleSheet.create({
     borderColor: '#939185',
     borderBlockStartColor: '#F7F7F7',
   },
+  wishListBtn: {
+    width: 30,
+  }
 });
 
 export default DetailScreen;
