@@ -79,6 +79,8 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
     }
 
     private String extractRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null || cookies.length == 0) return null;
         Cookie cookie = Arrays.stream(request.getCookies()).filter(c -> c.getName().equals("refresh")).findFirst().orElse(null);
         if (cookie == null) return null;
         return cookie.getValue();
