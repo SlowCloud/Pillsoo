@@ -58,6 +58,5 @@ public class JwtLogoutHandler implements LogoutHandler {
 
         response.addCookie(cookie);
         response.setStatus(HttpServletResponse.SC_OK);
-        System.out.println("logout complete");
     }
 }
