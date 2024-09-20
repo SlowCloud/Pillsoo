@@ -63,7 +63,6 @@ public class JWTUtil {
         return getPayload(token).get("gender", String.class);  // role 추출
     }
 
-
     // JWT 만료 여부 확인
     public boolean isExpired(String token) {
         Date expiration = getPayload(token)
