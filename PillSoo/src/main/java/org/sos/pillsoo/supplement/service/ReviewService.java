@@ -1,5 +1,7 @@
 package org.sos.pillsoo.supplement.service;
 
+import org.sos.pillsoo.auth.entity.User;
+import org.sos.pillsoo.auth.repository.UserRepository;
 import org.sos.pillsoo.supplement.dto.ReviewDto;
 import org.sos.pillsoo.supplement.entity.Review;
 import org.sos.pillsoo.supplement.entity.Supplement;
@@ -16,6 +18,9 @@ public class ReviewService {
 
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @Autowired
+    private UserRepository userRepository; // 추가: User 정보를 조회하기 위한 UserRepository 주입
 
     // 리뷰 목록 조회
     public List<ReviewDto> getReviews(int supplementSeq) {
@@ -61,7 +66,15 @@ public class ReviewService {
         dto.setReviewSeq(review.getReviewSeq());
         dto.setUserSeq(review.getUserSeq());
         dto.setSupplementSeq(review.getSupplement().getSupplementSeq());
-        dto.setUserName("User"); // 실제 사용자 이름을 넣는 로직이 필요하다면 수정
+
+        // userSeq로 User 정보를 조회하여 UserName 설정
+        User user = userRepository.findByUserSeq(review.getUserSeq());
+        if (user != null) {
+            dto.setUserName(user.getUserId());  // User의 userId 또는 적절한 필드 설정
+        } else {
+            dto.setUserName("Unknown User");  // userSeq가 없는 경우 기본값 설정
+        }
+
         dto.setContent(review.getContent());
         dto.setCreatedAt(review.getCreatedAt());  // Timestamp로 저장
         return dto;
