@@ -5,7 +5,6 @@ import org.sos.pillsoo.mykit.entity.Alarm;
 import org.sos.pillsoo.mykit.entity.Cabinet;
 import org.sos.pillsoo.mykit.repository.AlarmRepository;
 import org.sos.pillsoo.mykit.repository.CabinetRepository;
-import org.sos.pillsoo.supplement.entity.Supplement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
