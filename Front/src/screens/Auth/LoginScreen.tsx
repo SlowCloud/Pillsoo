@@ -13,6 +13,8 @@ import {authNavigations} from '../../constants/navigations';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
+import { useDispatch } from 'react-redux';
+import { setMYId } from '../../store/store';
 
 type LoginScreenProps = StackScreenProps<
   AuthStackParamList,
@@ -20,6 +22,8 @@ type LoginScreenProps = StackScreenProps<
 >;
 
 const LoginScreen = ({navigation}: LoginScreenProps) => {
+  const dispatch = useDispatch()
+
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const passwordRef = useRef<TextInput>(null);
@@ -44,6 +48,8 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
         console.log('res', response);
         if (token) {
           await AsyncStorage.setItem('jwt_token', token);
+
+          dispatch(setMYId(userId))
 
           navigation.navigate('Main');
           Alert.alert('로그인 성공');

@@ -10,9 +10,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
 interface Review {
-  id: number;
+  reviewSeq: number;
   name: string;
   content: string;
+  supplementSeq: number;
+  userName: string;
+  userSeq: number;
+  
 }
 
 const DetailReview: React.FC = () => {
@@ -60,9 +64,12 @@ const DetailReview: React.FC = () => {
       <View style={styles.reviewContents}>
         {reviewList.map(reviewItem => (
           <DetailReviewItems
-            key={reviewItem.id}
-            name={reviewItem.name}
+            key={reviewItem.reviewSeq}
+            userName={reviewItem.userName}
+            userId={reviewItem.userSeq}
             content={reviewItem.content}
+            supplementId={reviewItem.supplementSeq}
+            reviewId={reviewItem.reviewSeq}
           />
         ))}
         <DetailReviewInput />
