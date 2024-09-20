@@ -1,8 +1,8 @@
 package org.sos.pillsoo.mykit.controller;
 
+import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.mykit.dto.AlarmDto;
 import org.sos.pillsoo.mykit.service.AlarmService;
-import org.sos.pillsoo.auth.dto.CustomUserDetails; // CustomUserDetails에서 userSeq 가져오기
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

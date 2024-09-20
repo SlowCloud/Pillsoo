@@ -1,11 +1,11 @@
 package org.sos.pillsoo.supplement.service;
 
 import org.sos.pillsoo.auth.entity.User;
+import org.sos.pillsoo.auth.repository.UserRepository;
 import org.sos.pillsoo.supplement.dto.WishListDto;
+import org.sos.pillsoo.supplement.entity.Supplement;
 import org.sos.pillsoo.supplement.entity.WishList;
 import org.sos.pillsoo.supplement.repository.WishListRepository;
-import org.sos.pillsoo.supplement.entity.Supplement;
-import org.sos.pillsoo.auth.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
