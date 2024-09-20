@@ -19,16 +19,16 @@ public class JWTUtil {
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
     }
 
-    public String getCategory(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
-    }
-
     private Claims getPayload(String token) {
         return Jwts.parser()  // parser() 사용
                 .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    public String getCategory(String token) {
+        return getPayload(token).get("category", String.class);
     }
 
     // JWT에서 userSeq 추출
