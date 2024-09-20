@@ -42,24 +42,24 @@ const AppNavigator = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="Recommend" 
+        name="Recommend"
         component={RecommendScreen}
         options={{headerShown: false}}
       />
       <Stack.Screen
         name="MoreRecommend"
         component={MoreRecommendScreen}
-        options={{ headerTitle: '' }}
+        options={{headerTitle: ''}}
       />
       <Stack.Screen
         name="MoreRecommendResult"
         component={MoreRecommendResultScreen}
-        options={{ headerTitle: '' }}
+        options={{headerTitle: ''}}
       />
       <Stack.Screen
         name="RecommendCategory"
         component={RecommendCategoryScreen}
-        options={{ headerTitle: '' }}
+        options={{headerTitle: ''}}
       />
       <Stack.Screen
         name="Home"

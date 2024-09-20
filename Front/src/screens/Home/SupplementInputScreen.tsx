@@ -1,26 +1,14 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import SearchBar from '../../components/common/SearchBar'; // SearchBar 컴포넌트 임포트
 
 const SupplementInputScreen = () => {
-  const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation();
-
-  const handleSearch = () => {
-    console.log('검색어:', searchQuery);
-    setSearchQuery(' ');
-  };
 
   return (
     <>
       <View style={styles.container}>
-        <SearchBar
-          placeholder="복용하시고 있는 영양제를 입력해주세요 !"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          onSearch={handleSearch}
-        />
+        <Text>복용하고 있는 리스트</Text>
       </View>
 
       <View style={styles.inputContainer}>
