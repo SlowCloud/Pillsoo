@@ -19,7 +19,7 @@ public class SupplementController {
     private SupplementService supplementService;
 
     // 영양제 상세 정보 조회 (userSeq를 JWT에서 추출)
-    @GetMapping("/detail/{supplementSeq}")
+    @GetMapping("/{supplementSeq}")
     public SupplementDto getSupplement(@PathVariable int supplementSeq) {
         // JWT 토큰에서 userSeq를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
