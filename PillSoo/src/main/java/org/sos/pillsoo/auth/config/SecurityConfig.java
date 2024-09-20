@@ -1,6 +1,7 @@
 package org.sos.pillsoo.auth.config;
 
 import org.sos.pillsoo.auth.jwt.JWTUtil;
+import org.sos.pillsoo.auth.jwt.JwtLogoutHandler;
 import org.sos.pillsoo.auth.jwt.filter.CustomLogoutFilter;
 import org.sos.pillsoo.auth.jwt.filter.JWTFilter;
 import org.sos.pillsoo.auth.jwt.filter.LoginFilter;
@@ -16,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -49,14 +51,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, RefreshTokenFilter refreshTokenFilter) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, RefreshTokenFilter refreshTokenFilter, JwtLogoutHandler jwtLogoutHandler) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
-                .formLogin(form -> form.disable())
                 .httpBasic(basic -> basic.disable())
+                .logout(logout->logout
+                                .logoutUrl("/api/v1/signout")
+                                .addLogoutHandler(jwtLogoutHandler)
+                                .logoutSuccessUrl("/api/v1/logout-success")
+//                        .addLogoutHandler(new CookieClearingLogoutHandler("refresh"))
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/signin", "/api/v1/signup").permitAll()
                         .requestMatchers("/api/v1/reissue").permitAll()
+                        .requestMatchers("/api/v1/signout").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
@@ -67,9 +75,6 @@ public class SecurityConfig {
         var loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository);
         loginFilter.setFilterProcessesUrl("/api/v1/signin");
         http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
-
-        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
-
 
         return http.build();
     }
