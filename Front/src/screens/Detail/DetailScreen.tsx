@@ -31,7 +31,6 @@ const DetailScreen: React.FC = () => {
   const {id} = route.params;
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<boolean>(false);
-
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
   );
@@ -69,7 +68,6 @@ const DetailScreen: React.FC = () => {
           isInWishlist: data.inWishlist,
         });
 
-        // 위시리스트 상태 설정
         setMyWishList(data.inWishlist);
       } catch (error) {
         console.error(error);
@@ -89,33 +87,31 @@ const DetailScreen: React.FC = () => {
 
   const handleWishListBtn = async () => {
     try {
-      await axios.post(
-        `${API_URL}/api/v1/wishlist`,
-        {userSeq, supplementSeq: id},
-        {
+      if (myWishList) {
+        // 위시리스트에서 제거
+        await axios.delete(`${API_URL}/api/v1/wishlist`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
-      );
-      setMyWishList(true);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleNotWishListBtn = async () => {
-    try {
-      await axios.delete('${API_URL}/api/v1/wishlist', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          userSeq,
-          supplementSeq: id,
-        },
-      });
-      setMyWishList(false);
+          params: {
+            userSeq,
+            supplementSeq: id,
+          },
+        });
+        setMyWishList(false); // 상태 업데이트
+      } else {
+        // 위시리스트에 추가
+        await axios.post(
+          `${API_URL}/api/v1/wishlist`,
+          {userSeq, supplementSeq: id},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        setMyWishList(true); // 상태 업데이트
+      }
     } catch (error) {
       console.log(error);
     }
@@ -128,19 +124,15 @@ const DetailScreen: React.FC = () => {
         <View style={styles.infoContainer}>
           <Text style={styles.pillName}>{pillData.name}</Text>
           <TouchableOpacity onPress={handleWishListBtn}>
-            {myWishList ? (
-              <Image
-                source={require('../../assets/heart1.png')}
-                style={styles.wishListBtn}
-                resizeMode="contain"
-              />
-            ) : (
-              <Image
-                source={require('../../assets/heart2.png')}
-                style={styles.wishListBtn}
-                resizeMode="contain"
-              />
-            )}
+            <Image
+              source={
+                myWishList
+                  ? require('../../assets/heart1.png') // 위시리스트에 있을 때
+                  : require('../../assets/heart2.png') // 위시리스트에 없을 때
+              }
+              style={styles.wishListBtn}
+              resizeMode="contain"
+            />
           </TouchableOpacity>
         </View>
       </View>

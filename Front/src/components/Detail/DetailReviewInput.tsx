@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
-
+import {API_URL} from '@env';
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
 const DetailReviewInput: React.FC = () => {
@@ -40,6 +40,7 @@ const DetailReviewInput: React.FC = () => {
     try {
       const response = await axios.post(
         `${API_URL}/api/v1/supplement/${id}/reviews`,
+        // `http://10.0.2.2:8080/api/v1/supplement/${id}/reviews`,
         {content: review},
         {
           headers: {

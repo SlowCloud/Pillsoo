@@ -25,7 +25,7 @@ const WishListScreen: React.FC = () => {
         },
       });
       setMyWishList(response.data);
-      console.log('my wish', response.data);
+      // console.log('my wish', response.data);
     } catch (error) {
       console.log(error);
     }

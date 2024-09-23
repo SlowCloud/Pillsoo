@@ -2,10 +2,10 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TextInput} from 'react-native-gesture-handler';
-
+import {API_URL} from '@env';
 type Props = {
   userName: string;
   content: string;
@@ -49,6 +49,7 @@ const DetailReviewItems: React.FC<Props> = ({
     try {
       const response = await axios.patch(
         `${API_URL}/api/v1/supplement/${supplementId}/reviews`,
+        // `http://10.0.2.2:8080/api/v1/supplement/${supplementId}/reviews`,
         {reviewSeq: reviewId, content: updateReview},
         {
           headers: {
@@ -80,6 +81,7 @@ const DetailReviewItems: React.FC<Props> = ({
     try {
       const response = await axios.delete(
         `${API_URL}/api/v1/supplement/${supplementId}/reviews`,
+        // `http://10.0.2.2:8080/api/v1/supplement/${supplementId}/reviews`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
