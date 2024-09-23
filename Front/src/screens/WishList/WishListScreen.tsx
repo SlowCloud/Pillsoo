@@ -12,6 +12,7 @@ interface Wish {
   supplementSeq: number;
   pillName: string;
   functionality: string;
+  imageUrl: string;
 }
 
 const WishListScreen: React.FC = () => {
@@ -27,7 +28,6 @@ const WishListScreen: React.FC = () => {
         },
       });
       setMyWishList(response.data);
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -72,10 +72,8 @@ const WishListScreen: React.FC = () => {
               key={index}
               onPress={() => handleItemPress(myWish.supplementSeq)}>
               <WishListItem
-                userSeq={myWish.userSeq}
-                supplementSeq={myWish.supplementSeq}
                 pillName={myWish.pillName}
-                functionality={myWish.functionality}
+                imageUrl={myWish.imageUrl}
               />
             </TouchableOpacity>
           ))

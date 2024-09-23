@@ -34,7 +34,6 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        // `${API_URL}/api/v1/signin`,
         `${API_URL}/api/v1/signin`,
         {
           username: userId,
@@ -48,10 +47,8 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
       );
 
       if (response.status === 200) {
-        console.log(response);
         const token = response.headers['access'];
         // const token = response.headers['authorization'].split(' ')[1];
-        // console.log('res', response);
         if (token) {
           await AsyncStorage.setItem('jwt_token', token);
 
@@ -68,7 +65,6 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
           navigation.navigate('Main');
           Alert.alert('로그인 성공');
         } else {
-          // console.log(AsyncStorage);
           Alert.alert('토큰이 없습니다. 로그인 실패');
         }
       }
