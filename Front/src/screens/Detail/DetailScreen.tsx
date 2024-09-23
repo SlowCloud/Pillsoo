@@ -31,6 +31,8 @@ const DetailScreen: React.FC = () => {
   const {id} = route.params;
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<boolean>(false);
+  const [myKit, setMyKit] = useState<boolean>(false);
+
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
   );
@@ -69,6 +71,7 @@ const DetailScreen: React.FC = () => {
         });
 
         setMyWishList(data.inWishlist);
+        setMyKit(data.isInKit); // API 응답에서 isInKit 확인
       } catch (error) {
         console.error(error);
       }
@@ -117,23 +120,61 @@ const DetailScreen: React.FC = () => {
     }
   };
 
+  const handleKitBtn = async () => {
+    try {
+      if (myKit) {
+        // 복용 중 목록에서 제거
+        await axios.delete(`${API_URL}/api/v1/my-kit`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            supplementSeq: id,
+          },
+        });
+        setMyKit(false); // 상태 업데이트
+      } else {
+        // 복용 중 목록에 추가
+        await axios.post(
+          `${API_URL}/api/v1/my-kit`,
+          {supplementSeq: id},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        setMyKit(true); // 상태 업데이트
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.infoBox}>
         <Image source={{uri: pillData.imageUrl}} style={styles.image} />
         <View style={styles.infoContainer}>
           <Text style={styles.pillName}>{pillData.name}</Text>
-          <TouchableOpacity onPress={handleWishListBtn}>
-            <Image
-              source={
-                myWishList
-                  ? require('../../assets/heart1.png') // 위시리스트에 있을 때
-                  : require('../../assets/heart2.png') // 위시리스트에 없을 때
-              }
-              style={styles.wishListBtn}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
+          <View style={styles.rowContainer}>
+            <TouchableOpacity onPress={handleWishListBtn}>
+              <Image
+                source={
+                  myWishList
+                    ? require('../../assets/heart1.png') // 위시리스트에 있을 때
+                    : require('../../assets/heart2.png') // 위시리스트에 없을 때
+                }
+                style={styles.wishListBtn}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleKitBtn}>
+              <Text style={styles.dosageText}>
+                {myKit ? '복용 중' : '복용 안 함'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
       <View style={styles.canSelectMenu}>
@@ -216,6 +257,14 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 20,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center', // 수직 가운데 정렬
+    marginTop: 10,
+  },
+  dosageText: {
+    marginLeft: 10, // 이미지와 텍스트 사이 간격
   },
   canSelectMenu: {
     flexDirection: 'row',
