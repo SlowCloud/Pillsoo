@@ -34,7 +34,7 @@ def recommend_supplements(client_text: str = Query(..., description="Client inpu
     # 데이터베이스에서 아이템 가져오기
     db_items = get_functionality_items(db)
     
-    # 유사도 계산
+    # 단어별 유사도 계산 (병렬 처리 적용)
     top_matches = calculate_similarity(client_text, db_items)
     
     # 결과 형식 변환
