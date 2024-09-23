@@ -16,9 +16,13 @@ router = APIRouter()
 # Redis 클라이언트 설정
 r = redis.Redis(host='localhost', port=6379, db=0)
 
-def generate_cache_key(text: str) -> str:
+'''def generate_cache_key(text: str) -> str:
     preprocessed_text = preprocess_text(text)  # 캐시 키 생성 시 전처리된 텍스트 사용
-    return hashlib.md5(preprocessed_text.encode()).hexdigest()
+    return hashlib.md5(preprocessed_text.encode()).hexdigest()'''
+
+def generate_cache_key(text: str) -> str:
+    # 입력 텍스트를 그대로 사용하여 캐시 키 생성
+    return hashlib.md5(text.encode()).hexdigest()
 
 @router.get("/api/v1/recommend/survey")
 def recommend_supplements(client_text: str = Query(..., description="Client input text"), db: Session = Depends(get_db)) -> List[Dict[str, Any]]:
