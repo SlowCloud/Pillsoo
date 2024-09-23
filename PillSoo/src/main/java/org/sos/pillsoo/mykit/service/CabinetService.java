@@ -64,6 +64,7 @@ public class CabinetService {
         dto.setSupplementSeq(cabinet.getSupplement().getSupplementSeq());
         dto.setPillName(cabinet.getSupplement().getPillName());
         dto.setFunctionality(cabinet.getSupplement().getFunctionality());
+        dto.setImageUrl(cabinet.getSupplement().getImageUrl());
         return dto;
     }
 }
