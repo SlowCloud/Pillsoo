@@ -9,14 +9,14 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native'; // 네비게이션 훅 임포트
+import {useNavigation} from '@react-navigation/native';
 import SearchBar from '../../components/common/SearchBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {API_URL} from '@env';
 
 const SearchResultScreen = () => {
-  const navigation = useNavigation(); // 네비게이션 객체 가져오기
+  const navigation = useNavigation();
   const [token, setToken] = useState<string | null>(null);
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -36,19 +36,15 @@ const SearchResultScreen = () => {
 
     setLoading(true);
     try {
-      const response = await axios.get(
-        'http://10.0.2.2:8080/api/v1/supplement/search',
-        // `${API_URL}/api/v1/supplement/search`
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            searchtext: searchQuery,
-            functionality: '',
-          },
+      const response = await axios.get(`${API_URL}/api/v1/supplement/search`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+        params: {
+          searchtext: searchQuery,
+          functionality: '',
+        },
+      });
 
       if (response.status === 200) {
         setResults(response.data);
