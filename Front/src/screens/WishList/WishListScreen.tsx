@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import Header from '../../components/common/Header';
 import WishListItem from '../../components/WishList/WishListItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,6 +15,7 @@ interface Wish {
 }
 
 const WishListScreen: React.FC = () => {
+  const navigation = useNavigation();
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<Wish[]>([]);
 
@@ -25,7 +27,7 @@ const WishListScreen: React.FC = () => {
         },
       });
       setMyWishList(response.data);
-      // console.log('my wish', response.data);
+      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -56,19 +58,26 @@ const WishListScreen: React.FC = () => {
     return () => clearInterval(interval);
   }, [token]);
 
+  const handleItemPress = (supplementSeq: number) => {
+    navigation.navigate('Detail', {id: supplementSeq});
+  };
+
   return (
     <>
       <Header />
       <View style={styles.container}>
         {myWishList.length > 0 ? (
           myWishList.map((myWish, index) => (
-            <WishListItem
+            <TouchableOpacity
               key={index}
-              userSeq={myWish.userSeq}
-              supplementSeq={myWish.supplementSeq}
-              pillName={myWish.pillName}
-              functionality={myWish.functionality}
-            />
+              onPress={() => handleItemPress(myWish.supplementSeq)}>
+              <WishListItem
+                userSeq={myWish.userSeq}
+                supplementSeq={myWish.supplementSeq}
+                pillName={myWish.pillName}
+                functionality={myWish.functionality}
+              />
+            </TouchableOpacity>
           ))
         ) : (
           <Text>위시리스트가 비어 있습니다.</Text>
