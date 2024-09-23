@@ -10,4 +10,5 @@ public class WishListDto {
     private int supplementSeq;
     private String pillName;
     private String functionality;
+    private String imageUrl;
 }
