@@ -12,7 +12,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {authNavigations} from '../../constants/navigations';
 import axios from 'axios';
-
+import {API_URL} from '@env';
 type SignUpScreenProps = StackScreenProps<
   AuthStackParamList,
   typeof authNavigations.SIGNUP
@@ -64,7 +64,7 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
     const genderValue = gender === 'Male' ? 0 : 1;
 
     try {
-      const response = await axios.post('http://10.0.2.2:8080/api/v1/signup', {
+      const response = await axios.post(`${API_URL}/api/v1/signup`, {
         userId,
         password,
         nickname: userName,

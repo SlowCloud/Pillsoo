@@ -6,7 +6,7 @@ import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {API_URL} from '@env';
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
 interface Review {
@@ -16,7 +16,6 @@ interface Review {
   supplementSeq: number;
   userName: string;
   userSeq: number;
-  
 }
 
 const DetailReview: React.FC = () => {
@@ -40,7 +39,7 @@ const DetailReview: React.FC = () => {
 
       try {
         const response = await axios.get(
-          `http://10.0.2.2:8080/api/v1/supplement/${id}/reviews`,
+          `${API_URL}/api/v1/supplement/${id}/reviews`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

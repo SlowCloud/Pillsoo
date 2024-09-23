@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
-import {useNavigation} from '@react-navigation/native'; // navigation 훅 가져오기
+import {useNavigation} from '@react-navigation/native';
 import Header from '../../components/common/Header';
 import SearchBar from '../../components/common/SearchBar';
 

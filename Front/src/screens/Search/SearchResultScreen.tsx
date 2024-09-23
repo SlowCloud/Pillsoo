@@ -37,7 +37,7 @@ const SearchResultScreen = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        'http://10.0.2.2:8080/api/v1/supplement/search',
+        `${API_URL}/api/v1/supplement/search`,
         // `${API_URL}/api/v1/supplement/search`
         {
           headers: {

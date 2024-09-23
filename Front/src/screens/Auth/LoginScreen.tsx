@@ -35,7 +35,7 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
     try {
       const response = await axios.post(
         // `${API_URL}/api/v1/signin`,
-        'http://10.0.2.2:8080/api/v1/signin',
+        `${API_URL}/api/v1/signin`,
         {
           username: userId,
           password,
@@ -48,7 +48,7 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
       );
 
       if (response.status === 200) {
-        const token = response.headers['authorization']?.split(' ')[1];
+        const token = response.headers['access'];
         // console.log('res', response);
         if (token) {
           await AsyncStorage.setItem('jwt_token', token);

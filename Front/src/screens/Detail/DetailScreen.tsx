@@ -49,14 +49,11 @@ const DetailScreen: React.FC = () => {
     const fetchPillData = async () => {
       if (!token) return;
       try {
-        const response = await axios.get(
-          `http://10.0.2.2:8080/api/v1/supplement/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await axios.get(`${API_URL}/api/v1/supplement/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
         const data = response.data;
         console.log(data);
         setPillData({
@@ -93,7 +90,7 @@ const DetailScreen: React.FC = () => {
   const handleWishListBtn = async () => {
     try {
       await axios.post(
-        'http://10.0.2.2:8080/api/v1/wishlist',
+        `${API_URL}/api/v1/wishlist`,
         {userSeq, supplementSeq: id},
         {
           headers: {
@@ -109,7 +106,7 @@ const DetailScreen: React.FC = () => {
 
   const handleNotWishListBtn = async () => {
     try {
-      await axios.delete('http://10.0.2.2:8080/api/v1/wishlist', {
+      await axios.delete('${API_URL}/api/v1/wishlist', {
         headers: {
           Authorization: `Bearer ${token}`,
         },

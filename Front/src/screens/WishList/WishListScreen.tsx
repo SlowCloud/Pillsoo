@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 import Header from '../../components/common/Header';
 import WishListItem from '../../components/WishList/WishListItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import {API_URL} from '@env';
 
 interface Wish {
   userSeq: number;
@@ -18,16 +19,13 @@ const WishListScreen: React.FC = () => {
 
   const fetchResults = async () => {
     try {
-      const response = await axios.get(
-        'http://10.0.2.2:8080/api/v1/wishlist',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await axios.get(`${API_URL}/api/v1/wishlist`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
       setMyWishList(response.data);
-      console.log('my wish', response.data)
+      console.log('my wish', response.data);
     } catch (error) {
       console.log(error);
     }
@@ -48,7 +46,6 @@ const WishListScreen: React.FC = () => {
     }
   }, [token]);
 
-
   useEffect(() => {
     const interval = setInterval(() => {
       if (token) {
@@ -65,7 +62,7 @@ const WishListScreen: React.FC = () => {
       <View style={styles.container}>
         {myWishList.length > 0 ? (
           myWishList.map((myWish, index) => (
-            <WishListItem 
+            <WishListItem
               key={index}
               userSeq={myWish.userSeq}
               supplementSeq={myWish.supplementSeq}
