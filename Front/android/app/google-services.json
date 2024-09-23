@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "723674365715",
+    "project_id": "sos-92537",
+    "storage_bucket": "sos-92537.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:723674365715:android:ced951ee4e4a8c05e824e6",
+        "android_client_info": {
+          "package_name": "com.front"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqfoZDfGA5hYKhicUnjEh2Dgqc5yrJF3M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

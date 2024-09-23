@@ -24,6 +24,25 @@ const AlarmScreen = () => {
     }
   };
 
+  const convertUtcToKst = (utcDateString: string): Date => {
+    const utcDate = new Date(utcDateString);
+    const kstDate = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
+    return kstDate;
+  }
+
+  const checkAlarm = (hours: number, minutes: number) => {
+    const today = new Date().toISOString();
+    const kstDate  = convertUtcToKst(today); 
+
+    const currentHours = kstDate .getHours();
+    const currentMinutes = kstDate .getMinutes();
+
+    if (currentHours == hours && currentMinutes == minutes) {
+      Alert.alert('안녕')
+    }
+  }
+
+  
   // 시간 선택이 변경될 때 실행되는 함수
   const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
     const currentDate = selectedDate || date;
@@ -34,6 +53,9 @@ const AlarmScreen = () => {
     const minutes = currentDate.getMinutes();
     console.log('설정한 시간', hours)
     console.log('설정한 분', minutes)
+
+    setInterval(() => checkAlarm(hours, minutes), 60*1000);
+
     setAlarmTime(`${hours}:${minutes < 10 ? `0${minutes}` : minutes}`);
   };
 
@@ -72,6 +94,8 @@ const AlarmScreen = () => {
 
     Alert.alert(`알람이 ${alarmTime}에 설정되었습니다.`);
   };
+
+
 
   return (
     <View style={styles.container}>

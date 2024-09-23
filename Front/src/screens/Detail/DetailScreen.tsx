@@ -58,7 +58,6 @@ const DetailScreen: React.FC = () => {
           },
         );
         const data = response.data;
-        console.log(data);
         setPillData({
           id: data.supplementSeq,
           name: data.pillName,
