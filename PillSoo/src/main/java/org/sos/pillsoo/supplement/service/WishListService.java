@@ -32,6 +32,7 @@ public class WishListService {
                     dto.setSupplementSeq(wishList.getSupplement().getSupplementSeq());
                     dto.setPillName(wishList.getSupplement().getPillName());
                     dto.setFunctionality(wishList.getSupplement().getFunctionality());
+                    dto.setImageUrl(wishList.getSupplement().getImageUrl());
                     return dto;
                 })
                 .collect(Collectors.toList());
