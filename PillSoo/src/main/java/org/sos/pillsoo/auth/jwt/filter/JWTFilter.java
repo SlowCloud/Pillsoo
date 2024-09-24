@@ -27,11 +27,15 @@ public class JWTFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String token = request.getHeader("access");
+        if(response.getHeader("access") != null) {
+            token = response.getHeader("access");
+        }
 
         if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
+
 
         try {
             if (jwtUtil.isExpired(token)) {

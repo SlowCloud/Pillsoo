@@ -48,8 +48,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String gender = customUserDetails.getUserGender();
         int age = customUserDetails.getUserAge();
 
-        String accessToken = jwtUtil.createJwt("access", role, userId, userSeq, nickname, gender, age, 600000L);
-        String refreshToken = jwtUtil.createJwt("refresh", role, userId, userSeq, nickname, gender, age, 100000000L);
+        String accessToken = jwtUtil.createJwt("access", role, userId, userSeq, nickname, gender, age, 1000L * 60 * 60);
+        String refreshToken = jwtUtil.createJwt("refresh", role, userId, userSeq, nickname, gender, age, 1000L * 60 * 60 * 24);
 
         addRefreshEntity(userId, refreshToken, 86400000L);
 
