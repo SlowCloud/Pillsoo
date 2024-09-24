@@ -56,8 +56,6 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
           );
           const dec = JSON.parse(base64.decode(payload));
 
-          console.log('로그인 정보보보봅', dec)
-
           dispatch(setReduxUserId(dec.userId));
           dispatch(setUserSeq(dec.userSeq));
           dispatch(setRole(dec.role));

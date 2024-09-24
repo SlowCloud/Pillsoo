@@ -49,7 +49,6 @@ const DetailReviewInput: React.FC = () => {
         },
       );
       if (response.status === 200) {
-        console.log(response);
         setReview('');
       } else {
         Alert.alert('리뷰 작성 실패');

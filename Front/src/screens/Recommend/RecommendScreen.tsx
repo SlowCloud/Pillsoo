@@ -46,7 +46,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
         },
       );
       const data = response.data;
-      console.log(data);
+      console.log('넌 뭐야?', data);
       const pills = data.map((item: any) => ({
         id: item.supplementSeq,
         imageUrl: {uri: item.image_url},
