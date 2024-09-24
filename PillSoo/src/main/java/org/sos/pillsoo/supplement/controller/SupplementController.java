@@ -26,6 +26,8 @@ public class SupplementController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();  // 사용자 정보에서 userSeq를 가져옴
         int userSeq = userDetails.getUserSeq();
 
+        supplementService.recordClickCount(supplementSeq, userSeq);
+
         // 서비스에 userSeq와 supplementSeq 전달
         return supplementService.getSupplementById(supplementSeq, userSeq);
     }

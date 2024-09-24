@@ -2,12 +2,14 @@ package org.sos.pillsoo.supplement.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.sos.pillsoo.auth.entity.User;
 
 import java.sql.Timestamp;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "click_count")
 public class ClickCount {
