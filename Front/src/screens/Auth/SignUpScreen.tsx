@@ -12,7 +12,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {authNavigations} from '../../constants/navigations';
 import axios from 'axios';
-import {API_URL} from '@env';
+import { API_URL } from '@env';
 type SignUpScreenProps = StackScreenProps<
   AuthStackParamList,
   typeof authNavigations.SIGNUP

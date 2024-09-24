@@ -2,11 +2,12 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_URL} from '@env';
+import { API_URL } from '@env';
 import Header from '../../components/common/Header';
 import AgeBasedRecommendations from '../../components/Recommend/AgeBasedRecommendations';
 import SelectPillItems from '../../components/Recommend/SelectPillItems';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import { useSelector } from 'react-redux';
 
 export type RecommendParamList = {
   Recommend: undefined;
@@ -24,7 +25,7 @@ export type RecommendPill = {
 };
 
 const RecommendScreen: React.FC<Props> = ({navigation}) => {
-  const [age, setAge] = useState<number>(25);
+  const age = useSelector((state: {age: string | null}) => state.age);
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
 
   // 화면 렌더링 되자마자 함수 실행

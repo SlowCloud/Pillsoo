@@ -6,7 +6,7 @@ import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_URL} from '@env';
+import { API_URL } from '@env';
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
 interface Review {
