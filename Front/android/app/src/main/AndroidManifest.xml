@@ -1,10 +1,14 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="Front">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <!-- ocr 기능 permission -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -34,6 +38,8 @@
       <!-- Push Notification Receiver -->
       <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationReceiver" android:exported="true"/>
       <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationOpenedReceiver" android:exported="true"/>
+      <receiver android:name=".MyAlarmReceiver" android:exported="true"/>
+
 
       <!-- Service for handling notifications -->
       <service android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationService" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false"/>

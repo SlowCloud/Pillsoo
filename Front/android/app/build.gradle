@@ -124,6 +124,10 @@ dependencies {
     // Firebase BoM 추가
     implementation platform('com.google.firebase:firebase-bom:33.3.0') // Firebase BoM
     implementation 'com.google.firebase:firebase-analytics' // Firebase Analytics SDK
+
+    // Declare the dependency for the Cloud Firestore library
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation("com.google.firebase:firebase-firestore")
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

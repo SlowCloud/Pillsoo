@@ -7,6 +7,7 @@ import {
   Alert,
   Linking,
   Platform,
+  PermissionsAndroid
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import PushNotification, { Importance } from 'react-native-push-notification';
@@ -19,23 +20,44 @@ const AlarmScreen = () => {
   const [show, setShow] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
+  const requestNotificationPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Notification permission granted');
+        } else {
+          console.log('Notification permission denied');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+  };
+
   useEffect(() => {
     console.log('나옴!');
     configurePushNotifications();
     registerFCM();
 
+    requestNotificationPermission();
+
     return () => {
+      console.log('나 끈다')
       localNotificationService.unRegister();
     };
-  }, [selectedDate]);
+  }, []);
 
   const configurePushNotifications = () => {
     try {
+      console.log('넌 되니');
       PushNotification.configure({
         onNotification: function (notification) {
           console.log("NOTIFICATION:", notification);
           if (notification.userInteraction) {
-            onOpenNotification(notification); // 클릭했을 때만 호출
+            onOpenNotification(notification);
           }
         },
         permissions: {
@@ -44,29 +66,40 @@ const AlarmScreen = () => {
           sound: true,
         },
         popInitialNotification: true,
-        requestPermissions: Platform.OS === 'ios',
+        requestPermissions: Platform.OS === 'android',
       });
+
+      console.log('와라 이놈아')
+  
+      if (Platform.OS === 'android') {
+        PushNotification.createChannel(
+          {
+            channelId: 'default_my_channel_id',
+            channelName: 'Default Channel',
+            channelDescription: 'A default channel for notifications',
+            playSound: true,
+            soundName: 'default',
+            importance: Importance.HIGH,
+          },
+          (created) => {
+            if (created) {
+              console.log('Channel created successfully');
+            } else {
+              console.log('Channel already exists or failed to create');
+              console.log('채널 ID:', 'default_my_channel_id');
+            }
+          }
+        );
+  
+        // 권한 확인 추가
+        PushNotification.checkPermissions((permissions) => {
+          console.log('Permissions:', permissions);
+        });
+      }
     } catch (error) {
       console.log('Error in PushNotification.configure', error);
     }
-
-    if (Platform.OS === 'android') {
-      PushNotification.createChannel(
-        {
-          channelId: 'default_my_channel_id',
-          channelName: 'Default Channel',
-          channelDescription: 'A default channel for notifications',
-          playSound: true,
-          soundName: 'default',
-          importance: Importance.HIGH,
-        },
-        (created) => {
-          console.log(created ? 'Channel created successfully' : 'Channel already exists or failed to create');
-        },
-      );
-    }
   };
-
   const registerFCM = async () => {
     const token = await messaging().getToken();
     console.log('[App] onRegister : token :', token);
@@ -104,27 +137,29 @@ const AlarmScreen = () => {
     const currentDate = selected || date;
     setShow(false);
     setDate(currentDate);
-    setSelectedDate(currentDate);
-    console.log('시간 정함!!!', selected);
-  
-    // 알람 자동 설정
-    setAlarm();
+    setSelectedDate(currentDate)
+    
+    const alarmDate = new Date(currentDate)
+    setAlarm(alarmDate);
   };
   
-  const setAlarm = async () => {
-    if (!selectedDate) {
+  const setAlarm = async (alarmDate: Date) => {
+    if (!alarmDate) {
       Alert.alert('알람 시간을 선택해 주세요.');
       return;
     }
-  
+
     // 알람 설정
     PushNotification.localNotificationSchedule({
+      channelId: 'default_my_channel_id',
       message: '알람이 울립니다!',
-      date: selectedDate,
+      date: alarmDate,
       allowWhileIdle: true,
     });
-  
-    Alert.alert(`알람이 ${selectedDate.toLocaleTimeString()}에 설정되었습니다.`);
+    
+
+    console.log('시간 비교', new Date(), alarmDate)
+    Alert.alert(`알람이 ${alarmDate.toLocaleTimeString()}에 설정되었습니다.`);
   };
   
   const onNotification = (notify: any) => {
@@ -160,7 +195,9 @@ const AlarmScreen = () => {
             onChange={onChange}
           />
         )}
-        <Button onPress={setAlarm} title="알람 설정" />
+        <Button 
+        // onPress={setAlarm} 
+        title="알람 설정" disabled={!selectedDate} />
       </View>
     </View>
   );
