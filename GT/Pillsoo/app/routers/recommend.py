@@ -1,23 +1,16 @@
 # app/routers/recommend.py
 
-import redis
 import hashlib
 import json
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from ..database import get_db
+from ..database import get_db, r
 from ..crud import get_functionality_items, get_supplements_by_age
 from ..similarity import calculate_similarity, preprocess_text
 from typing import List, Dict, Any
 
 # FastAPI 라우터 설정
 router = APIRouter()
-
-# Redis 클라이언트 설정
-try:
-    r = redis.Redis(host='localhost', port=6379, db=0)
-except redis.exceptions.ConnectionError as e:
-    r = None  # Redis가 사용 불가한 경우 None으로 설정
 
 def generate_cache_key(text: str) -> str:
     # 입력 텍스트를 그대로 사용하여 캐시 키 생성
