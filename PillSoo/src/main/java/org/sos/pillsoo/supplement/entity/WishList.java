@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.sos.pillsoo.auth.entity.User;
 
-@Entity
 @Getter
 @Setter
+@Entity
 @Table(name = "WishList")
 public class WishList {
 

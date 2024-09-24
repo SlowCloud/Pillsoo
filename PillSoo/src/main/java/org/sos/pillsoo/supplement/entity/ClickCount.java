@@ -3,6 +3,7 @@ package org.sos.pillsoo.supplement.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.CurrentTimestamp;
+import org.sos.pillsoo.auth.entity.User;
 
 import java.sql.Timestamp;
 
@@ -13,8 +14,15 @@ public class ClickCount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long recordSeq;
-    private int supplementSeq;
-    private int userSeq;
+
+    @ManyToOne
+    @JoinColumn(name = "supplement_seq")
+    private Supplement supplement;
+
+    @ManyToOne
+    @JoinColumn(name = "user_seq")
+    private User user;
+
     @CurrentTimestamp
     private Timestamp clickSeq;
 }
