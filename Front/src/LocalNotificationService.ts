@@ -1,9 +1,8 @@
-import PushNotification from 'react-native-push-notification';
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import PushNotification, { PushNotificationObject } from 'react-native-push-notification';
 import { Platform } from 'react-native';
 
 interface NotificationData {
-  [key: string]: any; // 동적 속성에 대한 타입 정의
+  [key: string]: any;
 }
 
 interface NotificationOptions {
@@ -19,24 +18,29 @@ interface NotificationOptions {
   category?: string;
 }
 
+interface CustomPushNotificationObject extends PushNotificationObject {
+  title: string;
+  message: string;
+}
+
+interface NotificationWithInteraction extends Omit<PushNotificationObject, 'message'> {
+  data?: NotificationData;
+  userInteraction?: boolean; // Add this line
+}
+
 class LocalNotificationService {
   configure = (onOpenNotification: (data: NotificationData) => void) => {
     PushNotification.configure({
-      onRegister: (token: string) => {
+      onRegister: (token: { os: string; token: string; }) => {
         console.log('[LocalNotificationService] onRegister : localtoken', token);
       },
-      onNotification: (notification: any) => {
+      onNotification: (notification: NotificationWithInteraction) => {
         console.log('[LocalNotificationService] onNotification ', notification);
-        if (!notification?.data) {
-          return;
-        }
-        notification.userInteraction = true;
-        onOpenNotification(
-          Platform.OS === 'ios' ? notification.data.item : notification.data,
-        );
-
-        if (Platform.OS === 'ios') {
-          notification.finish(PushNotificationIOS.FetchResult.NoData);
+        
+        if (notification?.data) {
+          if (notification.userInteraction) {
+            onOpenNotification(notification.data);
+          }
         }
       },
       permissions: {
@@ -54,21 +58,18 @@ class LocalNotificationService {
   };
 
   showNotification = (id: string, title: string, message: string, data: NotificationData = {}, options: NotificationOptions = {}) => {
-    PushNotification.localNotification({
+    const notification: CustomPushNotificationObject = {
       ...this.buildAndroidNotification(id, title, message, data, options),
-      ...this.buildIOSNotification(id, title, message, data, options),
       title: title || '',
       message: message || '',
-      playSound: options.playSound || false,
-      soundName: options.soundName || 'default',
-      userInteraction: false,
-    });
+    };
+
+    PushNotification.localNotification(notification);
   };
 
   buildAndroidNotification = (id: string, title: string, message: string, data: NotificationData = {}, options: NotificationOptions = {}) => {
     return {
       id: id,
-      authCancel: true,
       largeIcon: options.largeIcon || 'ic_launcher',
       smallIcon: options.smallIcon || 'ic_notification',
       bigText: message || '',
@@ -78,26 +79,12 @@ class LocalNotificationService {
       priority: options.priority || 'high',
       importance: options.importance || 'high',
       data: data,
-    };
-  };
-
-  buildIOSNotification = (id: string, title: string, message: string, data: NotificationData = {}, options: NotificationOptions = {}) => {
-    return {
-      alertAction: options.alertAction || 'view',
-      category: options.category || '',
-      userInfo: {
-        id: id,
-        item: data,
-      },
+      message: message || '',
     };
   };
 
   cancelAllLocalNotifications = () => {
-    if (Platform.OS === 'ios') {
-      PushNotificationIOS.removeAllDeliveredNotifications();
-    } else {
-      PushNotification.cancelAllLocalNotifications();
-    }
+    PushNotification.cancelAllLocalNotifications();
   };
 
   removeDeliveredNotificationByID = (notificationId: string) => {
