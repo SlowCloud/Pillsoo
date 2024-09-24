@@ -40,6 +40,7 @@ const SupplementInputScreen = () => {
             userSeq,
           },
         });
+
         setMyKitData(response.data);
       } catch (err) {
         console.error(err);

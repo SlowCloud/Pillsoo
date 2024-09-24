@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Header from '../../components/common/Header';
 import WishListItem from '../../components/WishList/WishListItem';
@@ -66,20 +72,22 @@ const WishListScreen: React.FC = () => {
     <>
       <Header />
       <View style={styles.container}>
-        {myWishList.length > 0 ? (
-          myWishList.map((myWish, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => handleItemPress(myWish.supplementSeq)}>
-              <WishListItem
-                pillName={myWish.pillName}
-                imageUrl={myWish.imageUrl}
-              />
-            </TouchableOpacity>
-          ))
-        ) : (
-          <Text>위시리스트가 비어 있습니다.</Text>
-        )}
+        <ScrollView>
+          {myWishList.length > 0 ? (
+            myWishList.map((myWish, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => handleItemPress(myWish.supplementSeq)}>
+                <WishListItem
+                  pillName={myWish.pillName}
+                  imageUrl={myWish.imageUrl}
+                />
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text>위시리스트가 비어 있습니다.</Text>
+          )}
+        </ScrollView>
       </View>
     </>
   );
@@ -88,7 +96,6 @@ const WishListScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     padding: 10,
   },
 });
