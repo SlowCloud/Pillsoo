@@ -12,7 +12,7 @@ import {
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import PushNotification, { Importance } from 'react-native-push-notification';
 import messaging from '@react-native-firebase/messaging';
-import { localNotificationService } from '../../LocalNotificationService';
+import firestore from '@react-native-firebase/firestore';
 
 const AlarmScreen = () => {
   const [date, setDate] = useState(new Date());
@@ -41,12 +41,10 @@ const AlarmScreen = () => {
     console.log('나옴!');
     configurePushNotifications();
     registerFCM();
-
     requestNotificationPermission();
 
     return () => {
-      console.log('나 끈다')
-      localNotificationService.unRegister();
+      console.log('나 끈다');
     };
   }, []);
 
@@ -69,8 +67,6 @@ const AlarmScreen = () => {
         requestPermissions: Platform.OS === 'android',
       });
 
-      console.log('와라 이놈아')
-  
       if (Platform.OS === 'android') {
         PushNotification.createChannel(
           {
@@ -86,12 +82,10 @@ const AlarmScreen = () => {
               console.log('Channel created successfully');
             } else {
               console.log('Channel already exists or failed to create');
-              console.log('채널 ID:', 'default_my_channel_id');
             }
           }
         );
-  
-        // 권한 확인 추가
+
         PushNotification.checkPermissions((permissions) => {
           console.log('Permissions:', permissions);
         });
@@ -100,6 +94,7 @@ const AlarmScreen = () => {
       console.log('Error in PushNotification.configure', error);
     }
   };
+
   const registerFCM = async () => {
     const token = await messaging().getToken();
     console.log('[App] onRegister : token :', token);
@@ -122,12 +117,6 @@ const AlarmScreen = () => {
     });
   };
 
-  const openExactAlarmPermissionSettings = () => {
-    if (Platform.OS === 'android' && Platform.Version >= 31) {
-      Linking.openSettings();
-    }
-  };
-
   const showTimePicker = () => {
     setShow(true);
     setMode('time');
@@ -137,31 +126,47 @@ const AlarmScreen = () => {
     const currentDate = selected || date;
     setShow(false);
     setDate(currentDate);
-    setSelectedDate(currentDate)
-    
-    const alarmDate = new Date(currentDate)
-    setAlarm(alarmDate);
+    setSelectedDate(currentDate);
+
+    setAlarm(currentDate);
   };
-  
-  const setAlarm = async (alarmDate: Date) => {
+
+  const saveAlarm = async (alarmDate: Date) => {
+    const utcDate = new Date(alarmDate.getTime() - 9 * 60 * 60 * 1000);
+
+    console.log('나 왓다@@@@@@@@@@@@@@@@@', alarmDate, utcDate)
+    await firestore().collection('alarms').add({
+        time: firestore.Timestamp.fromDate(utcDate),
+        message: '시간을 맞추자',
+        createdAt: firestore.FieldValue.serverTimestamp(),
+    });
+    Alert.alert('알람이 Firebase에 저장되었습니다!');
+};
+
+const setAlarm = async (alarmDate: Date) => {
     if (!alarmDate) {
-      Alert.alert('알람 시간을 선택해 주세요.');
-      return;
+        Alert.alert('알람 시간을 선택해 주세요.');
+        return;
     }
 
-    // 알람 설정
-    PushNotification.localNotificationSchedule({
-      channelId: 'default_my_channel_id',
-      message: '알람이 울립니다!',
-      date: alarmDate,
-      allowWhileIdle: true,
-    });
+    // UTC로 변환
     
+    console.log('앱에서 설정한 시간', alarmDate)
 
-    console.log('시간 비교', new Date(), alarmDate)
+    await saveAlarm(alarmDate); // Firebase에 알람 저장
+    // const utcDate = new Date(alarmDate.getTime() - 9 * 60 * 60 * 1000);
+
+    PushNotification.localNotificationSchedule({
+        channelId: 'default_my_channel_id',
+        message: '알람이 울립니다!',
+        date: alarmDate,
+        allowWhileIdle: true,
+    });
+
     Alert.alert(`알람이 ${alarmDate.toLocaleTimeString()}에 설정되었습니다.`);
-  };
-  
+};
+
+
   const onNotification = (notify: any) => {
     if (notify) {
       console.log('[App] onNotification : notify :', notify);
@@ -196,8 +201,10 @@ const AlarmScreen = () => {
           />
         )}
         <Button 
-        // onPress={setAlarm} 
-        title="알람 설정" disabled={!selectedDate} />
+          // onPress={setAlarm} 
+          title="알람 설정" 
+          disabled={!selectedDate} 
+        />
       </View>
     </View>
   );
