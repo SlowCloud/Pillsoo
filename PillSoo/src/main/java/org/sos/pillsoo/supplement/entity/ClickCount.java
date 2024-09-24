@@ -13,7 +13,8 @@ import java.sql.Timestamp;
 public class ClickCount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long recordSeq;
+    @Column(name = "click_count_seq")
+    private long clickCountSeq;
 
     @ManyToOne
     @JoinColumn(name = "supplement_seq")
@@ -24,5 +25,6 @@ public class ClickCount {
     private User user;
 
     @CurrentTimestamp
-    private Timestamp clickSeq;
+    @Column(name = "click_timestamp")
+    private Timestamp clickTimestamp;
 }
