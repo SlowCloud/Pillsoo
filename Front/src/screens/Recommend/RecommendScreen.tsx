@@ -2,9 +2,9 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_URL} from '@env'; // .env에서 API_URL 가져오기
+import {API_URL} from '@env';
 import Header from '../../components/common/Header';
-import RecommendItem from '../../components/Recommend/RecommendItem';
+import AgeBasedRecommendations from '../../components/Recommend/AgeBasedRecommendations';
 import SelectPillItems from '../../components/Recommend/SelectPillItems';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 
@@ -15,53 +15,49 @@ export type RecommendParamList = {
 };
 
 export type Props = {
-  navigation: any; // 적절한 타입으로 변경
+  navigation: any;
 };
 
-type RecommendPill = {
+export type RecommendPill = {
   id: number;
   imageUrl: any;
 };
 
 const RecommendScreen: React.FC<Props> = ({navigation}) => {
-  const [age, setAge] = useState<number>(0);
+  const [age, setAge] = useState<number>(35);
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
 
+  // 화면 렌더링 되자마자 함수 실행
   useEffect(() => {
-    setAge(20); // 나이 설정
-    fetchRecommendPills(); // 추천 영양제 가져오기
+    AgeRecommendPills();
   }, []);
 
-  const fetchRecommendPills = async () => {
+  // 나이대별 추천 영양제 조회
+  const AgeRecommendPills = async () => {
     try {
       const token = await AsyncStorage.getItem('jwt_token');
-      const response = await axios.get(`${API_URL}/api/v1/recommend`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // 헤더에 토큰 추가
+      const response = await axios.get(
+        `${API_URL}/api/v1/recommend?age=${age}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-        params: {age},
-      });
+      );
       const data = response.data;
       console.log(data);
-      // 추천 영양제 데이터 설정
       const pills = data.map((item: any) => ({
         id: item.supplementSeq,
-        imageUrl: {uri: item.image_url}, // URL 형태로 변환
+        imageUrl: {uri: item.image_url},
       }));
 
       setRecommendPills(pills);
     } catch (error) {
       console.log(error);
-    } finally {
-      setLoading(false);
     }
   };
 
-  if (loading) {
-    return <Text>Loading...</Text>; // 로딩 상태 표시
-  }
-
+  // 카테고리
   const categories: string[] = [
     '간 건강',
     '갑상선',
@@ -99,16 +95,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
     <>
       <Header />
       <View style={styles.container}>
-        <Text style={styles.recommendText}>{age}대에게 맞는 영양제 추천</Text>
-        <View style={styles.recommendBox}>
-          {recommendPills.map(recommendPill => (
-            <RecommendItem
-              key={recommendPill.id}
-              id={recommendPill.id}
-              imageUrl={recommendPill.imageUrl}
-            />
-          ))}
-        </View>
+        <AgeBasedRecommendations age={age} recommendPills={recommendPills} />
         <View style={styles.pillCategoryBox}>
           <FlatList
             data={chunkedCategories}
@@ -127,30 +114,19 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
           />
           {lastRow && (
             <View style={styles.lastRow}>
-              <View style={styles.categoryFirstItem}>
+              {lastRow.map(category => (
                 <SelectPillItems
-                  category={lastRow[0]}
+                  key={category}
+                  category={category}
                   navigation={navigation}
                 />
-              </View>
-              <View style={styles.categorySecondItem}>
-                <SelectPillItems
-                  category={lastRow[1]}
-                  navigation={navigation}
-                />
-              </View>
-              <View style={styles.categoryThirdItem}>
-                <SelectPillItems
-                  category={lastRow[2]}
-                  navigation={navigation}
-                />
-              </View>
+              ))}
             </View>
           )}
         </View>
         <TouchableOpacity
           style={styles.recommendBtn}
-          activeOpacity={0.7}
+          activeOpacity={0.5}
           onPress={() => navigation.navigate('MoreRecommend')}>
           <Text style={styles.moreRecommendText}>더 많은 영양제 추천받기</Text>
         </TouchableOpacity>
@@ -165,17 +141,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     marginVertical: 50,
   },
-  recommendText: {
-    fontSize: 15,
-    color: 'black',
-    marginBottom: 10,
-  },
-  recommendBox: {
-    marginTop: 25,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
   pillCategoryBox: {
     marginTop: 70,
   },
@@ -188,22 +153,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
-  },
-  categoryFirstItem: {
-    flex: 1,
-    marginLeft: -75,
-    marginRight: -60,
-    alignItems: 'center',
-  },
-  categorySecondItem: {
-    flex: 1,
-    marginLeft: -110,
-    alignItems: 'center',
-  },
-  categoryThirdItem: {
-    flex: 1,
-    marginLeft: -160,
-    alignItems: 'center',
   },
   recommendBtn: {
     marginTop: 85,
