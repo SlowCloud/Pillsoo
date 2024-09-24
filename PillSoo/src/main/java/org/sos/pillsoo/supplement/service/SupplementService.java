@@ -13,7 +13,6 @@ import org.sos.pillsoo.supplement.repository.ClickCountRepository;
 import org.sos.pillsoo.supplement.repository.EffectCategoriesRepository;
 import org.sos.pillsoo.supplement.repository.SupplementRepository;
 import org.sos.pillsoo.supplement.repository.WishListRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
