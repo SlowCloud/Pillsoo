@@ -6,3 +6,7 @@
 - pymysql
 - scikit-learn
 - requests
+- konlpy
+- redis
+- ray
+
