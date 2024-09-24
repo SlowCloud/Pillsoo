@@ -1,5 +1,6 @@
 package org.sos.pillsoo.supplement.service;
 
+import org.sos.pillsoo.mykit.repository.CabinetRepository;
 import org.sos.pillsoo.supplement.dto.SupplementDto;
 import org.sos.pillsoo.supplement.entity.EffectCategories;
 import org.sos.pillsoo.supplement.entity.Supplement;
@@ -24,9 +25,13 @@ public class SupplementService {
     @Autowired
     private WishListRepository wishListRepository;
 
+    @Autowired
+    private CabinetRepository cabinetRepository;
+
     public SupplementDto getSupplementById(int supplementSeq, int userSeq) {
         Supplement supplement = supplementRepository.findById(supplementSeq).orElseThrow();
         boolean isInWishlist = wishListRepository.existsByUser_UserSeqAndSupplement_SupplementSeq(userSeq, supplementSeq);
+        boolean isInMykit = cabinetRepository.findByUser_UserSeqAndSupplement_SupplementSeq(userSeq, supplementSeq).isPresent();
 
         SupplementDto dto = new SupplementDto();
         dto.setSupplementSeq(supplement.getSupplementSeq());
@@ -39,6 +44,7 @@ public class SupplementService {
         dto.setFunctionality(supplement.getFunctionality());
         dto.setImageUrl(supplement.getImageUrl());
         dto.setInWishlist(isInWishlist);
+        dto.setInMykit(isInMykit);
 
         return dto;
     }

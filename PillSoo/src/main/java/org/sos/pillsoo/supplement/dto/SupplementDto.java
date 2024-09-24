@@ -16,4 +16,5 @@ public class SupplementDto {
     private String functionality;
     private String imageUrl;
     private boolean inWishlist;  // isInWishlist 대신 inWishlist로 정의
+    private boolean inMykit;     // Mykit에 있는지 여부 추가
 }
