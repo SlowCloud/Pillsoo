@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import axios from 'axios';
-import {API_URL} from '@env';
+// import {API_URL} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TextInput } from 'react-native-gesture-handler';
-
+import {TextInput} from 'react-native-gesture-handler';
+import {API_URL} from '@env';
 type Props = {
   userName: string;
   content: string;
@@ -14,8 +14,14 @@ type Props = {
   reviewId: number;
 };
 
-const DetailReviewItems: React.FC<Props> = ({userName, content, supplementId, userId, reviewId}) => {
-  const myName = useSelector((state: { userId: string | null }) => state.userId);
+const DetailReviewItems: React.FC<Props> = ({
+  userName,
+  content,
+  supplementId,
+  userId,
+  reviewId,
+}) => {
+  const myName = useSelector((state: {userId: string | null}) => state.userId);
 
   const [token, setToken] = useState<string | null>(null);
   const [updateContent, setUpdateContent] = useState<boolean>(false);
@@ -36,13 +42,14 @@ const DetailReviewItems: React.FC<Props> = ({userName, content, supplementId, us
   };
 
   const clickedUpdateBtn = async () => {
-    setUpdateContent(false)
-    setUpdateReview('')
+    setUpdateContent(false);
+    setUpdateReview('');
     if (!token) return;
 
     try {
       const response = await axios.patch(
-        `http://10.0.2.2:8080/api/v1/supplement/${supplementId}/reviews`,
+        `${API_URL}/api/v1/supplement/${supplementId}/reviews`,
+        // `http://10.0.2.2:8080/api/v1/supplement/${supplementId}/reviews`,
         {reviewSeq: reviewId, content: updateReview},
         {
           headers: {
@@ -50,66 +57,61 @@ const DetailReviewItems: React.FC<Props> = ({userName, content, supplementId, us
           },
         },
       );
-    } catch(error) {
-      console.log(error)
+    } catch (error) {
+      console.log(error);
     }
   };
-  
 
-  const UPdateMyReview = 
+  const UPdateMyReview = (
     <View>
       <TextInput
         value={updateReview}
         placeholder={content}
         autoCorrect={false}
         multiline
-        onChangeText={handleUpdateTextChange}
-      >
-      </TextInput>
-      <TouchableOpacity
-        onPress={clickedUpdateBtn}
-      >
+        onChangeText={handleUpdateTextChange}></TextInput>
+      <TouchableOpacity onPress={clickedUpdateBtn}>
         <Text>수정 완료</Text>
       </TouchableOpacity>
     </View>
-  
+  );
 
-
-
-  const handleDelete = async() => {
+  const handleDelete = async () => {
     if (!token) return;
     try {
       const response = await axios.delete(
-        `http://10.0.2.2:8080/api/v1/supplement/${supplementId}/reviews`,
+        `${API_URL}/api/v1/supplement/${supplementId}/reviews`,
+        // `http://10.0.2.2:8080/api/v1/supplement/${supplementId}/reviews`,
         {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
         },
-      )
+      );
     } catch (error) {
-      console.error(error)
-  } 
-  }
+      console.error(error);
+    }
+  };
 
-  const updateAndDelete = 
+  const updateAndDelete = (
     <View>
-      <TouchableOpacity
-        onPress={() => setUpdateContent(true)}
-      >
+      <TouchableOpacity onPress={() => setUpdateContent(true)}>
         <Text>수정</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        onPress={handleDelete}
-      >
+      <TouchableOpacity onPress={handleDelete}>
         <Text>삭제</Text>
       </TouchableOpacity>
     </View>
+  );
   return (
     <View style={styles.container}>
       <Text>📣{userName}</Text>
-      { updateContent ? UPdateMyReview : <Text style={styles.reviewContent}>{content}</Text> }
-      { myName == userName ? updateAndDelete : null}
+      {updateContent ? (
+        UPdateMyReview
+      ) : (
+        <Text style={styles.reviewContent}>{content}</Text>
+      )}
+      {myName == userName ? updateAndDelete : null}
     </View>
   );
 };

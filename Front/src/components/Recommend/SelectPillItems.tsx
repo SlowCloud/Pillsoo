@@ -1,25 +1,22 @@
 import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
-import { RecommendParamList } from '../../screens/Recommend/RecommendScreen';
-import { RecommendScreenNavigationProp } from '../../screens/Recommend/RecommendScreen';
-
-
+import {RecommendParamList} from '../../screens/Recommend/RecommendScreen';
+import {RecommendScreenNavigationProp} from '../../screens/Recommend/RecommendScreen';
 
 type Props = {
-    category: string;
-    navigation: RecommendScreenNavigationProp;
-}
+  category: string;
+  navigation: RecommendScreenNavigationProp;
+};
 
-const SelectPillItems: React.FC<Props> = ({ category, navigation }) => {
+const SelectPillItems: React.FC<Props> = ({category, navigation}) => {
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={styles.pillNameBox}
-      onPress={() => navigation.navigate('RecommendCategory', { category})}
-      >
-        <Text style={styles.pillNameText}>{category}</Text>
+      onPress={() => navigation.navigate('RecommendCategory', {category})}>
+      <Text style={styles.pillNameText}>{category}</Text>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   pillNameBox: {
@@ -31,15 +28,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     alignItems: 'center',
     elevation: 2,
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.1,
     shadowRadius: 4,
-},
-pillNameText: {
+  },
+  pillNameText: {
     fontSize: 15,
     color: '#333',
-    fontWeight: '500', 
-}
+    fontWeight: '500',
+  },
 });
 
 export default SelectPillItems;

@@ -1,31 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import Header from '../../components/common/Header';
 import WishListItem from '../../components/WishList/WishListItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import {API_URL} from '@env';
 
 interface Wish {
   userSeq: number;
   supplementSeq: number;
   pillName: string;
   functionality: string;
+  imageUrl: string;
 }
 
 const WishListScreen: React.FC = () => {
+  const navigation = useNavigation();
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<Wish[]>([]);
 
   const fetchResults = async () => {
     try {
-      const response = await axios.get(
-        'http://10.0.2.2:8080/api/v1/wishlist',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      const response = await axios.get(`${API_URL}/api/v1/wishlist`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
       setMyWishList(response.data);
     } catch (error) {
       console.log(error);
@@ -47,7 +54,6 @@ const WishListScreen: React.FC = () => {
     }
   }, [token]);
 
-
   useEffect(() => {
     const interval = setInterval(() => {
       if (token) {
@@ -58,23 +64,30 @@ const WishListScreen: React.FC = () => {
     return () => clearInterval(interval);
   }, [token]);
 
+  const handleItemPress = (supplementSeq: number) => {
+    navigation.navigate('Detail', {id: supplementSeq});
+  };
+
   return (
     <>
       <Header />
       <View style={styles.container}>
-        {myWishList.length > 0 ? (
-          myWishList.map((myWish, index) => (
-            <WishListItem 
-              key={index}
-              userSeq={myWish.userSeq}
-              supplementSeq={myWish.supplementSeq}
-              pillName={myWish.pillName}
-              functionality={myWish.functionality}
-            />
-          ))
-        ) : (
-          <Text>위시리스트가 비어 있습니다.</Text>
-        )}
+        <ScrollView>
+          {myWishList.length > 0 ? (
+            myWishList.map((myWish, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => handleItemPress(myWish.supplementSeq)}>
+                <WishListItem
+                  pillName={myWish.pillName}
+                  imageUrl={myWish.imageUrl}
+                />
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text>위시리스트가 비어 있습니다.</Text>
+          )}
+        </ScrollView>
       </View>
     </>
   );
@@ -83,7 +96,6 @@ const WishListScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     padding: 10,
   },
 });

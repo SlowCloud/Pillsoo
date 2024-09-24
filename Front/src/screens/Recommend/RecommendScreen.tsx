@@ -1,51 +1,84 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet, FlatList} from 'react-native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {API_URL} from '@env';
 import Header from '../../components/common/Header';
-import RecommendItem from '../../components/Recommend/RecommendItem';
+import AgeBasedRecommendations from '../../components/Recommend/AgeBasedRecommendations';
 import SelectPillItems from '../../components/Recommend/SelectPillItems';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 export type RecommendParamList = {
   Recommend: undefined;
   MoreRecommend: undefined;
-  RecommendCategory: { category: string };
-}
-
-export type RecommendScreenNavigationProp = StackNavigationProp<
-  RecommendParamList,
-  'Recommend'
->
-
-export type Props = {
-  navigation: RecommendScreenNavigationProp;
+  RecommendCategory: {category: string};
 };
 
-type RecommendPill = {
+export type Props = {
+  navigation: any;
+};
+
+export type RecommendPill = {
   id: number;
   imageUrl: any;
-}
+};
 
-const RecommendScreen: React.FC<Props> = ({ navigation }) => {
-  const [age, setAge] = useState<number>(0);
+const RecommendScreen: React.FC<Props> = ({navigation}) => {
+  const [age, setAge] = useState<number>(25);
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
 
-  const categories: string[] = [
-    '간 건강','갑상선','관절', '노화',  
-    '눈 건강','면역', '뼈 건강', '소화', 
-    '수면', '스트레스', '장 건강', '체지방', 
-    '치아', '콜레스테롤', '피부 건강', '항산화', 
-    '혈관',  '혈당', '혈압'
-  ];
-
+  // 화면 렌더링 되자마자 함수 실행
   useEffect(() => {
-    setAge(20);
-    setRecommendPills([
-      { id: 1, imageUrl: require('../../assets/profile/3.png') },
-      { id: 2, imageUrl: require('../../assets/profile/3.png') },
-      { id: 3, imageUrl: require('../../assets/profile/3.png') },
-    ]);
+    AgeRecommendPills();
   }, []);
+
+  // 나이대별 추천 영양제 조회
+  const AgeRecommendPills = async () => {
+    try {
+      const token = await AsyncStorage.getItem('jwt_token');
+      const response = await axios.get(
+        `${API_URL}/api/v1/recommend?age=${age}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      const data = response.data;
+      console.log(data);
+      const pills = data.map((item: any) => ({
+        id: item.supplementSeq,
+        imageUrl: {uri: item.image_url},
+      }));
+
+      setRecommendPills(pills);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // 카테고리
+  const categories: string[] = [
+    '간 건강',
+    '갑상선',
+    '관절',
+    '노화',
+    '눈 건강',
+    '면역',
+    '뼈 건강',
+    '소화',
+    '수면',
+    '스트레스',
+    '장 건강',
+    '체지방',
+    '치아',
+    '콜레스테롤',
+    '피부 건강',
+    '항산화',
+    '혈관',
+    '혈당',
+    '혈압',
+  ];
 
   const chunkArray = (array: string[], size: number) => {
     const result: string[][] = [];
@@ -62,22 +95,13 @@ const RecommendScreen: React.FC<Props> = ({ navigation }) => {
     <>
       <Header />
       <View style={styles.container}>
-        <Text style={styles.recommendText}>{age}대에게 맞는 영양제 추천</Text>
-        <View style={styles.recommendBox}>
-          {recommendPills.map((recommendPill) => (
-            <RecommendItem
-              key={recommendPill.id}
-              id={recommendPill.id}
-              imageUrl={recommendPill.imageUrl}
-            />
-          ))}
-        </View>
+        <AgeBasedRecommendations age={age} recommendPills={recommendPills} />
         <View style={styles.pillCategoryBox}>
           <FlatList
             data={chunkedCategories}
-            renderItem={({ item }) => (
+            renderItem={({item}) => (
               <View style={styles.categoryRow}>
-                {item.map((category) => (
+                {item.map(category => (
                   <SelectPillItems
                     key={category}
                     category={category}
@@ -90,26 +114,20 @@ const RecommendScreen: React.FC<Props> = ({ navigation }) => {
           />
           {lastRow && (
             <View style={styles.lastRow}>
-              <View style={styles.categoryFirstItem}>
-                <SelectPillItems category={lastRow[0]} navigation={navigation} />
-              </View>
-              <View style={styles.categorySecondItem}>
-                <SelectPillItems category={lastRow[1]} navigation={navigation} />
-              </View>
-              <View style={styles.categoryThirdItem}>
-                <SelectPillItems category={lastRow[2]} navigation={navigation} />
-              </View>
-              {/* <View style={styles.categoryFourthItem}>
-                <SelectPillItems category={lastRow[3]} navigation={navigation} />
-              </View> */}
+              {lastRow.map(category => (
+                <SelectPillItems
+                  key={category}
+                  category={category}
+                  navigation={navigation}
+                />
+              ))}
             </View>
           )}
         </View>
         <TouchableOpacity
           style={styles.recommendBtn}
-          activeOpacity={0.7}
-          onPress={() => navigation.navigate('MoreRecommend')}
-        >
+          activeOpacity={0.5}
+          onPress={() => navigation.navigate('MoreRecommend')}>
           <Text style={styles.moreRecommendText}>더 많은 영양제 추천받기</Text>
         </TouchableOpacity>
       </View>
@@ -123,17 +141,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     marginVertical: 50,
   },
-  recommendText: {
-    fontSize: 15,
-    color: 'black',
-    marginBottom: 10,
-  },
-  recommendBox: {
-    marginTop: 25,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
   pillCategoryBox: {
     marginTop: 70,
   },
@@ -146,27 +153,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
-  },
-  categoryFirstItem: {
-    flex: 1,
-    marginLeft: -75,
-    marginRight: -60,
-    alignItems: 'center',
-  },
-  categorySecondItem: {
-    flex: 1,
-    marginLeft: -110,
-    alignItems: 'center',
-  },
-  categoryThirdItem: {
-    flex: 1,
-    marginLeft: -160,
-    alignItems: 'center',
-  },
-  categoryFourthItem: {
-    flex: 1,
-    marginLeft: -170,
-    alignItems: 'center',
   },
   recommendBtn: {
     marginTop: 85,

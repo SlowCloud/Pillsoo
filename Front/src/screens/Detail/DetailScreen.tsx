@@ -22,6 +22,7 @@ export type PillData = {
   functionality: string;
   imageUrl: string;
   isInWishlist: boolean;
+  isInKit: boolean;
 };
 
 const DetailScreen: React.FC = () => {
@@ -31,6 +32,7 @@ const DetailScreen: React.FC = () => {
   const {id} = route.params;
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<boolean>(false);
+  const [myKit, setMyKit] = useState<boolean>(false);
 
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
@@ -45,18 +47,16 @@ const DetailScreen: React.FC = () => {
     fetchToken();
   }, []);
 
+  // 보충제 데이터 들고오기 (상세 데이터)
   useEffect(() => {
     const fetchPillData = async () => {
       if (!token) return;
       try {
-        const response = await axios.get(
-          `http://10.0.2.2:8080/api/v1/supplement/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await axios.get(`${API_URL}/api/v1/supplement/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
         const data = response.data;
         setPillData({
           id: data.supplementSeq,
@@ -69,10 +69,10 @@ const DetailScreen: React.FC = () => {
           functionality: data.functionality,
           imageUrl: data.imageUrl,
           isInWishlist: data.inWishlist,
+          isInKit: data.inMykit,
         });
-
-        // 위시리스트 상태 설정
         setMyWishList(data.inWishlist);
+        setMyKit(data.inMykit);
       } catch (error) {
         console.error(error);
       }
@@ -91,35 +91,76 @@ const DetailScreen: React.FC = () => {
 
   const handleWishListBtn = async () => {
     try {
-      await axios.post(
-        'http://10.0.2.2:8080/api/v1/wishlist',
-        {userSeq, supplementSeq: id},
-        {
+      if (myWishList) {
+        // 위시리스트에서 제거
+        await axios.delete(`${API_URL}/api/v1/wishlist`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        },
-      );
-      setMyWishList(true);
+          params: {
+            userSeq,
+            supplementSeq: id,
+          },
+        });
+        setMyWishList(false);
+      } else {
+        // 위시리스트에 추가
+        await axios.post(
+          `${API_URL}/api/v1/wishlist`,
+          {userSeq, supplementSeq: id},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        setMyWishList(true);
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleNotWishListBtn = async () => {
+  const handleKitBtn = async () => {
     try {
-      await axios.delete('http://10.0.2.2:8080/api/v1/wishlist', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          userSeq,
-          supplementSeq: id,
-        },
-      });
-      setMyWishList(false);
+      if (myKit) {
+        // 복용 중 목록에서 제거
+        const response = await axios.delete(`${API_URL}/api/v1/my-kit`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            supplementSeq: id,
+          },
+        });
+
+        // 응답 상태를 로그로 확인
+        console.log('제거', response.status);
+
+        if (response.status === 200 || response.status === 204) {
+          setMyKit(false);
+        }
+      } else {
+        // 복용 중 목록에 추가
+        const response = await axios.post(
+          `${API_URL}/api/v1/my-kit`,
+          {supplementSeq: id},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        // 응답 상태를 로그로 확인
+        console.log('추가', response.status);
+
+        if (response.status === 200) {
+          setMyKit(true);
+        }
+      }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -129,21 +170,24 @@ const DetailScreen: React.FC = () => {
         <Image source={{uri: pillData.imageUrl}} style={styles.image} />
         <View style={styles.infoContainer}>
           <Text style={styles.pillName}>{pillData.name}</Text>
-          <TouchableOpacity onPress={handleWishListBtn}>
-            {myWishList ? (
+          <View style={styles.rowContainer}>
+            <TouchableOpacity onPress={handleWishListBtn}>
               <Image
-                source={require('../../assets/heart1.png')}
+                source={
+                  myWishList
+                    ? require('../../assets/heart1.png') // 위시리스트에 있을 때
+                    : require('../../assets/heart2.png') // 위시리스트에 없을 때
+                }
                 style={styles.wishListBtn}
                 resizeMode="contain"
               />
-            ) : (
-              <Image
-                source={require('../../assets/heart2.png')}
-                style={styles.wishListBtn}
-                resizeMode="contain"
-              />
-            )}
-          </TouchableOpacity>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleKitBtn}>
+              <Text style={styles.dosageText}>
+                {myKit ? '복용 중' : '복용 안 함'}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
       <View style={styles.canSelectMenu}>
@@ -226,6 +270,14 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     gap: 20,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center', // 수직 가운데 정렬
+    marginTop: 10,
+  },
+  dosageText: {
+    marginLeft: 10, // 이미지와 텍스트 사이 간격
   },
   canSelectMenu: {
     flexDirection: 'row',
