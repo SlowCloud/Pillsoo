@@ -9,4 +9,5 @@ public class CabinetDto {
     private int supplementSeq;
     private String pillName;
     private String functionality;
+    private String imageUrl;
 }

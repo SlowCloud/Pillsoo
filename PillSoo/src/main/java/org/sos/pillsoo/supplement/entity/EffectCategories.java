@@ -1,14 +1,16 @@
 package org.sos.pillsoo.supplement.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor  // 기본 생성자
+@AllArgsConstructor
+@Entity
 @Table(name = "Effect_Categories")  // DB 테이블 이름 (대문자)
 public class EffectCategories {
 
@@ -23,10 +25,4 @@ public class EffectCategories {
     @Column(name = "effect_name")  // 효과 이름
     private String effectName;
 
-    // 커스텀 생성자
-    public EffectCategories(int effectSeq, int supplementSeq, String effectName) {
-        this.effectSeq = effectSeq;
-        this.supplementSeq = supplementSeq;
-        this.effectName = effectName;
-    }
 }
