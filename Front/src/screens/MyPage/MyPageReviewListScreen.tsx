@@ -4,7 +4,7 @@ import MyPageReviewItems from '../../components/MyPage/MyPageReviewItems';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { API_URL } from '@env';
-import { UseSelector, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 export type pillInfo = {
   name: string;
@@ -37,6 +37,7 @@ const MyPageReviewListScreen = () => {
     const fetchMyReview = async () => {
       if (!token) return;
       try {
+        console.log('내 리뷰 가져오기', userSeq)
         const response = await axios.get( `${API_URL}/api/v1/reviews`, {
           headers: {
             Authorization: `Bearer ${token}`,
