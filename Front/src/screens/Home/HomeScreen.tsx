@@ -8,7 +8,7 @@ import {useSelector} from 'react-redux';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const Id = useSelector((state: {userId: string | null}) => state.userId);
+  const nickname = useSelector((state: {nickname: string | null}) => state.nickname);
 
   return (
     <LinearGradient
@@ -16,7 +16,7 @@ const HomeScreen = () => {
       style={styles.screenContainer}>
       <Header />
       <View style={styles.container}>
-        <Text style={{fontSize: 25}}>{Id}님 안녕하세요 !</Text>
+        <Text style={{fontSize: 25}}>{nickname}님 안녕하세요 !</Text>
       </View>
 
       <View style={styles.alarm}>

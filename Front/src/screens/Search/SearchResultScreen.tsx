@@ -13,7 +13,8 @@ import {useNavigation} from '@react-navigation/native';
 import SearchBar from '../../components/common/SearchBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {API_URL} from '@env';
+import { API_URL } from '@env';
+
 
 const SearchResultScreen = () => {
   const navigation = useNavigation();
@@ -36,6 +37,7 @@ const SearchResultScreen = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API_URL}/api/v1/supplement/search`, {
+        
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -44,14 +46,13 @@ const SearchResultScreen = () => {
           functionality: '',
         },
       });
-
       if (response.status === 200) {
         setResults(response.data);
       } else {
         Alert.alert('검색 실패');
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data);
       Alert.alert('검색 실패');
     } finally {
       setLoading(false);

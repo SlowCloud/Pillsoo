@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {
+import React, { useEffect, useState } from 'react';
+import { 
   View,
   Text,
   Button,
@@ -7,70 +7,177 @@ import {
   Alert,
   Linking,
   Platform,
+  PermissionsAndroid
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import PushNotification from 'react-native-push-notification';
+import PushNotification, { Importance } from 'react-native-push-notification';
+import messaging from '@react-native-firebase/messaging';
+import firestore from '@react-native-firebase/firestore';
 
 const AlarmScreen = () => {
   const [date, setDate] = useState(new Date());
   const [mode, setMode] = useState<'time' | 'date' | 'datetime'>('time');
   const [show, setShow] = useState(false);
-  const [alarmTime, setAlarmTime] = useState('');
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  // 알람 설정 화면으로 이동하는 함수 (Android 12 이상)
-  const openExactAlarmPermissionSettings = () => {
-    if (Platform.OS === 'android' && Platform.Version >= 31) {
-      Linking.openSettings(); // 시스템 설정 화면으로 이동
+  const requestNotificationPermission = async () => {
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Notification permission granted');
+        } else {
+          console.log('Notification permission denied');
+        }
+      } catch (err) {
+        console.warn(err);
+      }
     }
   };
 
-  // 시간 선택이 변경될 때 실행되는 함수
-  const onChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
-    const currentDate = selectedDate || date;
-    setShow(false);
-    setDate(currentDate);
-    
-    const hours = currentDate.getHours();
-    const minutes = currentDate.getMinutes();
-    console.log('설정한 시간', hours)
-    console.log('설정한 분', minutes)
-    setAlarmTime(`${hours}:${minutes < 10 ? `0${minutes}` : minutes}`);
+  useEffect(() => {
+    console.log('나옴!');
+    configurePushNotifications();
+    registerFCM();
+    requestNotificationPermission();
+
+    return () => {
+      console.log('나 끈다');
+    };
+  }, []);
+
+  const configurePushNotifications = () => {
+    try {
+      console.log('넌 되니');
+      PushNotification.configure({
+        onNotification: function (notification) {
+          console.log("NOTIFICATION:", notification);
+          if (notification.userInteraction) {
+            onOpenNotification(notification);
+          }
+        },
+        permissions: {
+          alert: true,
+          badge: true,
+          sound: true,
+        },
+        popInitialNotification: true,
+        requestPermissions: Platform.OS === 'android',
+      });
+
+      if (Platform.OS === 'android') {
+        PushNotification.createChannel(
+          {
+            channelId: 'default_my_channel_id',
+            channelName: 'Default Channel',
+            channelDescription: 'A default channel for notifications',
+            playSound: true,
+            soundName: 'default',
+            importance: Importance.HIGH,
+          },
+          (created) => {
+            if (created) {
+              console.log('Channel created successfully');
+            } else {
+              console.log('Channel already exists or failed to create');
+            }
+          }
+        );
+
+        PushNotification.checkPermissions((permissions) => {
+          console.log('Permissions:', permissions);
+        });
+      }
+    } catch (error) {
+      console.log('Error in PushNotification.configure', error);
+    }
   };
 
-  // 시간 선택 창 열기
+  const registerFCM = async () => {
+    const token = await messaging().getToken();
+    console.log('[App] onRegister : token :', token);
+
+    messaging().onMessage(async remoteMessage => {
+      console.log('A new FCM message arrived!', remoteMessage);
+      onNotification(remoteMessage);
+    });
+
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log('Notification caused app to open from background state:', remoteMessage);
+      onOpenNotification(remoteMessage);
+    });
+
+    messaging().getInitialNotification().then(remoteMessage => {
+      if (remoteMessage) {
+        console.log('App opened from quit state:', remoteMessage);
+        onOpenNotification(remoteMessage);
+      }
+    });
+  };
+
   const showTimePicker = () => {
     setShow(true);
     setMode('time');
   };
 
-  // 알람 설정 함수
-  const setAlarm = async () => {
-    if (!alarmTime) {
-      Alert.alert('알람 시간을 선택해 주세요.');
-      return;
+  const onChange = (event: DateTimePickerEvent, selected: Date | undefined) => {
+    const currentDate = selected || date;
+    setShow(false);
+    setDate(currentDate);
+    setSelectedDate(currentDate);
+
+    setAlarm(currentDate);
+  };
+
+  const saveAlarm = async (alarmDate: Date) => {
+    const utcDate = new Date(alarmDate.getTime() - 9 * 60 * 60 * 1000);
+
+    console.log('나 왓다@@@@@@@@@@@@@@@@@', alarmDate, utcDate)
+    await firestore().collection('alarms').add({
+        time: firestore.Timestamp.fromDate(utcDate),
+        message: '시간을 맞추자',
+        createdAt: firestore.FieldValue.serverTimestamp(),
+    });
+    Alert.alert('알람이 Firebase에 저장되었습니다!');
+};
+
+const setAlarm = async (alarmDate: Date) => {
+    if (!alarmDate) {
+        Alert.alert('알람 시간을 선택해 주세요.');
+        return;
     }
 
-    // 알람 울릴 시간 계산 (현재 시간 이후에 설정)
-    const currentTime = new Date();
-    const timeToAlarm = new Date(date);
+    // UTC로 변환
+    
+    console.log('앱에서 설정한 시간', alarmDate)
 
-    if (timeToAlarm <= currentTime) {
-      Alert.alert('현재 시간보다 나중 시간을 선택해 주세요.');
-      return;
-    }
-
-    // Android 12 이상에서 정확한 알람을 설정하려면 설정 화면으로 이동
-    if (Platform.OS === 'android' && Platform.Version >= 31) {
-      openExactAlarmPermissionSettings();
-    }
+    await saveAlarm(alarmDate); // Firebase에 알람 저장
+    // const utcDate = new Date(alarmDate.getTime() - 9 * 60 * 60 * 1000);
 
     PushNotification.localNotificationSchedule({
-      message: '알람이 울립니다!', // 알람에 표시될 메시지
-      date: timeToAlarm, // 알람 울릴 시간
-      allowWhileIdle: true, // 앱이 비활성 상태일 때도 알람
+        channelId: 'default_my_channel_id',
+        message: '알람이 울립니다!',
+        date: alarmDate,
+        allowWhileIdle: true,
     });
 
-    Alert.alert(`알람이 ${alarmTime}에 설정되었습니다.`);
+    Alert.alert(`알람이 ${alarmDate.toLocaleTimeString()}에 설정되었습니다.`);
+};
+
+
+  const onNotification = (notify: any) => {
+    if (notify) {
+      console.log('[App] onNotification : notify :', notify);
+    } else {
+      console.log('[App] onNotification : notify is null or undefined');
+    }
+  };
+
+  const onOpenNotification = (notify: any) => {
+    console.log('[App] onOpenNotification : notify :', notify);
+    Alert.alert('Open Notification : notify.body :' + notify.body);
   };
 
   return (
@@ -79,9 +186,7 @@ const AlarmScreen = () => {
 
       <View style={styles.timeContainer}>
         <Text style={styles.alarmText}>
-          {alarmTime
-            ? `설정된 알람 시간: ${alarmTime}`
-            : '알람 시간이 설정되지 않았습니다.'}
+          {selectedDate ? `설정된 알람 시간: ${selectedDate.toLocaleTimeString()}` : '알람 시간이 설정되지 않았습니다.'}
         </Text>
       </View>
 
@@ -91,12 +196,15 @@ const AlarmScreen = () => {
           <DateTimePicker
             value={date}
             mode={mode}
-            // is24Hour={true}
             display="default"
             onChange={onChange}
           />
         )}
-        <Button onPress={setAlarm} title="알람 설정" />
+        <Button 
+          // onPress={setAlarm} 
+          title="알람 설정" 
+          disabled={!selectedDate} 
+        />
       </View>
     </View>
   );

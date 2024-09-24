@@ -1,6 +1,10 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 import MyPageReviewItems from '../../components/MyPage/MyPageReviewItems';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { API_URL } from '@env';
+import { UseSelector, useSelector } from 'react-redux';
 
 export type pillInfo = {
   name: string;
@@ -13,10 +17,42 @@ export type MyReview = {
 }
 
 const MyPageReviewListScreen = () => {
+  const [token, setToken] = useState<string | null>(null);
+  const userSeq = useSelector((state: {userSeq: number | null}) => state.userSeq);
   // 프론트가 백한테 유저id 보낸다
   // 백이 프론트한테 유저 정보, 리뷰를 쓴 영양제의 id를 보낸다
   // 프론트가 백한테 영양제 id를 보낸다
   // 백이 프론트한테 영양제 상세 정보를 보낸다
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await AsyncStorage.getItem('jwt_token');
+      setToken(storedToken);
+    };
+
+    fetchToken();
+  }, []);
+
+  // 보충제 데이터 들고오기 (상세 데이터)
+  useEffect(() => {
+    const fetchMyReview = async () => {
+      if (!token) return;
+      try {
+        const response = await axios.get( `${API_URL}/api/v1/reviews`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            userSeq: userSeq,
+          },
+        });
+        console.log('내 리뷰', response)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchMyReview()
+  }, []);
 
 
   const myReviews = [

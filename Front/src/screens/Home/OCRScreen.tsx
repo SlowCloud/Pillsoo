@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Button, TouchableOpacity} from 'react-native';
 import {launchCamera} from 'react-native-image-picker';
 import axios from 'axios';
 import {OCR_API_KEY} from '@env';
-import {TOKEN} from '@env';
+import { TOKEN } from '@env';
 
 const OCRScreen = () => {
   const [ocrText, setOcrText] = useState<string | null>(null);
