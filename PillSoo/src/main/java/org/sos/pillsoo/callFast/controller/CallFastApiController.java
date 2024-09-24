@@ -1,5 +1,8 @@
 package org.sos.pillsoo.callFast.controller;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import org.sos.pillsoo.callFast.dto.RecommendReqDto;
 import org.sos.pillsoo.callFast.dto.RecommendResDto;
 import org.sos.pillsoo.callFast.dto.TextBasedReqDto;
@@ -21,14 +24,14 @@ public class CallFastApiController {
     }
 
     @GetMapping("/recommend")
-    public RecommendResDto[] getRecommendations(@RequestParam int age) {
+    public RecommendResDto[] getRecommendations(@RequestParam @Min(1) @Max(130) int age) {
         RecommendReqDto request = new RecommendReqDto();
         request.setAge(age);
         return callFastApiService.getRecommendations(request);
     }
 
     @GetMapping("/recommend/survey")
-    public TextBasedResDto[] getTextBasedRecommendations(@RequestParam("client_text") String clientText) {
+    public TextBasedResDto[] getTextBasedRecommendations(@RequestParam("client_text") @NotBlank String clientText) {
         TextBasedReqDto request = new TextBasedReqDto();
         request.setClientText(clientText);
         return callFastApiService.getTextBasedRecommendations(request);
