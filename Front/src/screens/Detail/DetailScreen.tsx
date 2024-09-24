@@ -22,6 +22,7 @@ export type PillData = {
   functionality: string;
   imageUrl: string;
   isInWishlist: boolean;
+  isInKit: boolean;
 };
 
 const DetailScreen: React.FC = () => {
@@ -46,6 +47,7 @@ const DetailScreen: React.FC = () => {
     fetchToken();
   }, []);
 
+  // 보충제 데이터 들고오기 (상세 데이터)
   useEffect(() => {
     const fetchPillData = async () => {
       if (!token) return;
@@ -68,10 +70,10 @@ const DetailScreen: React.FC = () => {
           functionality: data.functionality,
           imageUrl: data.imageUrl,
           isInWishlist: data.inWishlist,
+          isInKit: data.inMykit,
         });
-
         setMyWishList(data.inWishlist);
-        setMyKit(data.isInKit);
+        setMyKit(data.inMykit);
       } catch (error) {
         console.error(error);
       }
