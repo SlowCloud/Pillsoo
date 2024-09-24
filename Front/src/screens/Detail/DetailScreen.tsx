@@ -33,11 +33,9 @@ const DetailScreen: React.FC = () => {
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<boolean>(false);
   const [myKit, setMyKit] = useState<boolean>(false);
-
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
   );
-
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem('jwt_token');
@@ -58,7 +56,6 @@ const DetailScreen: React.FC = () => {
           },
         });
         const data = response.data;
-        console.log(data);
         setPillData({
           id: data.supplementSeq,
           name: data.pillName,

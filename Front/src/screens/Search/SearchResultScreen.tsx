@@ -33,7 +33,6 @@ const SearchResultScreen = () => {
 
   const fetchResults = async () => {
     if (!searchQuery.trim() || !token) return;
-
     setLoading(true);
     try {
       const response = await axios.get(`${API_URL}/api/v1/supplement/search`, {

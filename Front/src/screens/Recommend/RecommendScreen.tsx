@@ -24,7 +24,7 @@ export type RecommendPill = {
 };
 
 const RecommendScreen: React.FC<Props> = ({navigation}) => {
-  const [age, setAge] = useState<number>(25);
+  const [age, setAge] = useState<number>(31);
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
 
   // 화면 렌더링 되자마자 함수 실행
@@ -45,7 +45,6 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
         },
       );
       const data = response.data;
-      console.log(data);
       const pills = data.map((item: any) => ({
         id: item.supplementSeq,
         imageUrl: {uri: item.image_url},
