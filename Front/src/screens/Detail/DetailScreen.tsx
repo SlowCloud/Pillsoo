@@ -71,7 +71,7 @@ const DetailScreen: React.FC = () => {
         });
 
         setMyWishList(data.inWishlist);
-        setMyKit(data.isInKit); // API 응답에서 isInKit 확인
+        setMyKit(data.isInKit);
       } catch (error) {
         console.error(error);
       }
@@ -101,7 +101,7 @@ const DetailScreen: React.FC = () => {
             supplementSeq: id,
           },
         });
-        setMyWishList(false); // 상태 업데이트
+        setMyWishList(false);
       } else {
         // 위시리스트에 추가
         await axios.post(
@@ -113,7 +113,7 @@ const DetailScreen: React.FC = () => {
             },
           },
         );
-        setMyWishList(true); // 상태 업데이트
+        setMyWishList(true);
       }
     } catch (error) {
       console.log(error);
@@ -124,7 +124,7 @@ const DetailScreen: React.FC = () => {
     try {
       if (myKit) {
         // 복용 중 목록에서 제거
-        await axios.delete(`${API_URL}/api/v1/my-kit`, {
+        const response = await axios.delete(`${API_URL}/api/v1/my-kit`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -132,10 +132,16 @@ const DetailScreen: React.FC = () => {
             supplementSeq: id,
           },
         });
-        setMyKit(false); // 상태 업데이트
+
+        // 응답 상태를 로그로 확인
+        console.log('제거', response.status);
+
+        if (response.status === 200 || response.status === 204) {
+          setMyKit(false);
+        }
       } else {
         // 복용 중 목록에 추가
-        await axios.post(
+        const response = await axios.post(
           `${API_URL}/api/v1/my-kit`,
           {supplementSeq: id},
           {
@@ -144,10 +150,16 @@ const DetailScreen: React.FC = () => {
             },
           },
         );
-        setMyKit(true); // 상태 업데이트
+
+        // 응답 상태를 로그로 확인
+        console.log('추가', response.status);
+
+        if (response.status === 200) {
+          setMyKit(true);
+        }
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
