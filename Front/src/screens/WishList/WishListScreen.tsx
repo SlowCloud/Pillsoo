@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Linking,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Header from '../../components/common/Header';
@@ -54,18 +55,14 @@ const WishListScreen: React.FC = () => {
     }
   }, [token]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (token) {
-        fetchResults();
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [token]);
-
   const handleItemPress = (supplementSeq: number) => {
     navigation.navigate('Detail', {id: supplementSeq});
+  };
+
+  const handlePurchasePress = (pillName: string) => {
+    const query = encodeURIComponent(pillName.trim());
+    const url = `https://msearch.shopping.naver.com/search/all?query=${query}`;
+    Linking.openURL(url);
   };
 
   return (
@@ -75,14 +72,20 @@ const WishListScreen: React.FC = () => {
         <ScrollView>
           {myWishList.length > 0 ? (
             myWishList.map((myWish, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleItemPress(myWish.supplementSeq)}>
-                <WishListItem
-                  pillName={myWish.pillName}
-                  imageUrl={myWish.imageUrl}
-                />
-              </TouchableOpacity>
+              <View key={index}>
+                <TouchableOpacity
+                  onPress={() => handleItemPress(myWish.supplementSeq)}>
+                  <WishListItem
+                    pillName={myWish.pillName}
+                    imageUrl={myWish.imageUrl}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.purchaseButton}
+                  onPress={() => handlePurchasePress(myWish.pillName)}>
+                  <Text style={styles.purchaseButtonText}>구매하러가기</Text>
+                </TouchableOpacity>
+              </View>
             ))
           ) : (
             <Text>위시리스트가 비어 있습니다.</Text>
@@ -97,6 +100,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+  },
+  purchaseButton: {
+    backgroundColor: '#D3EBCD',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 5,
+    alignItems: 'center',
+  },
+  purchaseButtonText: {
+    color: 'black',
+    fontSize: 16,
   },
 });
 

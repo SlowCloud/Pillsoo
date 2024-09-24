@@ -46,7 +46,6 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
 
       if (response.status === 200) {
         const token = response.headers['access'];
-        // const token = response.headers['authorization'].split(' ')[1];
         if (token) {
           await AsyncStorage.setItem('jwt_token', token);
 
