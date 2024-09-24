@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RecommendParamList} from './RecommendScreen';
-import {API_URL} from '@env';
+import { API_URL } from '@env';
 
 type RecommendCategoryScreenNavigationProp = StackNavigationProp<
   RecommendParamList,

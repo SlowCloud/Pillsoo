@@ -10,6 +10,7 @@ import {
 import Header from '../../components/common/Header';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {navigations} from '../../constants/navigations';
+import {useSelector} from 'react-redux';
 
 const images = [
   require('../../assets/profile/0.png'),
@@ -40,6 +41,7 @@ export type Props = {
 };
 
 const MyPageScreen: React.FC<Props> = ({navigation}) => {
+  const nickname = useSelector((state: {nickname: string | null}) => state.nickname);
   // 유저 정보 받기
   const myInfo = [{id: 445674, name: '현우'}];
 
@@ -83,7 +85,7 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
           style={styles.ProfileImage}
         />
         <View style={styles.profileNameBox}>
-          <Text style={styles.profileName}>{myInfo[0].name}</Text>
+          <Text style={styles.profileName}>{nickname}</Text>
         </View>
         <View style={styles.myPageMenuBox}>
           <TouchableOpacity

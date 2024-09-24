@@ -12,11 +12,9 @@ import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {authNavigations} from '../../constants/navigations';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_URL} from '@env';
+import { API_URL } from '@env';
 import {useDispatch} from 'react-redux';
-import {setUserId as setReduxUserId} from '../../store/store';
-import {setUserSeq} from '../../store/store';
-import {setRole} from '../../store/store';
+import {setUserId as setReduxUserId, setUserSeq, setRole, setAge, setNickname} from '../../store/store';
 import base64 from 'base-64';
 
 type LoginScreenProps = StackScreenProps<
@@ -61,6 +59,8 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
           dispatch(setReduxUserId(dec.userId));
           dispatch(setUserSeq(dec.userSeq));
           dispatch(setRole(dec.role));
+          dispatch(setAge(dec.age));
+          dispatch(setNickname(dec.nickname));
 
           navigation.navigate('Main');
           Alert.alert('로그인 성공');

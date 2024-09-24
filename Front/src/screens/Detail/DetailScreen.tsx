@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import axios from 'axios';
-import {API_URL} from '@env';
+import { API_URL } from '@env';
 import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
 import DetailInfo from '../../components/Detail/DetailInfo';
 import DetailReview from '../../components/Detail/DetailReview';
@@ -58,7 +58,6 @@ const DetailScreen: React.FC = () => {
           },
         });
         const data = response.data;
-        console.log(data);
         setPillData({
           id: data.supplementSeq,
           name: data.pillName,

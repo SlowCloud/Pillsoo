@@ -10,7 +10,7 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {API_URL} from '@env';
+import { API_URL } from '@env';
 import {useSelector} from 'react-redux';
 
 interface Supplement {

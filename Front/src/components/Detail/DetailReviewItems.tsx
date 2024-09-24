@@ -5,7 +5,7 @@ import axios from 'axios';
 // import {API_URL} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TextInput} from 'react-native-gesture-handler';
-import {API_URL} from '@env';
+import { API_URL } from '@env';
 type Props = {
   userName: string;
   content: string;
