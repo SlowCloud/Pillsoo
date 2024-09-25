@@ -12,7 +12,7 @@ import Header from '../../components/common/Header';
 import WishListItem from '../../components/WishList/WishListItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_URL } from '@env';
+import {API_URL} from '@env';
 
 interface Wish {
   userSeq: number;
@@ -53,7 +53,7 @@ const WishListScreen: React.FC = () => {
     if (token) {
       fetchResults();
     }
-  }, [token]);
+  }, [myWishList]);
 
   const handleItemPress = (supplementSeq: number) => {
     navigation.navigate('Detail', {id: supplementSeq});
