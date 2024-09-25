@@ -56,9 +56,15 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          params: {
+            functionality: '',
+            page: 1,
+            size: 10,
+          },
         },
       );
-      const data = response.data.slice(0, 10);
+      const data = response.data.content;
+      console.log(data);
       const pills = await Promise.all(
         data.map(async (item: any) => {
           const pillId = item.supplementSeq;
