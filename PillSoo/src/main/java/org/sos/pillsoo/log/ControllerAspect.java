@@ -29,11 +29,6 @@ public class ControllerAspect {
                         .append("=")
                         .append(param)
                         .append(System.lineSeparator());
-            } else {
-                // 파라미터가 null인 경우 null이라고 로깅
-                stringBuilder
-                        .append("null")
-                        .append(System.lineSeparator());
             }
         }
 
