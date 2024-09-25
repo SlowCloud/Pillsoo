@@ -3,6 +3,7 @@ package org.sos.pillsoo.auth.contoller;
 import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.auth.dto.SignupDto;
 import org.sos.pillsoo.auth.dto.UserUpdateDto;
+import org.sos.pillsoo.auth.exception.CustomException;
 import org.sos.pillsoo.auth.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -26,8 +27,17 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignupDto signupDto) {
-        userService.SignupProcess(signupDto);
-        return ResponseEntity.ok("회원가입 완료");
+//        userService.SignupProcess(signupDto);
+//        return ResponseEntity.ok("회원가입 완료");
+
+        try {
+            userService.SignupProcess(signupDto);
+            return ResponseEntity.ok("회원가입 완료");
+        } catch (CustomException e) {
+            return ResponseEntity
+                    .status(e.getErrorCode().getHttpStatus())
+                    .body(e.getErrorCode().getMessage());
+        }
     }
 
     // 권한 확인용 role user or admin
