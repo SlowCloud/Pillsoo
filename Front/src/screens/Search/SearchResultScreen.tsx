@@ -37,13 +37,12 @@ const SearchResultScreen = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API_URL}/api/v1/supplement/search`, {
-        
         headers: {
           Authorization: `Bearer ${token}`,
         },
         params: {
           searchtext: searchQuery,
-          functionality: '',
+          functionality: "",
         },
       });
       if (response.status === 200) {
@@ -52,7 +51,7 @@ const SearchResultScreen = () => {
         Alert.alert('검색 실패');
       }
     } catch (error) {
-      console.log(error.response.data);
+      console.log('catch로 온다', error.response.data);
       Alert.alert('검색 실패');
     } finally {
       setLoading(false);
