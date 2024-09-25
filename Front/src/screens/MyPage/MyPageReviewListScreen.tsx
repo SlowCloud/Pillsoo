@@ -24,6 +24,7 @@ const MyPageReviewListScreen = () => {
   // 프론트가 백한테 영양제 id를 보낸다
   // 백이 프론트한테 영양제 상세 정보를 보낸다
   useEffect(() => {
+    console.log('너 되니')
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem('jwt_token');
       setToken(storedToken);
@@ -37,13 +38,13 @@ const MyPageReviewListScreen = () => {
     const fetchMyReview = async () => {
       if (!token) return;
       try {
-        console.log('내 리뷰 가져오기', userSeq)
+        console.log('리뷰 가지고 온다', userSeq)
         const response = await axios.get( `${API_URL}/api/v1/reviews`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
           params: {
-            userSeq: userSeq,
+            userSeq: userSeq
           },
         });
         console.log('내 리뷰', response)

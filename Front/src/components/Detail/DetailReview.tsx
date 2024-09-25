@@ -46,7 +46,7 @@ const DetailReview: React.FC = () => {
             },
           },
         );
-
+        console.log('쓴 리뷰둘!!!1', response.data)
         if (response.status === 200) {
           setReviewList(response.data);
         }
