@@ -1,14 +1,25 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TextInput, TouchableOpacity, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { API_URL } from '@env';
+import { useSelector } from 'react-redux';
+import {useDispatch} from 'react-redux';
+import { setNickname } from '../../store/store';
 
 const UserUpdateScreen = () => {
-  const [nickname, setNickname] = useState('')
-  const [newNickname, setNewNickname] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [error, setError] = useState('')
+  const dispatch = useDispatch();
+  const [newNickname, setNewNickname] = useState<string>('')
+  const [newPassword, setNewPassword] = useState<string>('')
+  const [confirmnewPassword, setConfirmNewPassword] = useState<string>('')
+  const [error, setError] = useState<string>('')
   const [token, setToken] = useState<string | null>(null);
+
+  const nickname = useSelector((state: {nickname: string}) => state.nickname)
+  const age = useSelector((state: {age: number | null}) => state.age)
+  const gender = useSelector((state: {gender: string | null}) => state.gender)
+  console.log('회원정보 수정에서 내 젇보!!!!!!!!', nickname, age, gender)
+
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -19,17 +30,46 @@ const UserUpdateScreen = () => {
     fetchToken();
   }, [])
 
+  const handleUPdate = async () => {
+    if (!token) return;
 
-
-  const handleUPdate = () => {
-    if (password != confirmPassword) {
+    
+    if (newPassword && newPassword != confirmnewPassword) {
       setError('비밀번호가 일치하지 않습니다');
       return;
     }
 
-    if (password.length < 8) {
+    if (newPassword && newPassword.length < 8) {
       setError('비밀번호는 8자 이상이어야 합니다');
       return;
+    }
+
+    try {
+      const updateData: any = {
+        nickname: newNickname || nickname,
+        age: age,
+        gender: gender,
+      };
+
+      if (newPassword) {
+        updateData.password = newPassword;
+      }
+      console.log('나 회원정보 바꿀거임',updateData)
+      const response = await axios.patch(
+        `${API_URL}/api/v1/update`,
+        updateData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        }
+      )
+      Alert.alert('회원정보 수정을 완료했습니다')
+      if (newNickname) {
+          dispatch(setNickname(newNickname));
+      }
+    } catch(error) {
+      console.error(error)
     }
   }
 
@@ -50,18 +90,19 @@ const UserUpdateScreen = () => {
           <Text style={styles.userUpdateInputTitle}>비밀번호</Text>
           <TextInput
             secureTextEntry
-            value={password}
-            onChangeText={setPassword}
+            // value={newPassword}
+            onChangeText={setNewPassword}
             placeholder='비밀번호 변경'
             style={styles.userupdateInput}
           />
+          <Text>{error}</Text>
         </View>
         <View style={styles.userUpdateInputBox}>
           <Text style={styles.userUpdateInputTitle}>비밀번호 확인</Text>
           <TextInput
             secureTextEntry
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
+            // value={confirmNewPassword}
+            onChangeText={setConfirmNewPassword}
             placeholder='비밀번호 변경 확인'
             style={styles.userupdateInput}
           ></TextInput>

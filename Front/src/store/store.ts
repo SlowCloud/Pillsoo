@@ -8,6 +8,7 @@ const initialState = {
   role: null as string | null,
   age: null as number | null,
   nickname: null as string | null,
+  gender: null as string | null,
 };
 
 // 액션 타입
@@ -16,6 +17,7 @@ const SET_USER_SEQ = 'SET_USER_SEQ';
 const SET_ROLE = 'SET_ROLE';
 const SET_AGE = 'SET_AGE';
 const SET_NICKNAME = 'SET_NICKNAME';
+const SET_GENDER = 'SET_GENDER';
 
 // 액션 생성자
 export const setUserId = (userId: string | null) => ({
@@ -41,6 +43,10 @@ export const setAge = (age: number | null) => ({
 export const setNickname = (nickname: string | null) => ({
   type: SET_NICKNAME,
   payload: nickname,
+});
+export const setGender = (gender: string | null) => ({
+  type: SET_GENDER,
+  payload: gender,
 });
 
 // 액션 타입 인터페이스 정의
@@ -68,9 +74,13 @@ interface SetNicknameAction extends Action {
   type: typeof SET_NICKNAME;
   payload: string | null;
 }
+interface SetGenderAction extends Action {
+  type: typeof SET_GENDER;
+  payload: string | null;
+}
 
 // 액션 타입을 통합
-type MyActionTypes = setUserIdAction | SetUserSeqAction | SetRoleAction | SetAgeAction | SetNicknameAction;
+type MyActionTypes = setUserIdAction | SetUserSeqAction | SetRoleAction | SetAgeAction | SetNicknameAction | SetGenderAction;
 
 // 리듀서
 const reducer = (state = initialState, action: MyActionTypes) => {
@@ -85,6 +95,8 @@ const reducer = (state = initialState, action: MyActionTypes) => {
       return {...state, age: action.payload};
     case SET_NICKNAME:
       return {...state, nickname: action.payload};
+    case SET_GENDER:
+      return {...state, gender: action.payload};
     default:
       return state;
   }
