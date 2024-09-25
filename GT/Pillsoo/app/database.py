@@ -12,11 +12,19 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+'''
 # Redis 클라이언트 설정
 try:
     r = redis.Redis(host='localhost', port=6379, db=0)
 except redis.exceptions.ConnectionError as e:
     r = None  # Redis가 사용 불가한 경우 None으로 설정
+'''
+    
+# Redis 클라이언트 설정 (원격 서버로 변경)
+try:
+    r = redis.Redis(host='j11e205.p.ssafy.io', port=30379, db=0)
+except redis.exceptions.ConnectionError as e:
+    r = None  # Redis가 사용 불가한 경우 None으로 설정    
 
 # MongoDB 설정
 mongo_client = MongoClient("mongodb://localhost:27017/")
