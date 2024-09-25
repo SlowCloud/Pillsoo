@@ -12,9 +12,9 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {navigations} from '../../constants/navigations';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
-import { API_URL } from '@env';
-import { useNavigation } from '@react-navigation/native';
-
+import {API_URL} from '@env';
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const images = [
   require('../../assets/profile/0.png'),
   require('../../assets/profile/1.png'),
@@ -44,11 +44,15 @@ export type Props = {
 };
 
 const MyPageScreen: React.FC<Props> = ({navigation}) => {
-  const nickname = useSelector((state: {nickname: string | null}) => state.nickname);
+  const nickname = useSelector(
+    (state: {nickname: string | null}) => state.nickname,
+  );
   const userId = useSelector((state: {userId: string | null}) => state.userId);
-  const userSeq = useSelector((state: {userSeq: string | null}) => state.userSeq);
+  const userSeq = useSelector(
+    (state: {userSeq: string | null}) => state.userSeq,
+  );
   const age = useSelector((state: {age: string | null}) => state.age);
-  const token = useSelector((state: {token: string | null}) => state.token)
+  const token = useSelector((state: {token: string | null}) => state.token);
   const navi = useNavigation();
 
   // 랜덤 프사
@@ -60,21 +64,18 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
         text: '예',
         onPress: async () => {
           try {
-            const response = await axios.post(
-              `${API_URL}/api/v1/signout`,
-            {
+            const response = await axios.post(`${API_URL}/api/v1/signout`, {
               headers: {
-                Authorization: `Bearer ${token}`
+                Authorization: `Bearer ${token}`,
               },
-            }
-          )
-          navigation.navigate('AuthHome')
-
-         } catch(error) {
-              console.error(error)
-            }
-          } 
-          
+            });
+            AsyncStorage.clear();
+            console.log('로그아웃');
+            navigation.navigate('AuthHome');
+          } catch (error) {
+            console.error(error);
+          }
+        },
       },
       {
         text: '아니요',
@@ -92,20 +93,16 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
           text: '예',
           onPress: async () => {
             try {
-              const response = await axios.delete(
-                `${API_URL}/api/v1/quit`,
-              {
+              const response = await axios.delete(`${API_URL}/api/v1/quit`, {
                 headers: {
-                  Authorization: `Bearer ${token}`
+                  Authorization: `Bearer ${token}`,
                 },
-              }
-            )
-            navigation.navigate('AuthHome')
-  
-           } catch(error) {
-                console.error(error)
-              }
-            } 
+              });
+              navigation.navigate('AuthHome');
+            } catch (error) {
+              console.error(error);
+            }
+          },
         },
         {
           text: '아니요',

@@ -2,12 +2,13 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import axios from 'axios';
-import { API_URL } from '@env';
+import {API_URL} from '@env';
 import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
 import DetailInfo from '../../components/Detail/DetailInfo';
 import DetailReview from '../../components/Detail/DetailReview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSelector} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
@@ -32,10 +33,12 @@ const DetailScreen: React.FC = () => {
   const {id} = route.params;
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<boolean>(false);
+  console.log('gdgd', myWishList);
   const [myKit, setMyKit] = useState<boolean>(false);
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
   );
+  console.log(userSeq);
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem('jwt_token');
@@ -56,6 +59,7 @@ const DetailScreen: React.FC = () => {
           },
         });
         const data = response.data;
+        console.log(data);
         setPillData({
           id: data.supplementSeq,
           name: data.pillName,
@@ -77,7 +81,7 @@ const DetailScreen: React.FC = () => {
     };
 
     fetchPillData();
-  }, [id, token]);
+  }, [token]);
 
   if (!pillData) {
     return (
@@ -91,7 +95,7 @@ const DetailScreen: React.FC = () => {
     try {
       if (myWishList) {
         // 위시리스트에서 제거
-        await axios.delete(`${API_URL}/api/v1/wishlist`, {
+        const response = await axios.delete(`${API_URL}/api/v1/wishlist`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -100,10 +104,11 @@ const DetailScreen: React.FC = () => {
             supplementSeq: id,
           },
         });
+        console.log('위시리스트에서 제거 응답:', response);
         setMyWishList(false);
       } else {
         // 위시리스트에 추가
-        await axios.post(
+        const response = await axios.post(
           `${API_URL}/api/v1/wishlist`,
           {userSeq, supplementSeq: id},
           {
@@ -112,10 +117,11 @@ const DetailScreen: React.FC = () => {
             },
           },
         );
+        console.log('위시리스트에 추가 응답:', response);
         setMyWishList(true);
       }
     } catch (error) {
-      console.log(error);
+      console.log('위시리스트 처리 에러:', error);
     }
   };
 
