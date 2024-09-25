@@ -1,7 +1,6 @@
 package org.sos.pillsoo.log;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -24,14 +23,15 @@ public class ControllerAspect {
 
         StringBuilder stringBuilder = new StringBuilder();
         for(Object param : joinPoint.getArgs()) {
-            stringBuilder
-                    .append(param.getClass().getSimpleName())
-                    .append("=")
-                    .append(param)
-                    .append(System.lineSeparator());
+            if (param != null) {
+                stringBuilder
+                        .append(param.getClass().getSimpleName())
+                        .append("=")
+                        .append(param)
+                        .append(System.lineSeparator());
+            }
         }
 
         logger.info(stringBuilder.toString());
     }
-
 }
