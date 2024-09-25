@@ -10,7 +10,7 @@ type Props = {
   userName: string;
   content: string;
   supplementId: number;
-  userId: number;
+  userSeq: number;
   reviewId: number;
 };
 
@@ -18,7 +18,7 @@ const DetailReviewItems: React.FC<Props> = ({
   userName,
   content,
   supplementId,
-  userId,
+  userSeq,
   reviewId,
 }) => {
   const myName = useSelector(
@@ -112,7 +112,7 @@ const DetailReviewItems: React.FC<Props> = ({
       ) : (
         <Text style={styles.reviewContent}>{content}</Text>
       )}
-      {myName == myName ? updateAndDelete : null}
+      {userName == myName ? updateAndDelete : null}
     </View>
   );
 };
