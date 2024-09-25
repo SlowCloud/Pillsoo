@@ -23,13 +23,6 @@ mongo_client = MongoClient("mongodb://j11e205.p.ssafy.io:30017/")
 mongo_db = mongo_client["sos_db"]  # MongoDB 데이터베이스
 mongo_collection = mongo_db["recommended"]  # MongoDB 컬렉션
 
-'''
-# MongoDB 설정
-mongo_client = MongoClient("mongodb://localhost:27017/")
-mongo_db = mongo_client["sos_db"]  # MongoDB 데이터베이스
-mongo_collection = mongo_db["recommended"]  # MongoDB 컬렉션
-'''
-
 # DB 세션을 반환하는 의존성
 def get_db():
     db = SessionLocal()
