@@ -28,10 +28,10 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
   const age = useSelector((state: {age: string | null}) => state.age);
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
 
-  // 화면 렌더링 되자마자 함수 실행
+  // 화면 렌더링 시 함수 실행
   useEffect(() => {
     AgeRecommendPills();
-  }, []);
+  }, [age]);
 
   // 나이대별 추천 영양제 조회
   const AgeRecommendPills = async () => {
@@ -80,6 +80,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
     '혈압',
   ];
 
+  // 카테고리 배열을 그룹으로 나누는 함수
   const chunkArray = (array: string[], size: number) => {
     const result: string[][] = [];
     for (let i = 0; i < array.length; i += size) {
@@ -99,24 +100,24 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
         <View style={styles.pillCategoryBox}>
           <FlatList
             data={chunkedCategories}
-            renderItem={({item}) => (
-              <View style={styles.categoryRow}>
+            renderItem={({item, index}) => (
+              <View style={styles.categoryRow} key={index}>
                 {item.map(category => (
                   <SelectPillItems
-                    key={category}
+                    key={category} // 카테고리명을 key로 사용
                     category={category}
                     navigation={navigation}
                   />
                 ))}
               </View>
             )}
-            keyExtractor={(item, index) => index.toString()}
+            keyExtractor={(item, index) => index.toString()} // 고유한 key 설정
           />
           {lastRow && (
             <View style={styles.lastRow}>
-              {lastRow.map(category => (
+              {lastRow.map((category, index) => (
                 <SelectPillItems
-                  key={category}
+                  key={`${category}-${index}`} // 카테고리명과 index로 고유한 key 설정
                   category={category}
                   navigation={navigation}
                 />
