@@ -26,7 +26,6 @@ const WishListScreen: React.FC = () => {
   const navigation = useNavigation();
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<Wish[]>([]);
-
   const fetchResults = async () => {
     try {
       const response = await axios.get(`${API_URL}/api/v1/wishlist`, {
@@ -35,6 +34,7 @@ const WishListScreen: React.FC = () => {
         },
       });
       setMyWishList(response.data);
+      console.log(myWishList);
     } catch (error) {
       console.log(error);
     }
@@ -53,7 +53,7 @@ const WishListScreen: React.FC = () => {
     if (token) {
       fetchResults();
     }
-  }, [myWishList]);
+  }, [token]);
 
   const handleItemPress = (supplementSeq: number) => {
     navigation.navigate('Detail', {id: supplementSeq});

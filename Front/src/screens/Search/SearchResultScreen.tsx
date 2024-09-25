@@ -13,8 +13,7 @@ import {useNavigation} from '@react-navigation/native';
 import SearchBar from '../../components/common/SearchBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_URL } from '@env';
-
+import {API_URL} from '@env';
 
 const SearchResultScreen = () => {
   const navigation = useNavigation();
@@ -42,16 +41,18 @@ const SearchResultScreen = () => {
         },
         params: {
           searchtext: searchQuery,
-          functionality: "",
+          functionality: '',
+          page: 1,
+          size: 10,
         },
       });
       if (response.status === 200) {
-        setResults(response.data);
+        setResults(response.data.content);
       } else {
         Alert.alert('검색 실패');
       }
     } catch (error) {
-      console.log('catch로 온다', error.response.data);
+      console.log(error);
       Alert.alert('검색 실패');
     } finally {
       setLoading(false);

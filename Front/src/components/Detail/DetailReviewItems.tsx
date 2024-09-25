@@ -5,7 +5,7 @@ import axios from 'axios';
 // import {API_URL} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TextInput} from 'react-native-gesture-handler';
-import { API_URL } from '@env';
+import {API_URL} from '@env';
 type Props = {
   userName: string;
   content: string;
@@ -21,8 +21,9 @@ const DetailReviewItems: React.FC<Props> = ({
   userSeq,
   reviewId,
 }) => {
-  const myName = useSelector((state: {userId: string | null}) => state.userId);
-
+  const myName = useSelector(
+    (state: {nickname: string | null}) => state.nickname,
+  );
   const [token, setToken] = useState<string | null>(null);
   const [updateContent, setUpdateContent] = useState<boolean>(false);
 
@@ -105,7 +106,7 @@ const DetailReviewItems: React.FC<Props> = ({
   );
   return (
     <View style={styles.container}>
-      <Text>📣{userName}</Text>
+      <Text>📣{myName}</Text>
       {updateContent ? (
         UPdateMyReview
       ) : (

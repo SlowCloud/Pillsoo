@@ -12,7 +12,7 @@ import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {authNavigations} from '../../constants/navigations';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL } from '@env';
+import {API_URL} from '@env';
 import {useDispatch} from 'react-redux';
 import {setUserId as setReduxUserId, setUserSeq, setRole, setAge, setNickname, setGender, setToken} from '../../store/store';
 import base64 from 'base-64';

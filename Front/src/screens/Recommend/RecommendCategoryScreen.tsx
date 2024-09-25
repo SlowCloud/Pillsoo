@@ -12,7 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RecommendParamList} from './RecommendScreen';
-import { API_URL } from '@env';
+import {API_URL} from '@env';
 
 type RecommendCategoryScreenNavigationProp = StackNavigationProp<
   RecommendParamList,
@@ -32,6 +32,7 @@ type Props = {
 type RecommendPill = {
   id: number;
   imageUrl: string;
+  pillName: string;
 };
 
 const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
@@ -39,8 +40,12 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
 
   useEffect(() => {
-    CategorySupplements();
-  }, [category]);
+    const fetchSupplements = async () => {
+      await CategorySupplements();
+    };
+
+    fetchSupplements();
+  }, []);
 
   const CategorySupplements = async () => {
     try {
@@ -51,17 +56,47 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          params: {
+            functionality: '',
+            page: 1,
+            size: 10,
+          },
         },
       );
-      const data = response.data;
-      const pills = data.map((item: any) => ({
-        id: item.supplementSeq,
-        // imageUrl: item.image_url,
-      }));
-
+      const data = response.data.content;
+      console.log(data);
+      const pills = await Promise.all(
+        data.map(async (item: any) => {
+          const pillId = item.supplementSeq;
+          const {imageUrl, pillName} = await ImageSupplements(pillId);
+          return {
+            id: pillId,
+            imageUrl,
+            pillName,
+          };
+        }),
+      );
       setRecommendPills(pills);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const ImageSupplements = async (id: number) => {
+    try {
+      const token = await AsyncStorage.getItem('jwt_token');
+      const response = await axios.get(`${API_URL}/api/v1/supplement/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return {
+        imageUrl: response.data.imageUrl,
+        pillName: response.data.pillName,
+      };
+    } catch (error) {
+      console.log(error);
+      return {imageUrl: '', pillName: ''};
     }
   };
 
@@ -78,8 +113,8 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
           <TouchableOpacity
             onPress={() => handlePillPress(item.id)}
             style={styles.pillItem}>
-            {/* <Image source={{uri: item.imageUrl}} style={styles.image} /> */}
-            <Text>{item.id}</Text>
+            <Image source={{uri: item.imageUrl}} style={styles.image} />
+            <Text>{item.pillName}</Text>
           </TouchableOpacity>
         )}
         keyExtractor={item => item.id.toString()}
