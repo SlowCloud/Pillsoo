@@ -32,7 +32,7 @@ def recommend_supplements(client_text: str = Query(..., description="Client inpu
     if mongo_result:
         # MongoDB에 결과가 있으면 Redis에 저장하고 반환
         if r:
-            r.set(cache_key, json.dumps(mongo_result['result']), ex=60000)
+            r.set(cache_key, json.dumps(mongo_result['result']), ex=600)
         return mongo_result['result']
     
     # 3. MySQL 데이터베이스에서 아이템 가져오기
