@@ -38,6 +38,7 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
           },
         });
         console.log('hi');
+        console.log(response);
         setRecommendations(response.data);
       } catch (err) {
         console.log(err);
@@ -47,7 +48,7 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
     if (token) {
       fetchRecommendations();
     }
-  }, []);
+  }, [inputText]);
 
   return (
     <View style={styles.container}>
