@@ -38,7 +38,6 @@ const DetailScreen: React.FC = () => {
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
   );
-  console.log(userSeq);
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem('jwt_token');

@@ -15,6 +15,7 @@ import axios from 'axios';
 import {API_URL} from '@env';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const images = [
   require('../../assets/profile/0.png'),
   require('../../assets/profile/1.png'),
@@ -70,7 +71,7 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
               },
             });
             AsyncStorage.clear();
-            console.log('로그아웃');
+
             navigation.navigate('AuthHome');
           } catch (error) {
             console.error(error);

@@ -14,7 +14,15 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
 import {useDispatch} from 'react-redux';
-import {setUserId as setReduxUserId, setUserSeq, setRole, setAge, setNickname, setGender, setToken} from '../../store/store';
+import {
+  setUserId as setReduxUserId,
+  setUserSeq,
+  setRole,
+  setAge,
+  setNickname,
+  setGender,
+  setToken,
+} from '../../store/store';
 import base64 from 'base-64';
 
 type LoginScreenProps = StackScreenProps<
@@ -61,9 +69,9 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
           dispatch(setRole(dec.role));
           dispatch(setAge(dec.age));
           dispatch(setNickname(dec.nickname));
-          dispatch(setGender(dec.gender))
-          console.log('토큰 리덕스에 넣을거임', token)
-          dispatch(setToken(token))
+          dispatch(setGender(dec.gender));
+          console.log('토큰 리덕스에 넣을거임', token);
+          dispatch(setToken(token));
 
           navigation.navigate('Main');
           Alert.alert('로그인 성공');

@@ -5,11 +5,12 @@ import Kit from '../../components/Home/Kit';
 import Header from '../../components/common/Header';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const nickname = useSelector((state: {nickname: string | null}) => state.nickname);
-
+  const nickname = useSelector(
+    (state: {nickname: string | null}) => state.nickname,
+  );
   return (
     <LinearGradient
       colors={['#ffffff', '#a4f870', '#ffffff']}
