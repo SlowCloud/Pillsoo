@@ -47,7 +47,8 @@ def recommend_supplements(client_text: str = Query(..., description="Client inpu
             "supplementSeq": item[0],       # supplementSeq
             "pill_name": item[1],           # pill_name
             "functionality": item[2],       # functionality
-            "dose_guide": item[4]           # dose_guide
+            "dose_guide": item[4],           # dose_guide
+            "image_url" : item[5]          # image_url
         }
         for item in top_matches
     ]
