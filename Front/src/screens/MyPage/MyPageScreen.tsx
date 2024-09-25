@@ -11,6 +11,9 @@ import Header from '../../components/common/Header';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {navigations} from '../../constants/navigations';
 import {useSelector} from 'react-redux';
+import axios from 'axios';
+import { API_URL } from '@env';
+import { useNavigation } from '@react-navigation/native';
 
 const images = [
   require('../../assets/profile/0.png'),
@@ -42,15 +45,36 @@ export type Props = {
 
 const MyPageScreen: React.FC<Props> = ({navigation}) => {
   const nickname = useSelector((state: {nickname: string | null}) => state.nickname);
-  // 유저 정보 받기
-  const myInfo = [{id: 445674, name: '현우'}];
+  const userId = useSelector((state: {userId: string | null}) => state.userId);
+  const userSeq = useSelector((state: {userSeq: string | null}) => state.userSeq);
+  const age = useSelector((state: {age: string | null}) => state.age);
+  const token = useSelector((state: {token: string | null}) => state.token)
+  const navi = useNavigation();
 
-  const imageNumber = myInfo[0].id % 10;
+  // 랜덤 프사
+  // const imageNumber = myInfo[0].id % 10;
 
   const goLogout = () => {
     Alert.alert('로그아웃', '로그아웃하시겠습니까?', [
       {
         text: '예',
+        onPress: async () => {
+          try {
+            const response = await axios.post(
+              `${API_URL}/api/v1/signout`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              },
+            }
+          )
+          navigation.navigate('AuthHome')
+
+         } catch(error) {
+              console.error(error)
+            }
+          } 
+          
       },
       {
         text: '아니요',
@@ -66,6 +90,22 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
       [
         {
           text: '예',
+          onPress: async () => {
+            try {
+              const response = await axios.delete(
+                `${API_URL}/api/v1/quit`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`
+                },
+              }
+            )
+            navigation.navigate('AuthHome')
+  
+           } catch(error) {
+                console.error(error)
+              }
+            } 
         },
         {
           text: '아니요',

@@ -11,7 +11,6 @@ type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
 interface Review {
   reviewSeq: number;
-  name: string;
   content: string;
   supplementSeq: number;
   userName: string;
@@ -46,7 +45,6 @@ const DetailReview: React.FC = () => {
             },
           },
         );
-
         if (response.status === 200) {
           setReviewList(response.data);
         }
@@ -65,7 +63,7 @@ const DetailReview: React.FC = () => {
           <DetailReviewItems
             key={reviewItem.reviewSeq}
             userName={reviewItem.userName}
-            userId={reviewItem.userSeq}
+            userSeq={reviewItem.userSeq}
             content={reviewItem.content}
             supplementId={reviewItem.supplementSeq}
             reviewId={reviewItem.reviewSeq}
