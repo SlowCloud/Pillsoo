@@ -84,13 +84,9 @@ interface SetGenderAction extends Action {
   type: typeof SET_GENDER;
   payload: string | null;
 }
-interface SetTokenAction extends Action {
-  type: typeof SET_TOKEN;
-  payload: string | null;
-}
 
 // 액션 타입을 통합
-type MyActionTypes = setUserIdAction | SetUserSeqAction | SetRoleAction | SetAgeAction | SetNicknameAction | SetGenderAction | SetTokenAction;
+type MyActionTypes = setUserIdAction | SetUserSeqAction | SetRoleAction | SetAgeAction | SetNicknameAction | SetGenderAction;
 
 // 리듀서
 const reducer = (state = initialState, action: MyActionTypes) => {
@@ -107,8 +103,6 @@ const reducer = (state = initialState, action: MyActionTypes) => {
       return {...state, nickname: action.payload};
     case SET_GENDER:
       return {...state, gender: action.payload};
-    case SET_TOKEN:
-      return {...state, token: action.payload};
     default:
       return state;
   }

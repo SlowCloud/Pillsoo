@@ -31,7 +31,9 @@ const DetailScreen: React.FC = () => {
   const route = useRoute<DetailScreenRouteProp>();
   const {id} = route.params;
   const [token, setToken] = useState<string | null>(null);
+  console.log(token)
   const [myWishList, setMyWishList] = useState<boolean>(false);
+  console.log('내 위시', myWishList)
   const [myKit, setMyKit] = useState<boolean>(false);
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
@@ -44,6 +46,7 @@ const DetailScreen: React.FC = () => {
 
     fetchToken();
   }, []);
+
 
   // 보충제 데이터 들고오기 (상세 데이터)
   useEffect(() => {
@@ -88,6 +91,7 @@ const DetailScreen: React.FC = () => {
   }
 
   const handleWishListBtn = async () => {
+    console.log(token)
     try {
       if (myWishList) {
         // 위시리스트에서 제거
@@ -113,6 +117,7 @@ const DetailScreen: React.FC = () => {
           },
         );
         setMyWishList(true);
+        console.log('위시에 추가했딴')
       }
     } catch (error) {
       console.log(error);
