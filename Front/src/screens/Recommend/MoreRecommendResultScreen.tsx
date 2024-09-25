@@ -30,6 +30,7 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
 
   useEffect(() => {
     const fetchRecommendations = async () => {
+      console.log(inputText);
       try {
         const response = await axios.get(`${API_URL}/api/v1/recommend/survey`, {
           params: {client_text: inputText},
@@ -38,17 +39,18 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
           },
         });
         console.log('hi');
-        console.log(response);
+        console.log('res', response);
         setRecommendations(response.data);
       } catch (err) {
-        console.log(err);
+        console.log('hihi');
+        console.log('err', err);
       }
     };
 
     if (token) {
       fetchRecommendations();
     }
-  }, [inputText]);
+  }, [token]);
 
   return (
     <View style={styles.container}>
