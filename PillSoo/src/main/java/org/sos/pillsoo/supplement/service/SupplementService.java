@@ -8,6 +8,9 @@ import org.sos.pillsoo.supplement.repository.EffectCategoriesRepository;
 import org.sos.pillsoo.supplement.repository.SupplementRepository;
 import org.sos.pillsoo.supplement.repository.WishListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -49,14 +52,16 @@ public class SupplementService {
         return dto;
     }
 
-    public List<EffectCategories> getSupplementsByEffectName(String effectName) {
-        // effect_name에 해당하는 영양제 목록을 조회
-        return effectCategoriesRepository.findByEffectName(effectName);
+    public Page<EffectCategories> getSupplementsByEffectName(String effectName, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return effectCategoriesRepository.findByEffectName(effectName, pageable);
     }
 
-    public List<SupplementDto> searchSupplements(String searchtext, String type) {
-        List<Supplement> supplements = supplementRepository.findByPillNameContaining(searchtext);
-        return supplements.stream().map(this::convertToDto).collect(Collectors.toList());
+    public Page<SupplementDto> searchSupplements(String searchtext, String type, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Supplement> supplements = supplementRepository.findByPillNameContaining(searchtext, pageable);
+
+        return supplements.map(this::convertToDto);
     }
 
     private SupplementDto convertToDto(Supplement supplement) {
