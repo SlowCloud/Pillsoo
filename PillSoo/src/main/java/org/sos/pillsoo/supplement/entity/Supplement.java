@@ -7,10 +7,10 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor  // 기본 생성자
+@Entity
 @Table(name = "Supplement")  // DB 테이블 이름 (대문자)
 public class Supplement {
 

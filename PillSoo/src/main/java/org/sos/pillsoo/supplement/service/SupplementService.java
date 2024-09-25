@@ -1,9 +1,15 @@
 package org.sos.pillsoo.supplement.service;
 
+import lombok.RequiredArgsConstructor;
+import org.sos.pillsoo.auth.entity.User;
+import org.sos.pillsoo.auth.repository.UserRepository;
 import org.sos.pillsoo.mykit.repository.CabinetRepository;
 import org.sos.pillsoo.supplement.dto.SupplementDto;
+import org.sos.pillsoo.supplement.entity.ClickCount;
 import org.sos.pillsoo.supplement.entity.EffectCategories;
 import org.sos.pillsoo.supplement.entity.Supplement;
+import org.sos.pillsoo.supplement.mapper.SupplementMapper;
+import org.sos.pillsoo.supplement.repository.ClickCountRepository;
 import org.sos.pillsoo.supplement.repository.EffectCategoriesRepository;
 import org.sos.pillsoo.supplement.repository.SupplementRepository;
 import org.sos.pillsoo.supplement.repository.WishListRepository;
@@ -16,40 +22,23 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class SupplementService {
 
-    @Autowired
-    private SupplementRepository supplementRepository;
-
-    @Autowired
-    private EffectCategoriesRepository effectCategoriesRepository;
-
-    @Autowired
-    private WishListRepository wishListRepository;
-
-    @Autowired
-    private CabinetRepository cabinetRepository;
+    private final SupplementRepository supplementRepository;
+    private final EffectCategoriesRepository effectCategoriesRepository;
+    private final WishListRepository wishListRepository;
+    private final CabinetRepository cabinetRepository;
+    private final ClickCountRepository clickCountRepository;
+    private final UserRepository userRepository;
+    private final SupplementMapper supplementMapper;
 
     public SupplementDto getSupplementById(int supplementSeq, int userSeq) {
         Supplement supplement = supplementRepository.findById(supplementSeq).orElseThrow();
         boolean isInWishlist = wishListRepository.existsByUser_UserSeqAndSupplement_SupplementSeq(userSeq, supplementSeq);
         boolean isInMykit = cabinetRepository.findByUser_UserSeqAndSupplement_SupplementSeq(userSeq, supplementSeq).isPresent();
-
-        SupplementDto dto = new SupplementDto();
-        dto.setSupplementSeq(supplement.getSupplementSeq());
-        dto.setPillName(supplement.getPillName());
-        dto.setExpirationDate(supplement.getExpirationDate().toString());
-        dto.setAppearance(supplement.getAppearance());
-        dto.setDoseAmount(supplement.getDoseAmount());
-        dto.setStorageMethod(supplement.getStorageMethod());
-        dto.setDoseGuide(supplement.getDoseGuide());
-        dto.setFunctionality(supplement.getFunctionality());
-        dto.setImageUrl(supplement.getImageUrl());
-        dto.setInWishlist(isInWishlist);
-        dto.setInMykit(isInMykit);
-
-        return dto;
+        return supplementMapper.toSupplementDto(supplement, isInWishlist, isInMykit);
     }
 
     public Page<EffectCategories> getSupplementsByEffectName(String effectName, int page, int size) {
@@ -60,21 +49,15 @@ public class SupplementService {
     public Page<SupplementDto> searchSupplements(String searchtext, String type, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Supplement> supplements = supplementRepository.findByPillNameContaining(searchtext, pageable);
-
-        return supplements.map(this::convertToDto);
+        return supplements.map(supplementMapper::toSupplementDto);
     }
 
-    private SupplementDto convertToDto(Supplement supplement) {
-        SupplementDto dto = new SupplementDto();
-        dto.setSupplementSeq(supplement.getSupplementSeq());
-        dto.setPillName(supplement.getPillName());
-        dto.setExpirationDate(supplement.getExpirationDate().toString());
-        dto.setAppearance(supplement.getAppearance());
-        dto.setDoseAmount(supplement.getDoseAmount());
-        dto.setStorageMethod(supplement.getStorageMethod());
-        dto.setDoseGuide(supplement.getDoseGuide());
-        dto.setFunctionality(supplement.getFunctionality());
-        dto.setImageUrl(supplement.getImageUrl());
-        return dto;
+    public void recordClickCount(int supplementSeq, int userSeq) {
+        ClickCount clickCount = new ClickCount();
+        User user = userRepository.getReferenceById(userSeq);
+        Supplement supplement = supplementRepository.getReferenceById(supplementSeq);
+        clickCount.setUser(user);
+        clickCount.setSupplement(supplement);
+        clickCountRepository.save(clickCount);
     }
 }

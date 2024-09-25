@@ -1,9 +1,9 @@
 package org.sos.pillsoo.supplement.controller;
 
+import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.supplement.dto.SupplementDto;
 import org.sos.pillsoo.supplement.entity.EffectCategories;
 import org.sos.pillsoo.supplement.service.SupplementService;
-import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
@@ -24,6 +24,8 @@ public class SupplementController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();  // 사용자 정보에서 userSeq를 가져옴
         int userSeq = userDetails.getUserSeq();
+
+        supplementService.recordClickCount(supplementSeq, userSeq);
 
         // 서비스에 userSeq와 supplementSeq 전달
         return supplementService.getSupplementById(supplementSeq, userSeq);

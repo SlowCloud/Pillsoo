@@ -21,6 +21,18 @@ public class CustomUserDetails implements UserDetails {
         return userEntity.getUserSeq();
     }
 
+    public String getUserNickname() {
+        return userEntity.getNickname();
+    }
+
+    public String getUserGender() {
+        return userEntity.getGender();
+    }
+
+    public int getUserAge() {
+        return userEntity.getAge();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
