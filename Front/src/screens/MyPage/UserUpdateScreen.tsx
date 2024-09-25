@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UserUpdateScreen = () => {
   const [nickname, setNickname] = useState('')
@@ -7,12 +8,18 @@ const UserUpdateScreen = () => {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
-    // 백엔드에서 유저 정보 가져오기
-    setNickname('현우')
-    setNewNickname('현우')
+    const fetchToken = async () => {
+      const storedToken = await AsyncStorage.getItem('jwt_token');
+      setToken(storedToken);
+    };
+
+    fetchToken();
   }, [])
+
+
 
   const handleUPdate = () => {
     if (password != confirmPassword) {

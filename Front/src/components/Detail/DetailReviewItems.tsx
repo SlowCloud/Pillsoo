@@ -10,7 +10,7 @@ type Props = {
   userName: string;
   content: string;
   supplementId: number;
-  userId: number;
+  userSeq: number;
   reviewId: number;
 };
 
@@ -18,10 +18,10 @@ const DetailReviewItems: React.FC<Props> = ({
   userName,
   content,
   supplementId,
-  userId,
+  userSeq,
   reviewId,
 }) => {
-  const nickname = useSelector((state: {nickname: string | null}) => state.nickname);
+  const myName = useSelector((state: {userId: string | null}) => state.userId);
 
   const [token, setToken] = useState<string | null>(null);
   const [updateContent, setUpdateContent] = useState<boolean>(false);
@@ -105,13 +105,13 @@ const DetailReviewItems: React.FC<Props> = ({
   );
   return (
     <View style={styles.container}>
-      <Text>📣{nickname}</Text>
+      <Text>📣{userName}</Text>
       {updateContent ? (
         UPdateMyReview
       ) : (
         <Text style={styles.reviewContent}>{content}</Text>
       )}
-      {nickname == userName ? updateAndDelete : null}
+      {userName == myName ? updateAndDelete : null}
     </View>
   );
 };
