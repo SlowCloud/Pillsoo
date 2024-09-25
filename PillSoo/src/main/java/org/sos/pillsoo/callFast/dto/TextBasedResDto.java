@@ -10,4 +10,5 @@ public class TextBasedResDto {
     private String pill_name;
     private String functionality;
     private String dose_guide;
+    private String image_url;
 }
