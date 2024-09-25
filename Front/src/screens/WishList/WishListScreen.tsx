@@ -53,7 +53,7 @@ const WishListScreen: React.FC = () => {
     if (token) {
       fetchResults();
     }
-  }, [myWishList]);
+  }, [token]);
 
   const handleItemPress = (supplementSeq: number) => {
     navigation.navigate('Detail', {id: supplementSeq});
