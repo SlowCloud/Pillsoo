@@ -41,7 +41,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
         `${API_URL}/api/v1/recommend?age=${age}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            access: `${token}`,
           },
         },
       );

@@ -34,7 +34,7 @@ const SupplementInputScreen = () => {
       try {
         const response = await axios.get(`${API_URL}/api/v1/my-kit`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            access: `${token}`,
           },
           params: {
             userSeq,

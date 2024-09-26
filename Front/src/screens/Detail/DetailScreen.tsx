@@ -31,6 +31,7 @@ const DetailScreen: React.FC = () => {
   const route = useRoute<DetailScreenRouteProp>();
   const {id} = route.params;
   const [token, setToken] = useState<string | null>(null);
+  console.log(token);
   const [myWishList, setMyWishList] = useState<boolean>(false);
   const [myKit, setMyKit] = useState<boolean>(false);
   const userSeq = useSelector(
@@ -50,14 +51,16 @@ const DetailScreen: React.FC = () => {
   useEffect(() => {
     const fetchPillData = async () => {
       console.log(token);
+      console.log(id, API_URL);
       if (!token) return;
       try {
         const response = await axios.get(`${API_URL}/api/v1/supplement/${id}`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            access: `${token}`,
           },
         });
         const data = response.data;
+        console.log('detail', data);
         setPillData({
           id: data.supplementSeq,
           name: data.pillName,
@@ -95,7 +98,7 @@ const DetailScreen: React.FC = () => {
         // 위시리스트에서 제거
         await axios.delete(`${API_URL}/api/v1/wishlist`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            access: `${token}`,
           },
           params: {
             userSeq,
@@ -110,7 +113,7 @@ const DetailScreen: React.FC = () => {
           {userSeq, supplementSeq: id},
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              access: `${token}`,
             },
           },
         );
@@ -127,7 +130,7 @@ const DetailScreen: React.FC = () => {
         // 복용 중 목록에서 제거
         const response = await axios.delete(`${API_URL}/api/v1/my-kit`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            accessn: `${token}`,
           },
           params: {
             supplementSeq: id,
@@ -147,7 +150,7 @@ const DetailScreen: React.FC = () => {
           {supplementSeq: id},
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              access: `${token}`,
             },
           },
         );

@@ -37,7 +37,7 @@ const SearchResultScreen = () => {
     try {
       const response = await axios.get(`${API_URL}/api/v1/supplement/search`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          access: `${token}`,
         },
         params: {
           searchtext: searchQuery,
