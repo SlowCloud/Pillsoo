@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import axios from 'axios';
@@ -8,7 +8,6 @@ import DetailInfo from '../../components/Detail/DetailInfo';
 import DetailReview from '../../components/Detail/DetailReview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSelector} from 'react-redux';
-import {useFocusEffect} from '@react-navigation/native';
 
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
@@ -31,69 +30,56 @@ const DetailScreen: React.FC = () => {
   const [pillData, setPillData] = useState<PillData | null>(null);
   const route = useRoute<DetailScreenRouteProp>();
   const {id} = route.params;
-  console.log(id);
   const [token, setToken] = useState<string | null>(null);
-  console.log(token)
   const [myWishList, setMyWishList] = useState<boolean>(false);
-  console.log('내 위시', myWishList)
   const [myKit, setMyKit] = useState<boolean>(false);
-
-  // Redux를 통해 현재 로그인한 사용자의 userSeq 가져오기
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
   );
   console.log(userSeq);
-  // useFocusEffect로 화면이 포커스를 받을 때마다 토큰 및 보충제 데이터를 가져옵니다.
-  useFocusEffect(
-    useCallback(() => {
-      const fetchTokenAndData = async () => {
-        try {
-          const storedToken = await AsyncStorage.getItem('jwt_token');
-          console.log(storedToken);
-          if (storedToken) {
-            setToken(storedToken);
-            console.log(storedToken);
-            // 토큰이 있을 때만 API 요청 수행
-            const response = await axios.get(
-              `${API_URL}/api/v1/supplement/${id}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${storedToken}`,
-                },
-                params: {
-                  userSeq,
-                },
-              },
-            );
-            console.log(storedToken);
-            const data = response.data;
-            console.log(DataView);
-            setPillData({
-              id: data.supplementSeq,
-              name: data.pillName,
-              expirationDate: data.expirationDate,
-              appearance: data.appearance,
-              doseAmount: data.doseAmount,
-              storageMethod: data.storageMethod,
-              doseGuide: data.doseGuide,
-              functionality: data.functionality,
-              imageUrl: data.imageUrl,
-              isInWishlist: data.inWishlist,
-              isInKit: data.inMykit,
-            });
-            setMyWishList(data.inWishlist);
-            setMyKit(data.inMykit);
-          } else {
-            console.log('No token found');
-          }
-        } catch (error) {
-          console.error('Error fetching pill data:', error);
-        }
-      };
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await AsyncStorage.getItem('jwt_token');
+      setToken(storedToken);
+    };
 
-      fetchTokenAndData();
-    }, [id]),
-  );
+    fetchToken();
+  }, []);
+
+  // 보충제 데이터 들고오기 (상세 데이터)
+  useEffect(() => {
+    const fetchPillData = async () => {
+      console.log(token);
+      if (!token) return;
+      try {
+        const response = await axios.get(`${API_URL}/api/v1/supplement/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = response.data;
+        setPillData({
+          id: data.supplementSeq,
+          name: data.pillName,
+          expirationDate: data.expirationDate,
+          appearance: data.appearance,
+          doseAmount: data.doseAmount,
+          storageMethod: data.storageMethod,
+          doseGuide: data.doseGuide,
+          functionality: data.functionality,
+          imageUrl: data.imageUrl,
+          isInWishlist: data.inWishlist,
+          isInKit: data.inMykit,
+        });
+        setMyWishList(data.inWishlist);
+        setMyKit(data.inMykit);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchPillData();
+  }, [id, token]);
 
   if (!pillData) {
     return (
@@ -104,14 +90,10 @@ const DetailScreen: React.FC = () => {
   }
 
   const handleWishListBtn = async () => {
-    if (!pillData) return;
-    console.log('내 토큰', token)
-
-
     try {
       if (myWishList) {
         // 위시리스트에서 제거
-        const response = await axios.delete(`${API_URL}/api/v1/wishlist`, {
+        await axios.delete(`${API_URL}/api/v1/wishlist`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -123,34 +105,21 @@ const DetailScreen: React.FC = () => {
         setMyWishList(false);
       } else {
         // 위시리스트에 추가
-        const response = await axios.post(
+        await axios.post(
           `${API_URL}/api/v1/wishlist`,
-          {supplementSeq: id},
+          {userSeq, supplementSeq: id},
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           },
         );
-      } else { 
-        console.log('위시에서 제거할거야')
-        // 위시리스트에서 제거
-        await axios.delete(`${API_URL}/api/v1/wishlist`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            userSeq,
-            supplementSeq: id,
-          },
-        });
+        setMyWishList(true);
       }
-      setMyWishList(updatedWishlistStatus);
-      setPillData(prev => prev ? { ...prev, isInWishlist: updatedWishlistStatus } : prev);
     } catch (error) {
-      console.log('Error handling wishlist:', error);
+      console.log(error);
     }
-  }
+  };
 
   const handleKitBtn = async () => {
     try {
@@ -164,7 +133,13 @@ const DetailScreen: React.FC = () => {
             supplementSeq: id,
           },
         });
-        setMyKit(false);
+
+        // 응답 상태를 로그로 확인
+        console.log('제거', response.status);
+
+        if (response.status === 200 || response.status === 204) {
+          setMyKit(false);
+        }
       } else {
         // 복용 중 목록에 추가
         const response = await axios.post(
@@ -176,10 +151,16 @@ const DetailScreen: React.FC = () => {
             },
           },
         );
-        setMyKit(true);
+
+        // 응답 상태를 로그로 확인
+        console.log('추가', response.status);
+
+        if (response.status === 200) {
+          setMyKit(true);
+        }
       }
     } catch (error) {
-      console.error('Error handling kit:', error);
+      console.error(error);
     }
   };
 
@@ -225,6 +206,8 @@ const DetailScreen: React.FC = () => {
             }>
             상세 정보
           </Text>
+          <View
+            style={selectedTab === 'info' ? styles.selectedCheck : null}></View>
         </TouchableOpacity>
         <TouchableOpacity
           style={
@@ -241,6 +224,10 @@ const DetailScreen: React.FC = () => {
             }>
             리뷰
           </Text>
+          <View
+            style={
+              selectedTab === 'review' ? styles.selectedCheck : null
+            }></View>
         </TouchableOpacity>
       </View>
       <View style={styles.selectedContent}>
@@ -320,6 +307,14 @@ const styles = StyleSheet.create({
   notSelectedText: {
     fontSize: 20,
     color: '#939185',
+  },
+  selectedCheck: {
+    width: 40,
+    height: 10,
+    marginTop: 11,
+    backgroundColor: '#D3EBCD',
+    borderTopLeftRadius: 7,
+    borderTopRightRadius: 7,
   },
   selectedContent: {
     height: '65%',
