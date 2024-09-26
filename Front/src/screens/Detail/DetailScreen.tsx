@@ -33,7 +33,9 @@ const DetailScreen: React.FC = () => {
   const {id} = route.params;
   console.log(id);
   const [token, setToken] = useState<string | null>(null);
+  console.log(token)
   const [myWishList, setMyWishList] = useState<boolean>(false);
+  console.log('내 위시', myWishList)
   const [myKit, setMyKit] = useState<boolean>(false);
 
   // Redux를 통해 현재 로그인한 사용자의 userSeq 가져오기
@@ -102,6 +104,10 @@ const DetailScreen: React.FC = () => {
   }
 
   const handleWishListBtn = async () => {
+    if (!pillData) return;
+    console.log('내 토큰', token)
+
+
     try {
       if (myWishList) {
         // 위시리스트에서 제거
@@ -126,12 +132,25 @@ const DetailScreen: React.FC = () => {
             },
           },
         );
-        setMyWishList(true);
+      } else { 
+        console.log('위시에서 제거할거야')
+        // 위시리스트에서 제거
+        await axios.delete(`${API_URL}/api/v1/wishlist`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            userSeq,
+            supplementSeq: id,
+          },
+        });
       }
+      setMyWishList(updatedWishlistStatus);
+      setPillData(prev => prev ? { ...prev, isInWishlist: updatedWishlistStatus } : prev);
     } catch (error) {
       console.log('Error handling wishlist:', error);
     }
-  };
+  }
 
   const handleKitBtn = async () => {
     try {

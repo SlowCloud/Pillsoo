@@ -21,8 +21,8 @@ import {
   setAge,
   setNickname,
   setGender,
-  setToken,
 } from '../../store/store';
+import {Buffer} from 'buffer';
 import base64 from 'base-64';
 
 type LoginScreenProps = StackScreenProps<
@@ -62,17 +62,19 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
             token.indexOf('.') + 1,
             token.lastIndexOf('.'),
           );
-          const dec = JSON.parse(base64.decode(payload));
-          // console.log('로그인 정보', dec)
+
+          const decodedData = base64.decode(payload);
+          const utf8String = Buffer.from(decodedData, 'binary').toString(
+            'utf-8',
+          );
+          const dec = JSON.parse(utf8String);
 
           dispatch(setReduxUserId(dec.userId));
           dispatch(setUserSeq(dec.userSeq));
           dispatch(setRole(dec.role));
-          dispatch(setAge(dec.age));
           dispatch(setNickname(dec.nickname));
           dispatch(setGender(dec.gender));
-          dispatch(setToken(token));
-
+          dispatch(setAge(dec.age));
           navigation.navigate('Main');
           Alert.alert('로그인 성공');
         } else {

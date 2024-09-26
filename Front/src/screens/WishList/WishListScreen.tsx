@@ -41,6 +41,7 @@ const WishListScreen: React.FC = () => {
           userSeq,
         },
       });
+      console.log('내 위시 목록', response.data);
       setMyWishList(response.data);
     } catch (error) {
       console.log(error);

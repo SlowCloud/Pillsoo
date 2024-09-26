@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,9 +12,8 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {navigations} from '../../constants/navigations';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
-import {API_URL} from '@env';
-import {useNavigation} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '@env';
+import { useNavigation } from '@react-navigation/native';
 
 const images = [
   require('../../assets/profile/0.png'),
@@ -53,8 +52,16 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
     (state: {userSeq: string | null}) => state.userSeq,
   );
   const age = useSelector((state: {age: string | null}) => state.age);
-  const token = useSelector((state: {token: string | null}) => state.token);
-  const navi = useNavigation();
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await AsyncStorage.getItem('jwt_token');
+      setToken(storedToken);
+    };
+
+    fetchToken();
+  }, []);
 
   // 랜덤 프사
   // const imageNumber = myInfo[0].id % 10;
