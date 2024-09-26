@@ -54,7 +54,7 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
         `${API_URL}/api/v1/supplement/effect/${category}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            access: `${token}`,
           },
           params: {
             functionality: '',
@@ -87,7 +87,7 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
       const token = await AsyncStorage.getItem('jwt_token');
       const response = await axios.get(`${API_URL}/api/v1/supplement/${id}`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          access: `${token}`,
         },
       });
       return {

@@ -50,7 +50,7 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
         const response = await axios.get(`${API_URL}/api/v1/recommend/survey`, {
           params: {client_text: inputText},
           headers: {
-            Authorization: `Bearer ${token}`,
+            access: `${token}`,
           },
         });
         setRecommendations(response.data);

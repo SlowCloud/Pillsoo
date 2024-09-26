@@ -44,7 +44,7 @@ const DetailReviewInput: React.FC = () => {
         {content: review},
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            access: `${token}`,
           },
         },
       );

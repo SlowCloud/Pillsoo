@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -12,8 +12,9 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {navigations} from '../../constants/navigations';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
-import { API_URL } from '@env';
-import { useNavigation } from '@react-navigation/native';
+import {API_URL} from '@env';
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const images = [
   require('../../assets/profile/0.png'),
@@ -74,7 +75,7 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
           try {
             const response = await axios.post(`${API_URL}/api/v1/signout`, {
               headers: {
-                Authorization: `Bearer ${token}`,
+                access: `${token}`,
               },
             });
             AsyncStorage.clear();
@@ -103,7 +104,7 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
             try {
               const response = await axios.delete(`${API_URL}/api/v1/quit`, {
                 headers: {
-                  Authorization: `Bearer ${token}`,
+                  access: `${token}`,
                 },
               });
               navigation.navigate('AuthHome');
