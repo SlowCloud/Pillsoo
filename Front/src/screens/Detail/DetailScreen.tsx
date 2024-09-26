@@ -132,21 +132,7 @@ const DetailScreen: React.FC = () => {
             },
           },
         );
-      } else { 
-        console.log('위시에서 제거할거야')
-        // 위시리스트에서 제거
-        await axios.delete(`${API_URL}/api/v1/wishlist`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            userSeq,
-            supplementSeq: id,
-          },
-        });
       }
-      setMyWishList(updatedWishlistStatus);
-      setPillData(prev => prev ? { ...prev, isInWishlist: updatedWishlistStatus } : prev);
     } catch (error) {
       console.log('Error handling wishlist:', error);
     }
