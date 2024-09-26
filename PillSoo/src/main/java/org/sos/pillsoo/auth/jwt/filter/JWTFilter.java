@@ -52,9 +52,6 @@ public class JWTFilter extends OncePerRequestFilter {
             String gender = jwtUtil.getGender(token);
             int age = jwtUtil.getAge(token);
 
-
-            System.out.println("Extracted userSeq from JWT: " + userSeq);  // 디버그 로그
-
             // User 객체 생성
             User userEntity = new User();
             userEntity.setUserSeq(userSeq);
