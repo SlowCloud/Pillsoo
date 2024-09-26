@@ -26,6 +26,7 @@ const WishListScreen: React.FC = () => {
   const navigation = useNavigation();
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<Wish[]>([]);
+
   const fetchResults = async () => {
     try {
       const response = await axios.get(`${API_URL}/api/v1/wishlist`, {

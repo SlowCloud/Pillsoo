@@ -64,10 +64,9 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
           dispatch(setReduxUserId(dec.userId));
           dispatch(setUserSeq(dec.userSeq));
           dispatch(setRole(dec.role));
-          console.log('닉네임을 가지고 와', dec.nickname)
           dispatch(setNickname(dec.nickname));
           dispatch(setGender(dec.gender))
-
+          dispatch(setAge(dec.age))
           navigation.navigate('Main');
           Alert.alert('로그인 성공');
         } else {
