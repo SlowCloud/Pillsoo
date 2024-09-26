@@ -21,6 +21,10 @@ const SearchResultScreen = () => {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
+  // 현재 페이지
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  // 더 많은 결과를 가져오는지
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -31,7 +35,7 @@ const SearchResultScreen = () => {
     fetchToken();
   }, []);
 
-  const fetchResults = async () => {
+  const fetchResults = async (newPage = 1) => {
     if (!searchQuery.trim() || !token) return;
     setLoading(true);
     try {
@@ -42,12 +46,19 @@ const SearchResultScreen = () => {
         params: {
           searchtext: searchQuery,
           functionality: '',
-          page: 1,
+          page: newPage,
+          // 새로운 페이지 번호 사용
           size: 10,
         },
       });
       if (response.status === 200) {
-        setResults(response.data.content);
+        if (newPage === 1) {
+          setResults(response.data.content);
+          // 결과 초기화
+        } else {
+          setResults(prevResults => [...prevResults, ...response.data.content]);
+          // 새로운 결과 추가
+        }
       } else {
         Alert.alert('검색 실패');
       }
@@ -56,12 +67,26 @@ const SearchResultScreen = () => {
       Alert.alert('검색 실패');
     } finally {
       setLoading(false);
+      setIsFetchingMore(false);
     }
   };
 
   useEffect(() => {
     fetchResults();
+    // 페이지가 바뀔 때마다 결과를 가져옴
   }, [searchQuery]);
+
+  const handleLoadMore = () => {
+    if (!isFetchingMore && !loading) {
+      // 중복 요청 방지
+      setIsFetchingMore(true);
+      const nextPage = page + 1;
+      // 다음 페이지로 증가
+      setPage(nextPage);
+      fetchResults(nextPage);
+      // 다음 페이지 결과를 가져옴
+    }
+  };
 
   const renderItem = ({item}: {item: any}) => (
     <TouchableOpacity
@@ -83,13 +108,23 @@ const SearchResultScreen = () => {
         />
       </View>
 
-      {loading ? (
+      {loading && page === 1 ? (
+        // 초기 로딩 상태
         <ActivityIndicator size="large" color="#a4f87b" />
       ) : results.length > 0 ? (
         <FlatList
           data={results}
           keyExtractor={item => item.supplementSeq.toString()}
           renderItem={renderItem}
+          onEndReached={handleLoadMore}
+          // 스크롤 시 더 많은 결과를 가져옴
+          onEndReachedThreshold={0.5}
+          // 리스트의 50%가 보일 때 호출
+          ListFooterComponent={
+            isFetchingMore ? (
+              <ActivityIndicator size="small" color="#a4f87b" />
+            ) : null
+          }
         />
       ) : (
         <Text style={styles.noResultsText}>검색 결과가 없습니다.</Text>
