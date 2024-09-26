@@ -55,7 +55,7 @@ const OCRScreen = () => {
             'x-goog-user-project': 'ocr-p-436200',
             'Content-Type': 'application/json',
             key: OCR_API_KEY,
-            access: `${TOKEN}`,
+            Authorization: `Bearer ${TOKEN}`,
           },
         },
       );
