@@ -54,6 +54,7 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
 
       if (response.status === 200) {
         const token = response.headers['access'];
+        console.log('로그인', token);
         if (token) {
           await AsyncStorage.setItem('jwt_token', token);
 
@@ -70,7 +71,6 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
           dispatch(setAge(dec.age));
           dispatch(setNickname(dec.nickname));
           dispatch(setGender(dec.gender));
-          console.log('토큰 리덕스에 넣을거임', token);
           dispatch(setToken(token));
 
           navigation.navigate('Main');

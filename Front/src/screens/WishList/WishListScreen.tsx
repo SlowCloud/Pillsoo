@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -7,12 +7,13 @@ import {
   ScrollView,
   Linking,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import Header from '../../components/common/Header';
 import WishListItem from '../../components/WishList/WishListItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {API_URL} from '@env';
+import {useSelector} from 'react-redux';
 
 interface Wish {
   userSeq: number;
@@ -23,38 +24,51 @@ interface Wish {
 }
 
 const WishListScreen: React.FC = () => {
+  const userSeq = useSelector(
+    (state: {userSeq: number | null}) => state.userSeq,
+  );
   const navigation = useNavigation();
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<Wish[]>([]);
 
-  const fetchResults = async () => {
+  const fetchResults = async (token: string | null) => {
     try {
       const response = await axios.get(`${API_URL}/api/v1/wishlist`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        params: {
+          userSeq,
+        },
       });
       setMyWishList(response.data);
-      // console.log(myWishList);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    const fetchToken = async () => {
-      const storedToken = await AsyncStorage.getItem('jwt_token');
-      setToken(storedToken);
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const fetchTokenAndWishlist = async () => {
+        try {
+          const storedToken = await AsyncStorage.getItem('jwt_token');
+          setToken(storedToken);
 
-    fetchToken();
-  }, []);
+          if (storedToken) {
+            await fetchResults(storedToken);
+          }
+        } catch (error) {
+          console.error('Error fetching token or wishlist:', error);
+        }
+      };
 
-  useEffect(() => {
-    if (token) {
-      fetchResults();
-    }
-  }, [token, myWishList]);
+      fetchTokenAndWishlist();
+
+      return () => {
+        console.log('포커스 떠남');
+      };
+    }, []),
+  );
 
   const handleItemPress = (supplementSeq: number) => {
     navigation.navigate('Detail', {id: supplementSeq});
