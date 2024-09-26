@@ -30,9 +30,18 @@ public class ReviewService {
 
     // 리뷰 작성 (userSeq는 JWT에서 받음)
     public ReviewDto addReview(int supplementSeq, int userSeq, ReviewDto reviewDto) {
+        // userSeq로 User 정보를 조회
+        User user = userRepository.findByUserSeq(userSeq);
+        if (user == null) {
+            throw new IllegalArgumentException("User not found for userSeq: " + userSeq);
+        }
+
+        // User에서 nickname 가져오기
+        String nickname = user.getNickname();  // User 객체에서 닉네임을 가져옴
         Review review = new Review();
         review.setSupplement(new Supplement(supplementSeq));
         review.setUserSeq(userSeq);  // JWT에서 받은 userSeq 사용
+        review.setNickName(nickname);
         review.setContent(reviewDto.getContent());
 
         // createdAt은 @PrePersist로 자동 설정됨
@@ -65,6 +74,7 @@ public class ReviewService {
         ReviewDto dto = new ReviewDto();
         dto.setReviewSeq(review.getReviewSeq());
         dto.setUserSeq(review.getUserSeq());
+        dto.setNickName(review.getNickName());
         dto.setSupplementSeq(review.getSupplement().getSupplementSeq());
 
         // userSeq로 User 정보를 조회하여 UserName 설정

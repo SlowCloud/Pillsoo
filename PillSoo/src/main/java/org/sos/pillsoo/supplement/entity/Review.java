@@ -22,6 +22,7 @@ public class Review {
     private Supplement supplement;  // Supplement와의 관계 정의
     private int userSeq;
     private String content;
+    private String nickName;
 
     @CreationTimestamp
     private Timestamp createdAt;
