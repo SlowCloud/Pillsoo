@@ -37,6 +37,8 @@ def calculate_similarity_for_word(word: str, db_items: List[Tuple[int, str, str,
 def calculate_similarity(input_text: str, db_items: List[Tuple[int, str, str, str, str]]) -> List[Tuple[int, str, str, str, str]]:
     # 입력 텍스트를 명사로 추출 (Ray로 병렬 처리)
     preprocessed_text = ray.get(preprocess_text.remote(input_text))
+    # print(f"Preprocessed text: {preprocessed_text}")
+
     
     # 명사 추출된 텍스트를 단어로 분리
     words = preprocessed_text.split()

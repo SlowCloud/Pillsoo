@@ -12,6 +12,7 @@ public class ReviewDto {
     private int userSeq;
     private int supplementSeq;
     private String userName;
+    private String nickName;
     private String content;
     private Timestamp createdAt;  // createdAt 필드 추가
 }
