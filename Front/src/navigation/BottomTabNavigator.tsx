@@ -1,7 +1,8 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/Home/HomeScreen';
-import SearchScreen from '../screens/Search/SearchScreen';
+import SearchScreen from '../screens/Search/SearchResultScreen';
+// import SearchScreen from '../screens/Search/SearchScreen';
 import RecommendScreen from '../screens/Recommend/RecommendScreen';
 import WishListScreen from '../screens/WishList/WishListScreen';
 import ProfileScreen from '../screens/MyPage/MyPageScreen';
