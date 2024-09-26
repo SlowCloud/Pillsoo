@@ -4,6 +4,8 @@ import org.sos.pillsoo.auth.dto.SignupDto;
 import org.sos.pillsoo.auth.dto.UserUpdateDto;
 import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.auth.repository.UserRepository;
+import org.sos.pillsoo.exception.ErrorCode;
+import org.sos.pillsoo.exception.PillSooException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,14 +25,13 @@ public class UserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+    @Transactional
     public void SignupProcess(SignupDto signupDto) {
         String userId = signupDto.getUserId();
         String userPassword = signupDto.getPassword();
 
-        Boolean isExist = userRepository.existsByUserId(userId);
-        if (isExist) {
-            System.out.println("이미 존재하는 유저 아이디입니다.");
-            return;
+        if (userRepository.existsByUserId(userId)) {
+            throw new PillSooException(ErrorCode.USER_ALREADY_EXISTS);
         }
 
         User user = new User();
@@ -40,14 +41,9 @@ public class UserService {
         user.setAge(signupDto.getAge());
         user.setCreatedAt(timestamp);
         user.setRole("ROLE_USER");
-        if (signupDto.isGender()) {
-            user.setGender("F");
-        } else {
-            user.setGender("M");
-        }
+        user.setGender(signupDto.isGender() ? "F" : "M");
 
         userRepository.save(user);
-
         System.out.println(user.getNickname() + "가 회원가입 함");
     }
 
@@ -61,4 +57,6 @@ public class UserService {
 
         userRepository.save(user);
     }
+
+
 }

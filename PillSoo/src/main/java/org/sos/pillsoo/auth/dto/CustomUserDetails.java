@@ -33,6 +33,11 @@ public class CustomUserDetails implements UserDetails {
         return userEntity.getAge();
     }
 
+    public String getRole() {
+        return userEntity.getRole();
+    }
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
