@@ -6,6 +6,8 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,7 +21,7 @@ public class ControllerAspect {
     public void controllerLogging(JoinPoint joinPoint) {
         Logger logger = LoggerFactory.getLogger(joinPoint.getSignature().getDeclaringType());
 
-        logger.info("ENTER {} ::", joinPoint.getSignature().getName());
+        logger.info("ENTER {} :: ", joinPoint.getSignature().getName());
 
         StringBuilder stringBuilder = new StringBuilder();
         for(Object param : joinPoint.getArgs()) {
@@ -28,10 +30,15 @@ public class ControllerAspect {
                         .append(param.getClass().getSimpleName())
                         .append("=")
                         .append(param)
-                        .append(System.lineSeparator());
+                        .append(", ");
             }
         }
-
         logger.info(stringBuilder.toString());
+
+        Authentication authentication = SecurityContextHolder.getContextHolderStrategy().getContext().getAuthentication();
+        if(authentication != null) {
+            logger.info("Connected User :: {}", authentication);
+        }
+
     }
 }
