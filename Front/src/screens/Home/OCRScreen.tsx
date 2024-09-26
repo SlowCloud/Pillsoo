@@ -24,7 +24,7 @@ const OCRScreen = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [results, setResults] = useState<any[]>([]);
   const navigation = useNavigation();
-
+  console.log('hi');
   useFocusEffect(
     React.useCallback(() => {
       handleCapture();

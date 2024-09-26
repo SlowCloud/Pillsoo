@@ -6,12 +6,14 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TextInput} from 'react-native-gesture-handler';
 import {API_URL} from '@env';
+
 type Props = {
   userName: string;
   content: string;
   supplementId: number;
   userSeq: number;
   reviewId: number;
+  nickName: string;
 };
 
 const DetailReviewItems: React.FC<Props> = ({
@@ -20,13 +22,16 @@ const DetailReviewItems: React.FC<Props> = ({
   supplementId,
   userSeq,
   reviewId,
+  nickName,
 }) => {
-  const myName = useSelector(
-    (state: {nickname: string | null}) => state.nickname,
-  );
+  const myName = useSelector((state: {userId: string | null}) => state.userId);
+
+  // const nickName = useSelector(
+  //   (state: {nickname: string | null}) => state.nickname,
+  // );
+
   const [token, setToken] = useState<string | null>(null);
   const [updateContent, setUpdateContent] = useState<boolean>(false);
-
   const [updateReview, setUpdateReview] = useState<string>('');
 
   useEffect(() => {
@@ -106,13 +111,13 @@ const DetailReviewItems: React.FC<Props> = ({
   );
   return (
     <View style={styles.container}>
-      <Text>📣{myName}</Text>
+      <Text>📣{nickName}</Text>
       {updateContent ? (
         UPdateMyReview
       ) : (
         <Text style={styles.reviewContent}>{content}</Text>
       )}
-      {userName == myName ? updateAndDelete : null}
+      {myName == userName ? updateAndDelete : null}
     </View>
   );
 };

@@ -15,6 +15,7 @@ interface Review {
   supplementSeq: number;
   userName: string;
   userSeq: number;
+  nickName: string;
 }
 
 const DetailReview: React.FC = () => {
@@ -46,6 +47,7 @@ const DetailReview: React.FC = () => {
           },
         );
         if (response.status === 200) {
+          // console.log(response);
           setReviewList(response.data);
         }
       } catch (error) {
@@ -67,6 +69,7 @@ const DetailReview: React.FC = () => {
             content={reviewItem.content}
             supplementId={reviewItem.supplementSeq}
             reviewId={reviewItem.reviewSeq}
+            nickName={reviewItem.nickName}
           />
         ))}
         <DetailReviewInput />
