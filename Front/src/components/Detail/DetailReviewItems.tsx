@@ -54,7 +54,7 @@ const DetailReviewItems: React.FC<Props> = ({
         {reviewSeq: reviewId, content: updateReview},
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            access: `${token}`,
           },
         },
       );
@@ -85,7 +85,7 @@ const DetailReviewItems: React.FC<Props> = ({
         // `http://10.0.2.2:8080/api/v1/supplement/${supplementId}/reviews`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            access: `${token}`,
           },
         },
       );

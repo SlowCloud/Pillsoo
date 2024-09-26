@@ -27,6 +27,7 @@ const WishListScreen: React.FC = () => {
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
   );
+  console.log('gdgd', userSeq);
   const navigation = useNavigation();
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<Wish[]>([]);
@@ -35,7 +36,7 @@ const WishListScreen: React.FC = () => {
     try {
       const response = await axios.get(`${API_URL}/api/v1/wishlist`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          access: `${token}`,
         },
         params: {
           userSeq,

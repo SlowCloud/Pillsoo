@@ -3,8 +3,8 @@ import {View, Text, StyleSheet, FlatList} from 'react-native';
 import MyPageReviewItems from '../../components/MyPage/MyPageReviewItems';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_URL } from '@env';
-import { useSelector } from 'react-redux';
+import {API_URL} from '@env';
+import {useSelector} from 'react-redux';
 
 interface Review {
   reviewSeq: number;
@@ -18,7 +18,9 @@ interface Review {
 const MyPageReviewListScreen = () => {
   const [token, setToken] = useState<string | null>(null);
   const [myAllReviews, setMyAllReviews] = useState<Review[]>([]);
-  const userSeq = useSelector((state: {userSeq: number | null}) => state.userSeq);
+  const userSeq = useSelector(
+    (state: {userSeq: number | null}) => state.userSeq,
+  );
   // 프론트가 백한테 유저id 보낸다
   // 백이 프론트한테 유저 정보, 리뷰를 쓴 영양제의 id를 보낸다
   // 프론트가 백한테 영양제 id를 보낸다
@@ -36,16 +38,16 @@ const MyPageReviewListScreen = () => {
   useEffect(() => {
     const fetchMyReview = async () => {
       if (!token) {
-        console.log('리뷰 가지고 오고 싶은데 토큰이 없어')
+        console.log('리뷰 가지고 오고 싶은데 토큰이 없어');
         return;
       }
       try {
-        const response = await axios.get( `${API_URL}/api/v1/reviews`, {
+        const response = await axios.get(`${API_URL}/api/v1/reviews`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            access: `${token}`,
           },
           params: {
-            userSeq: userSeq
+            userSeq: userSeq,
           },
         });
         setMyAllReviews(response.data);
@@ -54,7 +56,7 @@ const MyPageReviewListScreen = () => {
       }
     };
 
-    fetchMyReview()
+    fetchMyReview();
   }, [token]);
 
   const renderMyReview = ({item}: {item: Review}) => (
@@ -73,7 +75,7 @@ const MyPageReviewListScreen = () => {
       <FlatList
         data={myAllReviews}
         renderItem={renderMyReview}
-        keyExtractor={(item) => item.content}
+        keyExtractor={item => item.content}
         contentContainerStyle={styles.myReviewBox}
       />
     </View>
@@ -92,7 +94,7 @@ const styles = StyleSheet.create({
   },
   myReviewBox: {
     marginVertical: 20,
-  }
+  },
 });
 
 export default MyPageReviewListScreen;
