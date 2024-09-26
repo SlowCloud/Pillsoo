@@ -14,10 +14,16 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
 import {useDispatch} from 'react-redux';
-import {setUserId as setReduxUserId, setUserSeq, setRole, setAge, setNickname, setGender} from '../../store/store';
-import { Buffer } from 'buffer'
+import {
+  setUserId as setReduxUserId,
+  setUserSeq,
+  setRole,
+  setAge,
+  setNickname,
+  setGender,
+} from '../../store/store';
+import {Buffer} from 'buffer';
 import base64 from 'base-64';
-
 
 type LoginScreenProps = StackScreenProps<
   AuthStackParamList,
@@ -48,6 +54,7 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
 
       if (response.status === 200) {
         const token = response.headers['access'];
+        console.log('로그인', token);
         if (token) {
           await AsyncStorage.setItem('jwt_token', token);
 
@@ -57,16 +64,17 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
           );
 
           const decodedData = base64.decode(payload);
-          const utf8String = Buffer.from(decodedData, 'binary').toString('utf-8');
+          const utf8String = Buffer.from(decodedData, 'binary').toString(
+            'utf-8',
+          );
           const dec = JSON.parse(utf8String);
-
 
           dispatch(setReduxUserId(dec.userId));
           dispatch(setUserSeq(dec.userSeq));
           dispatch(setRole(dec.role));
           dispatch(setNickname(dec.nickname));
-          dispatch(setGender(dec.gender))
-          dispatch(setAge(dec.age))
+          dispatch(setGender(dec.gender));
+          dispatch(setAge(dec.age));
           navigation.navigate('Main');
           Alert.alert('로그인 성공');
         } else {

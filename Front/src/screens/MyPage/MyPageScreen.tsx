@@ -77,6 +77,7 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
                 Authorization: `Bearer ${token}`,
               },
             });
+            AsyncStorage.clear();
 
             navigation.navigate('AuthHome');
           } catch (error) {
