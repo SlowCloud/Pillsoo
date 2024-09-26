@@ -31,7 +31,9 @@ const DetailScreen: React.FC = () => {
   const route = useRoute<DetailScreenRouteProp>();
   const {id} = route.params;
   const [token, setToken] = useState<string | null>(null);
+  console.log(token)
   const [myWishList, setMyWishList] = useState<boolean>(false);
+  console.log('내 위시', myWishList)
   const [myKit, setMyKit] = useState<boolean>(false);
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
@@ -45,6 +47,15 @@ const DetailScreen: React.FC = () => {
 
     fetchToken();
   }, []);
+
+  useEffect(() => {
+    if (pillData) {
+      console.log('db', pillData)
+      console.log('db에서 들고온 좋아요', pillData.isInWishlist)
+      setMyWishList(pillData.isInWishlist);
+    }
+  }, [pillData]);
+  
 
   // 보충제 데이터 들고오기 (상세 데이터)
   useEffect(() => {
@@ -89,20 +100,16 @@ const DetailScreen: React.FC = () => {
   }
 
   const handleWishListBtn = async () => {
+    if (!pillData) return;
+    console.log('내 토큰', token)
+
+
     try {
-      if (myWishList) {
-        // 위시리스트에서 제거
-        await axios.delete(`${API_URL}/api/v1/wishlist`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            userSeq,
-            supplementSeq: id,
-          },
-        });
-        setMyWishList(false);
-      } else {
+      const updatedWishlistStatus = !myWishList;
+
+      if (updatedWishlistStatus) {
+
+        console.log('위시에서 추가할거야')
         // 위시리스트에 추가
         await axios.post(
           `${API_URL}/api/v1/wishlist`,
@@ -113,12 +120,25 @@ const DetailScreen: React.FC = () => {
             },
           },
         );
-        setMyWishList(true);
+      } else { 
+        console.log('위시에서 제거할거야')
+        // 위시리스트에서 제거
+        await axios.delete(`${API_URL}/api/v1/wishlist`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            userSeq,
+            supplementSeq: id,
+          },
+        });
       }
+      setMyWishList(updatedWishlistStatus);
+      setPillData(prev => prev ? { ...prev, isInWishlist: updatedWishlistStatus } : prev);
     } catch (error) {
       console.log(error);
     }
-  };
+  }
 
   const handleKitBtn = async () => {
     try {

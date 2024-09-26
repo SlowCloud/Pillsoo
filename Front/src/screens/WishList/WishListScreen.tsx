@@ -34,8 +34,9 @@ const WishListScreen: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log('내 위시 목록', response.data)
       setMyWishList(response.data);
-      console.log(myWishList);
+      // console.log(myWishList);
     } catch (error) {
       console.log(error);
     }
@@ -54,7 +55,7 @@ const WishListScreen: React.FC = () => {
     if (token) {
       fetchResults();
     }
-  }, [token]);
+  }, [token, myWishList]);
 
   const handleItemPress = (supplementSeq: number) => {
     navigation.navigate('Detail', {id: supplementSeq});
