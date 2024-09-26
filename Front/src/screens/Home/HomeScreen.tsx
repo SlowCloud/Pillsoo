@@ -9,6 +9,8 @@ import {useSelector} from 'react-redux';
 const HomeScreen = () => {
   const navigation = useNavigation();
   const nickname = useSelector((state: {nickname: string | null}) => state.nickname);
+  const decodedNickname = nickname ? decodeURIComponent(nickname) : '닉네임이 없습니다';
+  console.log("Redux에서 가져온 닉네임:", decodedNickname);
 
   return (
     <LinearGradient

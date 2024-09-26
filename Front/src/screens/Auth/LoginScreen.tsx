@@ -14,8 +14,10 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
 import {useDispatch} from 'react-redux';
-import {setUserId as setReduxUserId, setUserSeq, setRole, setAge, setNickname, setGender, setToken} from '../../store/store';
+import {setUserId as setReduxUserId, setUserSeq, setRole, setAge, setNickname, setGender} from '../../store/store';
+import { Buffer } from 'buffer'
 import base64 from 'base-64';
+
 
 type LoginScreenProps = StackScreenProps<
   AuthStackParamList,
@@ -53,17 +55,18 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
             token.indexOf('.') + 1,
             token.lastIndexOf('.'),
           );
-          const dec = JSON.parse(base64.decode(payload));
-          // console.log('로그인 정보', dec)
+
+          const decodedData = base64.decode(payload);
+          const utf8String = Buffer.from(decodedData, 'binary').toString('utf-8');
+          const dec = JSON.parse(utf8String);
+
 
           dispatch(setReduxUserId(dec.userId));
           dispatch(setUserSeq(dec.userSeq));
           dispatch(setRole(dec.role));
-          dispatch(setAge(dec.age));
+          console.log('닉네임을 가지고 와', dec.nickname)
           dispatch(setNickname(dec.nickname));
           dispatch(setGender(dec.gender))
-          console.log('토큰 리덕스에 넣을거임', token)
-          dispatch(setToken(token))
 
           navigation.navigate('Main');
           Alert.alert('로그인 성공');

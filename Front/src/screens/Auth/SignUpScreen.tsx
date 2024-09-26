@@ -60,6 +60,24 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
     }
   };
 
+  const handleAgeInput = (input: string) => {
+    // 숫자가 아닐 때
+    if(isNaN(Number(input))) {
+      Alert.alert('숫자를 입력해주세요')
+      setAge(input)
+
+      return;
+    }
+
+    // 범위 확인
+    const ageNumber = Number(input);
+    if (ageNumber < 0 || ageNumber > 99) {
+      Alert.alert('0~99세 사이의 나이를 입력하세요.')
+    }
+
+    setAge(input);
+  }
+
   const handleSignUp = async () => {
     const genderValue = gender === 'Male' ? 0 : 1;
 
@@ -143,7 +161,7 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
                 placeholder="나이"
                 keyboardType="numeric"
                 value={age}
-                onChangeText={setAge}
+                onChangeText={handleAgeInput}
               />
             </View>
           )}

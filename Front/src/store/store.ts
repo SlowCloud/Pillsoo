@@ -9,7 +9,6 @@ const initialState = {
   age: null as number | null,
   nickname: null as string | null,
   gender: null as string | null,
-  token: null as string | null,
 };
 
 // 액션 타입
@@ -19,7 +18,6 @@ const SET_ROLE = 'SET_ROLE';
 const SET_AGE = 'SET_AGE';
 const SET_NICKNAME = 'SET_NICKNAME';
 const SET_GENDER = 'SET_GENDER';
-const SET_TOKEN = 'SET_TOKEN';
 
 // 액션 생성자
 export const setUserId = (userId: string | null) => ({
@@ -49,10 +47,6 @@ export const setNickname = (nickname: string | null) => ({
 export const setGender = (gender: string | null) => ({
   type: SET_GENDER,
   payload: gender,
-});
-export const setToken = (token: string | null) => ({
-  type: SET_TOKEN,
-  payload: token,
 });
 
 // 액션 타입 인터페이스 정의
