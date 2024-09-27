@@ -16,7 +16,7 @@ public class ElasticSupplement {
     @Id
     String id;
 
-    @Field(name = "supplementSeq")
+    @Field(name = "supplementseq")
     long supplementSeq;
 
     @Field(name = "click_count")

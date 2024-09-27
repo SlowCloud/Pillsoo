@@ -27,7 +27,7 @@ class ElasticSupplementRepositoryTest {
 
     @Test
     void elasticsearchQueryTestWithElasticsearchOperations() {
-        ElasticSupplement elasticSupplement = elasticsearchOperations.get("uu_4LJIBWq2v5Ll8AUmj", ElasticSupplement.class);
+        ElasticSupplement elasticSupplement = elasticsearchOperations.get("gU4AMpIBWq2v5Ll8JCLE", ElasticSupplement.class);
         System.out.println(elasticSupplement);
     }
 

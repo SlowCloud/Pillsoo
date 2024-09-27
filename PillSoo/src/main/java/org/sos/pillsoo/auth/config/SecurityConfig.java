@@ -61,6 +61,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/signin", "/api/v1/signup").permitAll()
+                        .requestMatchers("/api/v1/supplement/search").permitAll()
                         .requestMatchers(HttpMethod.GET, "/login").denyAll()
                         .anyRequest().authenticated()
                 )
