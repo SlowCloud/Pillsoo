@@ -48,21 +48,23 @@ const SupplementInputScreen = () => {
     };
 
     fetchMyKitData();
-  }, [myKitData]);
+  }, []);
 
   const renderItem = ({item}: {item: Supplement}) => (
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() => navigation.navigate('Detail', {id: item.supplementSeq})}>
       <Image source={{uri: item.imageUrl}} style={styles.itemImage} />
-      <Text style={styles.itemName}>{item.pillName}</Text>
+      <Text style={styles.itemName} numberOfLines={1} ellipsizeMode="tail">
+        {item.pillName}
+      </Text>
     </TouchableOpacity>
   );
 
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.title}>복용 중인 리스트</Text>
+        <Text style={styles.title}>마이 키트</Text>
         <FlatList
           data={myKitData}
           renderItem={renderItem}
@@ -115,6 +117,7 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 16,
     fontWeight: 'bold',
+    maxWidth: '80%',
   },
   scanText: {
     fontSize: 16,

@@ -13,11 +13,10 @@ const HomeScreen = () => {
 
   return (
     <>
-      <Header />
       <View style={styles.container}>
         <View style={styles.nicknameContainer}>
-          <Text style={styles.nickname}>{nickname}</Text>
-          <Text style={styles.greeting}>님 안녕하세요 !</Text>
+          <Text style={styles.nickname}>{nickname}님</Text>
+          <Text style={styles.greeting}>안녕하세요 !</Text>
         </View>
       </View>
 
@@ -50,15 +49,16 @@ const styles = StyleSheet.create({
     flex: 0.1,
     alignItems: 'flex-start',
     padding: 30,
-    backgroundColor: '#fff',
+    backgroundColor: '#a4f87b',
+    paddingTop: 50,
   },
   nicknameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'column',
+    // alignItems: 'center',
   },
   nickname: {
     fontSize: 25,
-    color: '#a4f87b',
+    color: 'white',
   },
   greeting: {
     fontSize: 25,
@@ -67,13 +67,13 @@ const styles = StyleSheet.create({
   kit: {
     flex: 1.5,
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#a4f87b',
   },
   alarm: {
     flex: 0.25,
     alignItems: 'flex-end',
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#a4f87b',
   },
   alarmImage: {
     width: 100,
