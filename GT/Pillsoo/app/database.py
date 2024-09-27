@@ -24,8 +24,8 @@ mongo_client = MongoClient("mongodb://j11e205.p.ssafy.io:30017/")
 mongo_db = mongo_client["sos_db"]  # MongoDB 데이터베이스
 mongo_collection = mongo_db["recommended"]  # MongoDB 컬렉션
 
-# ElasticSearch 클라이언트 생성 (지정된 주소의 80번 포트로 수정)
-es = Elasticsearch(hosts=["http://j11e205-elasticsearch.duckdns.org:80/pillsoo_supplement_view/_search"])
+# ElasticSearch 클라이언트 생성 (지정된 주소의 80번 포트로 지정)
+es = Elasticsearch(hosts=["http://j11e205-elasticsearch.duckdns.org:80/"])
 
 # DB 세션을 반환하는 의존성
 def get_db():   
