@@ -8,6 +8,8 @@ charset-normalizer==3.3.2
 click==8.1.7
 colorama==0.4.6
 dnspython==2.6.1
+elastic-transport==8.15.0
+elasticsearch==8.15.1
 exceptiongroup==1.2.2
 fastapi==0.115.0
 filelock==3.16.1
