@@ -249,10 +249,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fff',
   },
   container: {
     flex: 1,
-    marginVertical: 45,
+    backgroundColor: '#fff',
   },
   infoBox: {
     height: '20%',

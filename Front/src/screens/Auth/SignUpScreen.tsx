@@ -12,7 +12,7 @@ import {StackScreenProps} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {authNavigations} from '../../constants/navigations';
 import axios from 'axios';
-import { API_URL } from '@env';
+import {API_URL} from '@env';
 type SignUpScreenProps = StackScreenProps<
   AuthStackParamList,
   typeof authNavigations.SIGNUP
@@ -62,9 +62,9 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
 
   const handleAgeInput = (input: string) => {
     // 숫자가 아닐 때
-    if(isNaN(Number(input))) {
-      Alert.alert('숫자를 입력해주세요')
-      setAge(input)
+    if (isNaN(Number(input))) {
+      Alert.alert('숫자를 입력해주세요');
+      setAge(input);
 
       return;
     }
@@ -72,11 +72,11 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
     // 범위 확인
     const ageNumber = Number(input);
     if (ageNumber < 0 || ageNumber > 99) {
-      Alert.alert('0~99세 사이의 나이를 입력하세요.')
+      Alert.alert('0~99세 사이의 나이를 입력하세요.');
     }
 
     setAge(input);
-  }
+  };
 
   const handleSignUp = async () => {
     const genderValue = gender === 'Male' ? 0 : 1;
@@ -222,6 +222,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     width: '100%',
+    backgroundColor: '#fff',
   },
   form: {
     width: '100%',

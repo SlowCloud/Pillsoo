@@ -27,7 +27,6 @@ const WishListScreen: React.FC = () => {
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
   );
-  console.log('gdgd', userSeq);
   const navigation = useNavigation();
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<Wish[]>([]);
@@ -60,7 +59,7 @@ const WishListScreen: React.FC = () => {
             await fetchResults(storedToken);
           }
         } catch (error) {
-          console.error('Error fetching token or wishlist:', error);
+          console.error(error);
         }
       };
 
@@ -76,31 +75,23 @@ const WishListScreen: React.FC = () => {
     navigation.navigate('Detail', {id: supplementSeq});
   };
 
-  const handlePurchasePress = (pillName: string) => {
-    const query = encodeURIComponent(pillName.trim());
-    const url = `https://msearch.shopping.naver.com/search/all?query=${query}`;
-    Linking.openURL(url);
-  };
-
   return (
     <>
       <Header />
       <View style={styles.container}>
+        {/* <View style={styles.textContainer}>
+          <Text style={styles.text}>나의 위시 리스트</Text>
+        </View> */}
         <ScrollView>
           {myWishList.length > 0 ? (
             myWishList.map((myWish, index) => (
-              <View key={index}>
+              <View key={index} style={styles.cardContainer}>
                 <TouchableOpacity
                   onPress={() => handleItemPress(myWish.supplementSeq)}>
                   <WishListItem
                     pillName={myWish.pillName}
                     imageUrl={myWish.imageUrl}
                   />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.purchaseButton}
-                  onPress={() => handlePurchasePress(myWish.pillName)}>
-                  <Text style={styles.purchaseButtonText}>구매하러가기</Text>
                 </TouchableOpacity>
               </View>
             ))
@@ -116,18 +107,30 @@ const WishListScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    backgroundColor: '#fff',
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 10,
   },
-  purchaseButton: {
-    backgroundColor: '#D3EBCD',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 5,
-    alignItems: 'center',
+  textContainer: {
+    margin: 30,
   },
-  purchaseButtonText: {
-    color: 'black',
-    fontSize: 16,
+  text: {
+    textAlign: 'center',
+    fontSize: 28,
+  },
+  cardContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    elevation: 3,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    marginBottom: 30,
+    overflow: 'hidden',
   },
 });
 

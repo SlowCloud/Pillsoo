@@ -76,13 +76,12 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
           dispatch(setGender(dec.gender));
           dispatch(setAge(dec.age));
           navigation.navigate('Main');
-          Alert.alert('로그인 성공');
         } else {
           Alert.alert('토큰이 없습니다. 로그인 실패');
         }
       }
     } catch (error) {
-      Alert.alert('로그인 실패');
+      Alert.alert('아이디나 비밀번호가 일치하지 않습니다.');
       console.error(error);
     }
   };
@@ -121,6 +120,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,

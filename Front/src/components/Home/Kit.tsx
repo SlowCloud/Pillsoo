@@ -39,9 +39,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    backgroundColor: 'white',
-    borderTopEndRadius: 50,
-    borderTopStartRadius: 50,
+    // backgroundColor: 'white',
+    // borderTopEndRadius: 50,
+    // borderTopStartRadius: 50,
   },
   buttonText: {
     color: 'black',
