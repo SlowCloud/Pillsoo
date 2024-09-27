@@ -128,7 +128,7 @@ const DetailScreen: React.FC = () => {
     try {
       if (myKit) {
         // 복용 중 목록에서 제거
-        const response = await axios.delete(`${API_URL}/api/v1/my-kit`, {
+        const response = await axios.delete(`${API_URL}/api/v1/cabnet`, {
           headers: {
             accessn: `${token}`,
           },
@@ -146,7 +146,7 @@ const DetailScreen: React.FC = () => {
       } else {
         // 복용 중 목록에 추가
         const response = await axios.post(
-          `${API_URL}/api/v1/my-kit`,
+          `${API_URL}/api/v1/cabnet`,
           {supplementSeq: id},
           {
             headers: {

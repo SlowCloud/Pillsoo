@@ -32,7 +32,7 @@ const SupplementInputScreen = () => {
       const token = await AsyncStorage.getItem('jwt_token');
 
       try {
-        const response = await axios.get(`${API_URL}/api/v1/my-kit`, {
+        const response = await axios.get(`${API_URL}/api/v1/cabnet`, {
           headers: {
             access: `${token}`,
           },

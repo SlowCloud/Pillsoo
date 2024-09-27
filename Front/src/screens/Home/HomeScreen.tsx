@@ -5,19 +5,25 @@ import Kit from '../../components/Home/Kit';
 import Header from '../../components/common/Header';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import styled from 'styled-components/native'
+
+
+
 const HomeScreen = () => {
   const navigation = useNavigation();
   const nickname = useSelector(
     (state: {nickname: string | null}) => state.nickname,
   );
+
+  // const mainText = styled.Text
+  
   return (
     <LinearGradient
       colors={['#ffffff', '#a4f870', '#ffffff']}
       style={styles.screenContainer}>
       <Header />
       <View style={styles.container}>
-        <Text style={{fontSize: 25}}>{nickname}님 안녕하세요 !</Text>
+        <Text style={styles.mainTitle}>{nickname}님 안녕하세요 !</Text>
       </View>
 
       <View style={styles.alarm}>
@@ -44,6 +50,10 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
+  },
+  mainTitle: {
+    fontFamily: 'WavvePADO-Regular.ttf',
+    fontSize: 30
   },
   container: {
     flex: 0.1,
