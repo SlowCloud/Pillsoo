@@ -19,7 +19,7 @@ const HomeNavigator = () => {
       <Stack.Screen
         name="SupplementInput"
         component={SupplementInputScreen}
-        options={{headerShown: false}}
+        options={{headerShown: false, presentation: 'modal'}}
       />
       <Stack.Screen
         name="OCR"

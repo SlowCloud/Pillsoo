@@ -31,13 +31,11 @@ const DetailScreen: React.FC = () => {
   const route = useRoute<DetailScreenRouteProp>();
   const {id} = route.params;
   const [token, setToken] = useState<string | null>(null);
-  console.log(token);
   const [myWishList, setMyWishList] = useState<boolean>(false);
   const [myKit, setMyKit] = useState<boolean>(false);
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
   );
-  console.log(userSeq);
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem('jwt_token');
@@ -50,8 +48,6 @@ const DetailScreen: React.FC = () => {
   // 보충제 데이터 들고오기 (상세 데이터)
   useEffect(() => {
     const fetchPillData = async () => {
-      console.log(token);
-      console.log(id, API_URL);
       if (!token) return;
       try {
         const response = await axios.get(`${API_URL}/api/v1/supplement/${id}`, {
@@ -60,7 +56,6 @@ const DetailScreen: React.FC = () => {
           },
         });
         const data = response.data;
-        console.log('detail', data);
         setPillData({
           id: data.supplementSeq,
           name: data.pillName,
@@ -172,7 +167,9 @@ const DetailScreen: React.FC = () => {
       <View style={styles.infoBox}>
         <Image source={{uri: pillData.imageUrl}} style={styles.image} />
         <View style={styles.infoContainer}>
-          <Text style={styles.pillName}>{pillData.name}</Text>
+          <Text style={styles.pillName} numberOfLines={1} ellipsizeMode="tail">
+            {pillData.name}
+          </Text>
           <View style={styles.rowContainer}>
             <TouchableOpacity onPress={handleWishListBtn}>
               <Image
@@ -193,6 +190,7 @@ const DetailScreen: React.FC = () => {
           </View>
         </View>
       </View>
+
       <View style={styles.canSelectMenu}>
         <TouchableOpacity
           style={
@@ -254,6 +252,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   infoBox: {
     height: '20%',
@@ -269,6 +269,7 @@ const styles = StyleSheet.create({
     color: 'black',
     marginTop: 40,
     marginRight: 10,
+    maxWidth: '80%',
   },
   infoContainer: {
     display: 'flex',

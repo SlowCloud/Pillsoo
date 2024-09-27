@@ -93,7 +93,9 @@ const SearchResultScreen = () => {
       style={styles.resultItem}
       onPress={() => navigation.navigate('Detail', {id: item.supplementSeq})}>
       <Image source={{uri: item.imageUrl}} style={styles.image} />
-      <Text style={styles.pillName}>{item.pillName}</Text>
+      <Text style={styles.pillName} numberOfLines={1} ellipsizeMode="tail">
+        {item.pillName}
+      </Text>
     </TouchableOpacity>
   );
 
@@ -158,6 +160,7 @@ const styles = StyleSheet.create({
   pillName: {
     fontSize: 18,
     fontWeight: 'bold',
+    maxWidth: '80%',
   },
   noResultsText: {
     textAlign: 'center',
