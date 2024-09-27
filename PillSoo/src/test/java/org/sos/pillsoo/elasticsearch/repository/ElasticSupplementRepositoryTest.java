@@ -3,16 +3,11 @@ package org.sos.pillsoo.elasticsearch.repository;
 import org.junit.jupiter.api.Test;
 import org.sos.pillsoo.elasticsearch.entity.ElasticSupplement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.data.elasticsearch.DataElasticsearchTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.web.client.RestTemplate;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ElasticSupplementRepositoryTest {
