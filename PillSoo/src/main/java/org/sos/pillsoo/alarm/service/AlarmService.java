@@ -44,6 +44,7 @@ public class AlarmService {
         alarm.setCabinet(cabinet);
         alarm.setTime(alarmReqDto.getTime());
         alarm.setTurnOn(true);
+        alarm.setUserSeq(userSeq);
 
         Alarm savedAlarm = alarmRepository.save(alarm);
         return convertAlarmToDto(savedAlarm);

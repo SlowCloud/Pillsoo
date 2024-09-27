@@ -26,4 +26,7 @@ public class Alarm {
 
     private boolean isTurnOn = true;
     private LocalTime time;
+
+    private int supplementSeq;
+    private int userSeq;
 }
