@@ -1,29 +1,20 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import Kit from '../../components/Home/Kit';
 import Header from '../../components/common/Header';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-// import styled from 'styled-components/native'
-
-
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = () => {
   const navigation = useNavigation();
   const nickname = useSelector(
     (state: {nickname: string | null}) => state.nickname,
   );
-
-  // const mainText = styled.Text
-  
   return (
-    <LinearGradient
-      colors={['#ffffff', '#a4f870', '#ffffff']}
-      style={styles.screenContainer}>
+    <>
       <Header />
       <View style={styles.container}>
-        <Text style={styles.mainTitle}>{nickname}님 안녕하세요 !</Text>
+        <Text style={{fontSize: 25}}>{nickname}님 안녕하세요 !</Text>
       </View>
 
       <View style={styles.alarm}>
@@ -43,7 +34,7 @@ const HomeScreen = () => {
       <View style={styles.kit}>
         <Kit />
       </View>
-    </LinearGradient>
+    </>
   );
 };
 
@@ -59,16 +50,30 @@ const styles = StyleSheet.create({
     flex: 0.1,
     alignItems: 'flex-start',
     padding: 30,
+    backgroundColor: '#fff',
+  },
+  nicknameContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  nickname: {
+    fontSize: 25,
+    color: '#a4f87b',
+  },
+  greeting: {
+    fontSize: 25,
+    color: 'black',
   },
   kit: {
     flex: 1.5,
     alignItems: 'center',
+    backgroundColor: '#fff',
   },
   alarm: {
     flex: 0.25,
     alignItems: 'flex-end',
     justifyContent: 'center',
-    bottom: 20,
+    backgroundColor: '#fff',
   },
   alarmImage: {
     width: 100,

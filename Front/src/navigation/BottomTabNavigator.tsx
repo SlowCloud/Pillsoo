@@ -63,6 +63,7 @@ const BottomTabsNavigator = () => {
             <Ionicons name="heart-outline" size={size} color={color} />
           ),
           headerShown: false,
+          headerTitle: '나의 위시 리스트',
         }}
       />
       <Tab.Screen

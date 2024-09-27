@@ -25,7 +25,7 @@ export type RecommendPill = {
 };
 
 const RecommendScreen: React.FC<Props> = ({navigation}) => {
-  const age = useSelector((state: {age: string | null}) => state.age);
+  const age = useSelector((state: {age: number}) => state.age);
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
 
   // 화면 렌더링 시 함수 실행
@@ -139,8 +139,9 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginHorizontal: 15,
-    marginVertical: 50,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: '#fff',
   },
   pillCategoryBox: {
     marginTop: 70,

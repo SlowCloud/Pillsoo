@@ -61,6 +61,8 @@ const OCRScreen = () => {
   };
 
   const sendToOcr = async (base64Image: string) => {
+    console.log('hihi');
+
     try {
       const response = await axios.post(
         'https://vision.googleapis.com/v1/images:annotate',
@@ -161,7 +163,7 @@ const OCRScreen = () => {
   const addSupplement = async (supplementSeq: number) => {
     try {
       const response = await axios.post(
-        `${API_URL}/api/v1/cabnet`,
+        `${API_URL}/api/v1/icabnet`,
         {
           supplementSeq,
         },
@@ -240,6 +242,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#fff',
   },
   resultContainer: {
     marginTop: 20,

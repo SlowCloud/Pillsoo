@@ -98,44 +98,47 @@ const SearchResultScreen = () => {
   );
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.searchBarContainer}>
-        <SearchBar
-          placeholder="검색어를 입력하세요 !"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-          onSearch={fetchResults}
-        />
-      </View>
+    <>
+      <View style={styles.screen}>
+        <View style={styles.searchBarContainer}>
+          <SearchBar
+            placeholder="검색어를 입력하세요 !"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            onSearch={fetchResults}
+          />
+        </View>
 
-      {loading && page === 1 ? (
-        // 초기 로딩 상태
-        <ActivityIndicator size="large" color="#a4f87b" />
-      ) : results.length > 0 ? (
-        <FlatList
-          data={results}
-          keyExtractor={item => item.supplementSeq.toString()}
-          renderItem={renderItem}
-          onEndReached={handleLoadMore}
-          // 스크롤 시 더 많은 결과를 가져옴
-          onEndReachedThreshold={0.5}
-          // 리스트의 50%가 보일 때 호출
-          ListFooterComponent={
-            isFetchingMore ? (
-              <ActivityIndicator size="small" color="#a4f87b" />
-            ) : null
-          }
-        />
-      ) : (
-        <Text style={styles.noResultsText}>검색 결과가 없습니다.</Text>
-      )}
-    </View>
+        {loading && page === 1 ? (
+          // 초기 로딩 상태
+          <ActivityIndicator size="large" color="#a4f87b" />
+        ) : results.length > 0 ? (
+          <FlatList
+            data={results}
+            keyExtractor={item => item.supplementSeq.toString()}
+            renderItem={renderItem}
+            onEndReached={handleLoadMore}
+            // 스크롤 시 더 많은 결과를 가져옴
+            onEndReachedThreshold={0.5}
+            // 리스트의 50%가 보일 때 호출
+            ListFooterComponent={
+              isFetchingMore ? (
+                <ActivityIndicator size="small" color="#a4f87b" />
+              ) : null
+            }
+          />
+        ) : (
+          <Text style={styles.noResultsText}>검색 결과가 없습니다.</Text>
+        )}
+      </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   searchBarContainer: {
     padding: 16,

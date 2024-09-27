@@ -13,9 +13,11 @@ import {API_URL} from '@env';
 import {useSelector} from 'react-redux';
 import {useDispatch} from 'react-redux';
 import {setNickname} from '../../store/store';
+import {useNavigation} from '@react-navigation/native';
 
 const UserUpdateScreen = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigation();
   const [newNickname, setNewNickname] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
   const [confirmnewPassword, setConfirmNewPassword] = useState<string>('');
@@ -70,6 +72,7 @@ const UserUpdateScreen = () => {
         },
       );
       Alert.alert('회원정보 수정을 완료했습니다');
+      navigate.navigate('프로필');
       if (newNickname) {
         dispatch(setNickname(newNickname));
       }
@@ -124,6 +127,7 @@ const UserUpdateScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   userUpdateTitle: {
     color: 'black',
