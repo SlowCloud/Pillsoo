@@ -7,7 +7,8 @@ import lombok.Setter;
 import org.sos.pillsoo.cabinet.entity.Cabinet;
 
 
-import java.util.Date;
+import java.time.LocalTime;
+
 
 @Entity
 @Getter
@@ -20,9 +21,9 @@ public class Alarm {
     private long alarmSeq;
 
     @ManyToOne
-    @JoinColumn(name = "mykitSeq")
+    @JoinColumn(name = "cabinetSeq")
     private Cabinet cabinet;
 
-    private boolean isUsed;
-    private Date alarm;
+    private boolean isTurnOn = true;
+    private LocalTime time;
 }

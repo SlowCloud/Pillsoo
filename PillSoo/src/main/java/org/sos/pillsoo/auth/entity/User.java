@@ -27,4 +27,5 @@ public class User {
     private Timestamp createdAt;
     private Timestamp withdrawalAt;
     private String role;
+    private String fcmToken;
 }

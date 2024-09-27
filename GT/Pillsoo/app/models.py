@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String,Text, ForeignKey
 from .database import Base
 
-'''
+
 class Supplement(Base):
     __tablename__ = 'Supplement'
     
@@ -19,9 +19,9 @@ class Age_Prefer(Base):
     PILL_pk = Column(Integer, ForeignKey('Supplement.supplementSeq'))
     AGE_GROUPS = Column(String(50))
     dose_guide = Column(String, index=True)
+
+
 '''
-
-
 class Supplement(Base):
     __tablename__ = 'Supplement_backup_copy'
     
@@ -39,3 +39,4 @@ class Age_Prefer(Base):
     PILL_pk = Column(Integer, ForeignKey('Supplement_backup_copy.supplementSeq'))
     AGE_GROUPS = Column(String(50))
     dose_guide = Column(String, index=True)
+'''

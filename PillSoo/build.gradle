@@ -47,6 +47,11 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
     implementation 'javax.servlet:javax.servlet-api:4.0.1' // 또는 필요한 버전
+
+    // firebase 24.09.27
+    // https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '9.3.0'
+
 }
 
 tasks.named('test') {
