@@ -3,6 +3,8 @@ package org.sos.pillsoo.supplement.service;
 import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.auth.repository.UserRepository;
+import org.sos.pillsoo.elasticsearch.entity.ElasticSupplement;
+import org.sos.pillsoo.elasticsearch.repository.ElasticSupplementRepository;
 import org.sos.pillsoo.mykit.repository.CabinetRepository;
 import org.sos.pillsoo.supplement.dto.SupplementDto;
 import org.sos.pillsoo.supplement.entity.ClickCount;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 public class SupplementService {
 
     private final SupplementRepository supplementRepository;
+    private final ElasticSupplementRepository elasticSupplementRepository;
     private final EffectCategoriesRepository effectCategoriesRepository;
     private final WishListRepository wishListRepository;
     private final CabinetRepository cabinetRepository;
@@ -44,7 +47,7 @@ public class SupplementService {
 
     public Page<SupplementDto> searchSupplements(String searchtext, String type, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Supplement> supplements = supplementRepository.findByPillNameContaining(searchtext, pageable);
+        Page<ElasticSupplement> supplements = elasticSupplementRepository.searchWithText(searchtext, pageable);
         return supplements.map(supplementMapper::toSupplementDto);
     }
 
