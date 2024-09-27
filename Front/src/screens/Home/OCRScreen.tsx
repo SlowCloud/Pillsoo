@@ -24,7 +24,7 @@ const OCRScreen = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [results, setResults] = useState<any[]>([]);
   const navigation = useNavigation();
-  console.log('hi');
+
   useFocusEffect(
     React.useCallback(() => {
       handleCapture();
@@ -61,6 +61,8 @@ const OCRScreen = () => {
   };
 
   const sendToOcr = async (base64Image: string) => {
+    console.log('hihi');
+
     try {
       const response = await axios.post(
         'https://vision.googleapis.com/v1/images:annotate',
@@ -240,6 +242,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#fff',
   },
   resultContainer: {
     marginTop: 20,

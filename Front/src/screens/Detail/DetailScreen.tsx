@@ -128,7 +128,7 @@ const DetailScreen: React.FC = () => {
     try {
       if (myKit) {
         // 복용 중 목록에서 제거
-        const response = await axios.delete(`${API_URL}/api/v1/my-kit`, {
+        const response = await axios.delete(`${API_URL}/api/v1/cabinet`, {
           headers: {
             accessn: `${token}`,
           },
@@ -146,7 +146,7 @@ const DetailScreen: React.FC = () => {
       } else {
         // 복용 중 목록에 추가
         const response = await axios.post(
-          `${API_URL}/api/v1/my-kit`,
+          `${API_URL}/api/v1/cabinet`,
           {supplementSeq: id},
           {
             headers: {
@@ -249,10 +249,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#fff',
   },
   container: {
     flex: 1,
-    marginVertical: 45,
+    backgroundColor: '#fff',
   },
   infoBox: {
     height: '20%',
