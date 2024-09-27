@@ -1,4 +1,4 @@
-package org.sos.pillsoo.cabinet.entity;
+package org.sos.pillsoo.alarm.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

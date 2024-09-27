@@ -1,6 +1,6 @@
-package org.sos.pillsoo.cabinet.repository;
+package org.sos.pillsoo.alarm.repository;
 
-import org.sos.pillsoo.cabinet.entity.Alarm;
+import org.sos.pillsoo.alarm.entity.Alarm;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

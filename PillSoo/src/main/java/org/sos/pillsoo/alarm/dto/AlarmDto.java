@@ -1,4 +1,4 @@
-package org.sos.pillsoo.cabinet.dto;
+package org.sos.pillsoo.alarm.dto;
 
 import lombok.Getter;
 import lombok.Setter;
