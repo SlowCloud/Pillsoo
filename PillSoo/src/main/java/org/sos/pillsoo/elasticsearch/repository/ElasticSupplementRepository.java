@@ -21,8 +21,8 @@ public interface ElasticSupplementRepository extends ElasticsearchRepository<Ela
           {
             "exp": {
               "click_count": {
-                "origin": 0,
-                "scale": 1000
+                "origin": 1000,
+                "scale": 10
               }
             }
           }
