@@ -1,18 +1,12 @@
-package org.sos.pillsoo.mykit.service;
+package org.sos.pillsoo.cabinet.service;
 
-<<<<<<< Updated upstream:PillSoo/src/main/java/org/sos/pillsoo/mykit/service/AlarmService.java
-import org.sos.pillsoo.mykit.dto.AlarmDto;
-import org.sos.pillsoo.mykit.entity.Alarm;
-import org.sos.pillsoo.mykit.entity.Cabinet;
-import org.sos.pillsoo.mykit.repository.AlarmRepository;
-import org.sos.pillsoo.mykit.repository.CabinetRepository;
-=======
-import org.sos.pillsoo.alarm.dto.AlarmDto;
-import org.sos.pillsoo.alarm.entity.Alarm;
+
+
+import org.sos.pillsoo.cabinet.dto.AlarmDto;
+import org.sos.pillsoo.cabinet.entity.Alarm;
 import org.sos.pillsoo.cabinet.entity.Cabinet;
-import org.sos.pillsoo.alarm.repository.AlarmRepository;
+import org.sos.pillsoo.cabinet.repository.AlarmRepository;
 import org.sos.pillsoo.cabinet.repository.CabinetRepository;
->>>>>>> Stashed changes:PillSoo/src/main/java/org/sos/pillsoo/alarm/service/AlarmService.java
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,12 +35,7 @@ public class AlarmService {
                 .orElseThrow(() -> new RuntimeException("Cabinet entry not found"));
 
         Alarm alarm = new Alarm();
-<<<<<<< Updated upstream:PillSoo/src/main/java/org/sos/pillsoo/mykit/service/AlarmService.java
         alarm.setCabinet(cabinet); // Cabinet 객체 설정
-=======
-//        alarm.setCabinet(cabinet); // Cabinet 객체 설정
-//        alarm.setAlarm(a);
->>>>>>> Stashed changes:PillSoo/src/main/java/org/sos/pillsoo/alarm/service/AlarmService.java
         alarm.setAlarm(alarmDto.getAlert());
         alarm.setUsed(alarmDto.isTurnOn());
         alarmRepository.save(alarm);

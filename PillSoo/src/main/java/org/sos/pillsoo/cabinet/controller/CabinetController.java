@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/my-kit")
+@RequestMapping("/api/v1/my-kifghfhgfhfgt")
 public class CabinetController {
 
     @Autowired
