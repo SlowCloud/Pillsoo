@@ -45,14 +45,9 @@ public class SupplementController {
     @GetMapping("/search")
     public Page<SupplementDto> searchSupplements(
             @RequestParam String searchtext,
-            @RequestParam(required = false) String type,
+            @RequestParam(required = false, defaultValue = "") String type,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-
-        // type이 null인 경우 기본 값을 설정하거나 빈 문자열로 처리
-        if (type == null) {
-            type = "";  // 혹은 다른 기본값으로 설정
-        }
 
         return supplementService.searchSupplements(searchtext, type, page, size);
     }
