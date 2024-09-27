@@ -7,7 +7,9 @@ import {
   Alert,
   Platform,
   PermissionsAndroid,
-  Modal
+  Modal,
+  FlatList,
+  Image
 } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import PushNotification, { Importance } from 'react-native-push-notification';
@@ -16,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { API_URL } from '@env';
 import { useSelector } from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
 
 interface Alarm {
   id: string;
@@ -37,6 +40,7 @@ const AlarmScreen = () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [myKitData, setMyKitData] = useState<Supplement[]>([]);
+  const navigation = useNavigation();
 
   const userSeq = useSelector((state: {userSeq: number | null}) => state.userSeq,
   );
@@ -210,6 +214,15 @@ const AlarmScreen = () => {
     }
   };
 
+  const renderItem = ({item}: {item: Supplement}) => (
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => navigation.navigate('Detail', {id: item.supplementSeq})}>
+      <Image source={{uri: item.imageUrl}} style={styles.itemImage} />
+      <Text style={styles.itemName}>{item.pillName}</Text>
+    </TouchableOpacity>
+  );
+
 
   // 알람 설정 모달
   const settingAlarm = 
@@ -221,10 +234,16 @@ const AlarmScreen = () => {
               <Text style={styles.modalBoxHeaderText}>X</Text>
             </TouchableOpacity>
           </View>
-          {/* 마이키트 목록 올거임 */}
+          <FlatList
+          data={myKitData}
+          renderItem={renderItem}
+          keyExtractor={item => item.supplementSeq.toString()}
+        />
           </View>
     </View>
       </Modal>
+
+
 
 
 
@@ -297,7 +316,24 @@ const styles = StyleSheet.create({
   modalBoxHeaderText: {
     fontWeight: 'bold',
     fontSize: 22,
-  }
+  },
+  itemContainer: {
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  itemImage: {
+    width: 50,
+    height: 50,
+    marginRight: 15,
+  },
+  itemName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
 export default AlarmScreen;
