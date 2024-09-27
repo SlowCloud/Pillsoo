@@ -1,4 +1,4 @@
-package org.sos.pillsoo.mykit.dto;
+package org.sos.pillsoo.cabinet.dto;
 
 import lombok.Getter;
 import lombok.Setter;

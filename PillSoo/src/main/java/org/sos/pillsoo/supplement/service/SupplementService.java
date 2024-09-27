@@ -3,7 +3,7 @@ package org.sos.pillsoo.supplement.service;
 import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.auth.repository.UserRepository;
-import org.sos.pillsoo.mykit.repository.CabinetRepository;
+import org.sos.pillsoo.cabinet.repository.CabinetRepository;
 import org.sos.pillsoo.supplement.dto.SupplementDto;
 import org.sos.pillsoo.supplement.entity.ClickCount;
 import org.sos.pillsoo.supplement.entity.EffectCategories;

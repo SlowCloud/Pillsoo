@@ -1,4 +1,4 @@
-package org.sos.pillsoo.mykit.entity;
+package org.sos.pillsoo.cabinet.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -14,7 +14,7 @@ public class Cabinet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int mykitSeq;
+    private int cabinetSeq;
 
     @ManyToOne(fetch = FetchType.EAGER)  // 즉시 로딩으로 설정
     @JoinColumn(name = "supplementSeq")

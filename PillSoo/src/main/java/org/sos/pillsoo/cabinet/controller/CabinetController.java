@@ -1,8 +1,8 @@
-package org.sos.pillsoo.mykit.controller;
+package org.sos.pillsoo.cabinet.controller;
 
 import org.sos.pillsoo.auth.dto.CustomUserDetails;
-import org.sos.pillsoo.mykit.dto.CabinetDto;
-import org.sos.pillsoo.mykit.service.CabinetService;
+import org.sos.pillsoo.cabinet.dto.CabinetDto;
+import org.sos.pillsoo.cabinet.service.CabinetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

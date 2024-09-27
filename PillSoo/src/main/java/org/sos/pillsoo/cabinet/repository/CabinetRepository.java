@@ -1,6 +1,6 @@
-package org.sos.pillsoo.mykit.repository;
+package org.sos.pillsoo.cabinet.repository;
 
-import org.sos.pillsoo.mykit.entity.Cabinet;
+import org.sos.pillsoo.cabinet.entity.Cabinet;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

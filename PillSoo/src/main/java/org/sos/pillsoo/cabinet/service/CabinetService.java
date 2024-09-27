@@ -1,10 +1,10 @@
-package org.sos.pillsoo.mykit.service;
+package org.sos.pillsoo.cabinet.service;
 
 import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.auth.repository.UserRepository;
-import org.sos.pillsoo.mykit.dto.CabinetDto;
-import org.sos.pillsoo.mykit.entity.Cabinet;
-import org.sos.pillsoo.mykit.repository.CabinetRepository;
+import org.sos.pillsoo.cabinet.dto.CabinetDto;
+import org.sos.pillsoo.cabinet.entity.Cabinet;
+import org.sos.pillsoo.cabinet.repository.CabinetRepository;
 import org.sos.pillsoo.supplement.entity.Supplement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
