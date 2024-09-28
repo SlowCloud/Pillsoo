@@ -17,8 +17,10 @@ import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { API_URL } from '@env';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
+import AlarmModal from '../../components/Home/AlarmModal';
+import { setOpenModal } from '../../store/store';
 
 interface Alarm {
   id: string;
@@ -37,13 +39,13 @@ const AlarmScreen = () => {
   const [token, setToken] = useState<string | null>(null);
   const [date, setDate] = useState<Date>(new Date());
   const [show, setShow] = useState<boolean>(false);
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  // const [openModal, setOpenModal] = useState<boolean>(false);
+  const [currentSupplementSeq, setCurrentSupplementSeq] = useState<number | null>(null);
   const [myKitData, setMyKitData] = useState<Supplement[]>([]);
   const navigation = useNavigation();
-
-  const userSeq = useSelector((state: {userSeq: number | null}) => state.userSeq,
-  );
+  const dispatch = useDispatch();
+  const openModal = useSelector((state: {openModal: boolean | null}) => state.openModal);
+  const userSeq = useSelector((state: {userSeq: number | null}) => state.userSeq);
 
   // 앱에서 알람을 받을 수 있는지 확인
   const requestNotificationPermission = async () => {
@@ -114,7 +116,8 @@ const AlarmScreen = () => {
         }
       );
     }
-  };
+  }
+
 
   // firebase 서버에서 수신받음
   const registerFCM = async () => {
@@ -157,22 +160,40 @@ const AlarmScreen = () => {
   };
 
   // 알람 정보를 저장한다
-  const setAlarm = async (alarmDate: Date) => {
+  const setAlarm = async (alarmDate: Date, supplementSeq: number) => {
     if (!alarmDate) {
       Alert.alert('알람 시간을 선택해 주세요.');
       return ;
     }
     const message = '영양제 먹을 시간입니다.'
+    console.log('백한테 보내기 직전에 시간', alarmDate, supplementSeq)
+
+    // 백한테 보내자
+    const token = await AsyncStorage.getItem('jwt_token');
+
+    try {
+      const response = await axios.post(`${API_URL}/api/v1/alarm`, 
+      {supplementSeq, alert: alarmDate},
+        {
+        headers: {
+          access: `${token}`,
+        },
+      });
+
     Alert.alert(`알람이 ${alarmDate.toLocaleTimeString()}에 설정되었습니다`);
-  };
+  } catch {
+    console.error(Error);
+  }
+}
 
   // 시간을 설정한다
   const onChange = (event: DateTimePickerEvent, selected: Date | undefined) => {
     const currentDate = selected || date;
     if (event.type === 'set') {
       setDate(currentDate);
-      setSelectedDate(currentDate);
-      setAlarm(currentDate)
+      if (currentSupplementSeq != null) {
+        setAlarm(currentDate, currentSupplementSeq);
+      }
     }
     setShow(false);
   };
@@ -188,11 +209,11 @@ const AlarmScreen = () => {
 
   // 알람을 설정할 수 있는 모달을 연다
   const showAlarmModal = () => {
-    setOpenModal((prev) => !prev);
-    if (openModal === false)  {
+    dispatch(setOpenModal(!openModal));
+    if (!openModal)  {
       fetchMyKitData();
     };
-  }
+  };
 
   const fetchMyKitData = async () => {
     const token = await AsyncStorage.getItem('jwt_token');
@@ -209,18 +230,32 @@ const AlarmScreen = () => {
 
       setMyKitData(response.data);
       console.log('나 마이키트 데이터 가져옴')
-    } catch (err) {
+    } catch(err) {
       console.error(err);
     }
   };
 
+  // 각각의 영양제한테 알람 추가
+  const setEachItemAlarm = async (supplementSeq : number) => {
+    setCurrentSupplementSeq(supplementSeq);
+    setShow(true);
+  }
+
   const renderItem = ({item}: {item: Supplement}) => (
-    <TouchableOpacity
-      style={styles.itemContainer}
-      onPress={() => navigation.navigate('Detail', {id: item.supplementSeq})}>
-      <Image source={{uri: item.imageUrl}} style={styles.itemImage} />
-      <Text style={styles.itemName}>{item.pillName}</Text>
-    </TouchableOpacity>
+    <View style={styles.eachItemBox}>
+      <TouchableOpacity
+        style={styles.itemContainer}
+        onPress={() => navigation.navigate('Detail', {id: item.supplementSeq})}>
+        <Image source={{uri: item.imageUrl}} style={styles.itemImage} />
+        <Text style={styles.itemName}>{item.pillName}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity 
+        style={styles.AddEachAlarmBtn}
+        onPress={() => setEachItemAlarm(item.supplementSeq)}
+        >
+        <Text>추가</Text>
+      </TouchableOpacity>
+    </View>
   );
 
 
@@ -234,21 +269,18 @@ const AlarmScreen = () => {
               <Text style={styles.modalBoxHeaderText}>X</Text>
             </TouchableOpacity>
           </View>
-          <FlatList
-          data={myKitData}
-          renderItem={renderItem}
-          keyExtractor={item => item.supplementSeq.toString()}
-        />
+            <FlatList
+            data={myKitData}
+            renderItem={renderItem}
+            keyExtractor={item => item.supplementSeq.toString()}
+          />
           </View>
     </View>
       </Modal>
 
-
-
-
-
   return (
     <View style={styles.container}>
+      {openModal && <AlarmModal myKitData={myKitData} />}
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
           onPress={showAlarmModal}
@@ -265,10 +297,9 @@ const AlarmScreen = () => {
         )}
         </TouchableOpacity>
       </View>
-      {openModal ? settingAlarm : null}
+      {/* {openModal ? settingAlarm : null} */}
     </View>
-  );
-};
+  )}
 
 const styles = StyleSheet.create({
   container: {
@@ -317,11 +348,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 22,
   },
+  eachItemBox: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
   itemContainer: {
     padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    width: '100%',
+    width: '70%',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -334,6 +370,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  AddEachAlarmBtn: {
+    width: 50,
+    height: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    marginRight: 30,
+    borderRadius: 15,
+  }
 });
 
 export default AlarmScreen;

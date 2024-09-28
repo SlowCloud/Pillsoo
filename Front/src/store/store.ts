@@ -9,6 +9,7 @@ const initialState = {
   age: null as number | null,
   nickname: null as string | null,
   gender: null as string | null,
+  openModal: false,
 };
 
 // 액션 타입
@@ -18,6 +19,7 @@ const SET_ROLE = 'SET_ROLE';
 const SET_AGE = 'SET_AGE';
 const SET_NICKNAME = 'SET_NICKNAME';
 const SET_GENDER = 'SET_GENDER';
+const SET_OPEN_MODAL = 'SET_OPEN_MODAL';
 
 // 액션 생성자
 export const setUserId = (userId: string | null) => ({
@@ -47,6 +49,10 @@ export const setNickname = (nickname: string | null) => ({
 export const setGender = (gender: string | null) => ({
   type: SET_GENDER,
   payload: gender,
+});
+export const setOpenModal = (openModal: boolean) => ({
+  type: SET_OPEN_MODAL,
+  payload: openModal,
 });
 
 // 액션 타입 인터페이스 정의
@@ -78,9 +84,21 @@ interface SetGenderAction extends Action {
   type: typeof SET_GENDER;
   payload: string | null;
 }
+interface setOpenMIdalAction extends Action {
+  type: typeof SET_OPEN_MODAL;
+  payload: boolean;
+}
 
 // 액션 타입을 통합
-type MyActionTypes = setUserIdAction | SetUserSeqAction | SetRoleAction | SetAgeAction | SetNicknameAction | SetGenderAction;
+type MyActionTypes = 
+  | setUserIdAction 
+  | SetUserSeqAction 
+  | SetRoleAction 
+  | SetAgeAction 
+  | SetNicknameAction 
+  | SetGenderAction
+  | setOpenMIdalAction;
+
 
 // 리듀서
 const reducer = (state = initialState, action: MyActionTypes) => {
@@ -97,6 +115,8 @@ const reducer = (state = initialState, action: MyActionTypes) => {
       return {...state, nickname: action.payload};
     case SET_GENDER:
       return {...state, gender: action.payload};
+    case SET_OPEN_MODAL:
+      return {...state, openModal: action.payload};
     default:
       return state;
   }
