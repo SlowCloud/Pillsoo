@@ -11,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -30,7 +29,7 @@ public class ControllerAspect {
         CodeSignature signature = (CodeSignature) joinPoint.getSignature();
         Logger logger = LoggerFactory.getLogger(signature.getDeclaringType());
 
-        logger.info("ENTER {}", joinPoint.getSignature().getName());
+        logger.info("ENTER :: {}", joinPoint.getSignature().getName());
         logger.info(getParamLog(joinPoint, signature));
 
         Authentication authentication = SecurityContextHolder.getContextHolderStrategy().getContext().getAuthentication();
