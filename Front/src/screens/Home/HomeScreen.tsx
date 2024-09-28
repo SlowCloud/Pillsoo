@@ -4,13 +4,12 @@ import Kit from '../../components/Home/Kit';
 import Header from '../../components/common/Header';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = () => {
   const navigation = useNavigation();
   const nickname = useSelector(
     (state: {nickname: string | null}) => state.nickname,
   );
-
   return (
     <>
       <View style={styles.container}>
@@ -44,6 +43,10 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
+  },
+  mainTitle: {
+    fontFamily: 'WavvePADO-Regular.ttf',
+    fontSize: 30
   },
   container: {
     flex: 0.1,
