@@ -13,10 +13,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 @Aspect
 public class ControllerAspect {
+
+    private static final Logger log = LoggerFactory.getLogger(ControllerAspect.class);
 
     @Pointcut("within(org.sos.pillsoo..*Controller)")
     void controllerPointcut() {}
@@ -28,8 +31,7 @@ public class ControllerAspect {
         Logger logger = LoggerFactory.getLogger(signature.getDeclaringType());
 
         logger.info("ENTER {}", joinPoint.getSignature().getName());
-        logger.info(getParamNameLog(signature));
-        logger.info(getParamValueLog(joinPoint));
+        logger.info(getParamLog(joinPoint, signature));
 
         Authentication authentication = SecurityContextHolder.getContextHolderStrategy().getContext().getAuthentication();
         if(authentication != null) {
@@ -38,14 +40,11 @@ public class ControllerAspect {
 
     }
 
-    private static String getParamNameLog(CodeSignature signature) {
-        return Arrays.stream(signature.getParameterNames())
+    private static String getParamLog(JoinPoint joinPoint, CodeSignature signature) {
+        String[] parameterNames = signature.getParameterNames();
+        Object[] args = joinPoint.getArgs();
+        return IntStream.range(0, parameterNames.length)
+                .mapToObj(i -> parameterNames[i] + "=" + (args[i] != null ? args[i] : "null"))
                 .collect(Collectors.joining(", ", "PARAMS :: ", ""));
-    }
-
-    private static String getParamValueLog(JoinPoint joinPoint) {
-        return Arrays.stream(joinPoint.getArgs())
-                .map(Object::toString)
-                .collect(Collectors.joining(", ", "PARAM VALUES :: ", ""));
     }
 }
