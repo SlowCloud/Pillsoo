@@ -163,7 +163,7 @@ const OCRScreen = () => {
   const addSupplement = async (supplementSeq: number) => {
     try {
       const response = await axios.post(
-        `${API_URL}/api/v1/icabnet`,
+        `${API_URL}/api/v1/cabinet`,
         {
           supplementSeq,
         },
