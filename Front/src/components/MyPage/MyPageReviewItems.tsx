@@ -57,8 +57,15 @@ const MyPageReviewItems: React.FC<Props> = ({
     <View style={styles.container}>
       <Image source={{uri: pillData?.imageUrl}} style={styles.myReviewImage} />
       <View style={styles.myReviewBox}>
-        <Text>💊{pillData?.pillName}</Text>
-        <Text style={styles.myReviewContent}>{content}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail">
+          💊{pillData?.pillName}
+        </Text>
+        <Text
+          style={styles.myReviewContent}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {content}
+        </Text>
       </View>
     </View>
   );
@@ -88,6 +95,7 @@ const styles = StyleSheet.create({
   },
   myReviewBox: {
     marginLeft: 10,
+    maxWidth: '80%',
   },
   pillName: {
     marginTop: 5,

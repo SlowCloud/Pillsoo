@@ -14,7 +14,6 @@ interface Props {
 
 const AgeBasedRecommendations = (props: Props) => {
   const {age, recommendPills} = props;
-
   const age2 = Math.floor(age / 10) * 10;
 
   return (

@@ -25,7 +25,7 @@ export type RecommendPill = {
 };
 
 const RecommendScreen: React.FC<Props> = ({navigation}) => {
-  const age = useSelector((state: {age: number}) => state.age);
+  const age = useSelector((state: {age: number | null}) => state.age);
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
 
   // 화면 렌더링 시 함수 실행
