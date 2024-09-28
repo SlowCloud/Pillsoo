@@ -22,12 +22,21 @@ interface Supplement {
   pillName: string;
   functionality: string;
   imageUrl: string;
-}
+};
+
+interface AlarmList {
+  alarmSeq: number;
+  alert: Date;
+  pillName: string;
+  supplementSeq: number;
+  turnon: boolean;
+};
 
 const AlarmScreen = () => {
   const [token, setToken] = useState<string | null>(null);
   const [FCMToken, setFCMToken] = useState<string | null>(null);
   const [myKitData, setMyKitData] = useState<Supplement[]>([]);
+  const [myAlarms, setMyAlarms] = useState<AlarmList[]>([]);
   const dispatch = useDispatch();
   const openModal = useSelector((state: {openModal: boolean | null}) => state.openModal);
   const userSeq = useSelector((state: {userSeq: boolean | null}) => state.userSeq);
@@ -63,7 +72,32 @@ const AlarmScreen = () => {
     };
 
     fetchPillData();
-  }, [token]);
+  }, [token, myKitData]);
+
+  // 알람 목록 가지고 와
+  useEffect(() => {
+    const fetchAlarmData = async () => {
+      if (!token) return;
+      try {
+        const response = await axios.get(
+          `${API_URL}/api/v1/alarm`,
+          {
+            headers: {
+              access: `${token}`,
+            },
+            params: {
+              userSeq: userSeq,
+            },
+          },
+        );
+        setMyAlarms(response.data)
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchAlarmData();
+  })
 
   // 앱에서 알람을 받을 수 있는지 확인
   const requestNotificationPermission = async () => {

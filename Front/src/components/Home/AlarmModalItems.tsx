@@ -5,23 +5,19 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { API_URL } from '@env';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface AlarmModalItemsProps {
-    functionality: string;
     pillName: string;
     supplementSeq: number;
     imageUrl: string;
 }
 
-const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ functionality, pillName, supplementSeq, imageUrl}) => {
+const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementSeq, imageUrl}) => {
     const [openAlarmModal, setOpenAlarmModal] = useState<boolean>(false);
     const [date, setDate] = useState<Date>(new Date());
     const [token, setToken] = useState<string | null>(null);
     const [currentSupplementSeq, setCurrentSupplementSeq] = useState<number | null>(null);
-
-    useEffect(() => {
-        setCurrentSupplementSeq(supplementSeq);
-    }, [supplementSeq]);
 
     useEffect(() => {
       const fetchToken = async () => {
@@ -30,7 +26,13 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ functionality, pillNa
       };
   
       fetchToken();
-    }, [supplementSeq]);
+    }, [])
+
+  //   useEffect(() => {
+  //     if (currentSupplementSeq != null) {
+  //         setAlarm(date, currentSupplementSeq);
+  //     }
+  // }, [date]); 
 
     // 알람을 설정할 수 있는 모달을 연다
   const showAlarmModal = () => {
@@ -46,11 +48,12 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ functionality, pillNa
     // 백한테 보내자
     const alarmTime = new Date(alarmDate);
     console.log('alarmTime', alarmTime)
+    console.log(alarmDate)
     try {
       const response = await axios.post(`${API_URL}/api/v1/alarm`, 
       {
         supplementSeq: supplementSeq, 
-        alert: alarmTime,
+        alert: alarmDate,
         isTurnOn: true
       },
         {
@@ -67,25 +70,21 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ functionality, pillNa
 
     // 시간을 설정한다
     const onChange = (event: DateTimePickerEvent, selected: Date | undefined) => {
-        console.log('Event type:', event.type);
-        console.log('나 왔다')
-        const currentDate = selected || date;
-        console.log(currentDate)
-        console.log(currentSupplementSeq)
-        if (event.type === 'set') {
-            setDate(currentDate);
-            if (currentSupplementSeq != null) {
-              console.log('나 알람 보낼 시간이랑 영양제임', currentDate, currentSupplementSeq)
-                setAlarm(currentDate, currentSupplementSeq);
-            }
-        }
-        console.log('나 했디')
-        setOpenAlarmModal(false);
-      };
+      const currentDate = selected || date;
+      setOpenAlarmModal(false);
+      setDate(currentDate);
+
+      const alarmDate = new Date(currentDate);
+      setAlarm(alarmDate, supplementSeq);
+    };
 
   return (
     <View>
-        <Image source={{uri: imageUrl}} />
+      <View style={styles.container}>
+        <Image 
+          source={{uri: imageUrl}} 
+          style={styles.itemImage}
+          />
         <Text>{pillName}</Text>
         <TouchableOpacity
             onPress={showAlarmModal}
@@ -100,11 +99,15 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ functionality, pillNa
             onChange={onChange}
           />
         )}
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    borderWidth: 2,
+  },
     itemImage: {
         width: 50,
         height: 50,
