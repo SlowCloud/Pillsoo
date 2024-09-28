@@ -1,8 +1,10 @@
-import React from 'react';
-import {StyleSheet, View, Text, Modal, TouchableOpacity, FlatList, Image} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import {useNavigation} from '@react-navigation/native';
 import { setOpenModal } from '../../store/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { API_URL } from '@env';
 import AlarmModalItems from './AlarmModalItems';
 
 interface Supplement {
@@ -12,14 +14,16 @@ interface Supplement {
     imageUrl: string;
   }
 
-  interface AlarmModalProps {
+  interface AlarmModalItemsProps {
     myKitData: Supplement[];
   }
 
-const AlarmModal: React.FC<AlarmModalProps> = ({myKitData}) => {
-    const openModal = useSelector((state: {openModal: boolean | null}) => state.openModal);
-    const dispatch = useDispatch();
-    const navigation = useNavigation();
+const AlarmModal:React.FC<AlarmModalItemsProps> = ({myKitData}) => {
+  const dispatch = useDispatch();
+  const openModal = useSelector((state: {openModal: boolean | null}) => state.openModal);
+
+
+
 
     // 알람을 설정할 수 있는 모달을 닫는다
     const showAlarmModal = () => {
@@ -36,14 +40,15 @@ const AlarmModal: React.FC<AlarmModalProps> = ({myKitData}) => {
           <Text>닫아!!!!!!</Text>
         </TouchableOpacity>
         {myKitData.map(item => (
-          <AlarmModalItems
-            key={item.supplementSeq}
-            functionality={item.functionality}
-            pillName={item.pillName}
-            supplementSeq={item.supplementSeq}
-            imageUrl={item.imageUrl}
-          />
-        ))}
+            <AlarmModalItems
+              key={item.supplementSeq}
+              functionality={item.functionality}
+              pillName={item.pillName}
+              supplementSeq={item.supplementSeq}
+              imageUrl={item.imageUrl}
+            />
+          ))
+        }
       </View>
   )
 }

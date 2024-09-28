@@ -16,10 +16,20 @@ interface AlarmModalItemsProps {
 const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ functionality, pillName, supplementSeq, imageUrl}) => {
     const [openAlarmModal, setOpenAlarmModal] = useState<boolean>(false);
     const [date, setDate] = useState<Date>(new Date());
+    const [token, setToken] = useState<string | null>(null);
     const [currentSupplementSeq, setCurrentSupplementSeq] = useState<number | null>(null);
 
     useEffect(() => {
         setCurrentSupplementSeq(supplementSeq);
+    }, [supplementSeq]);
+
+    useEffect(() => {
+      const fetchToken = async () => {
+        const storedToken = await AsyncStorage.getItem('jwt_token');
+        setToken(storedToken);
+      };
+  
+      fetchToken();
     }, [supplementSeq]);
 
     // 알람을 설정할 수 있는 모달을 연다
@@ -33,19 +43,16 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ functionality, pillNa
       Alert.alert('알람 시간을 선택해 주세요.');
       return ;
     }
-    const message = '영양제 먹을 시간입니다.'
     // 백한테 보내자
-    const token = await AsyncStorage.getItem('jwt_token');
     const alarmTime = new Date(alarmDate);
-    const hours = String(alarmTime.getUTCHours()).padStart(2, '0'); // 두 자리 수로 만들기
-    const minutes = String(alarmTime.getUTCMinutes()).padStart(2, '0');
-    const seconds = String(alarmTime.getUTCSeconds()).padStart(2, '0');
-    const timeString = `${hours}:${minutes}:${seconds}`;
-    console.log('백한테 보낼 거 내 토큰, 영양제seq, 날짜', token, supplementSeq, timeString)
-
+    console.log('alarmTime', alarmTime)
     try {
       const response = await axios.post(`${API_URL}/api/v1/alarm`, 
-      {supplementSeq: supplementSeq, alert: timeString},
+      {
+        supplementSeq: supplementSeq, 
+        alert: alarmTime,
+        isTurnOn: true
+      },
         {
         headers: {
           access: `${token}`,
@@ -53,8 +60,8 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ functionality, pillNa
       });
 
     Alert.alert(`알람이 ${alarmDate.toLocaleTimeString()}에 설정되었습니다`);
-  } catch {
-    console.error(Error);
+  } catch(error) {
+    console.error(error);
   }
 }
 
@@ -68,6 +75,7 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ functionality, pillNa
         if (event.type === 'set') {
             setDate(currentDate);
             if (currentSupplementSeq != null) {
+              console.log('나 알람 보낼 시간이랑 영양제임', currentDate, currentSupplementSeq)
                 setAlarm(currentDate, currentSupplementSeq);
             }
         }
