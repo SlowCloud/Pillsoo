@@ -59,7 +59,6 @@ const AlarmScreen = () => {
         );
       
       setMyKitData(response.data)
-      console.log('내 복용 영양제 정보 받아옴')
       } catch (error) {
         console.error(error);
       }
@@ -85,7 +84,6 @@ const AlarmScreen = () => {
         );
         dispatch(setResetAlarm(false))
         setMyAlarms(response.data)
-        console.log('내 알람 정보 받아옴')
       } catch (error) {
         console.error(error);
       }

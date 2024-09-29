@@ -18,14 +18,11 @@ const AlarmModal:React.FC<AlarmModalItemsProps> = ({myKitData}) => {
   const dispatch = useDispatch();
   const openModal = useSelector((state: {openModal: boolean | null}) => state.openModal);
 
-  
-
-
-    // 알람을 설정할 수 있는 모달을 닫는다
-    const showAlarmModal = () => {
-        dispatch(setOpenModal(!openModal));
-        if (!openModal)  {
-        };
+  // 알람을 설정할 수 있는 모달을 닫는다
+  const showAlarmModal = () => {
+      dispatch(setOpenModal(!openModal));
+      if (!openModal)  {
+      };
     };
     
   return (
