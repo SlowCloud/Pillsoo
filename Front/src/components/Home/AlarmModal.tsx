@@ -10,9 +10,9 @@ interface Supplement {
     imageUrl: string;
   }
 
-  interface AlarmModalItemsProps {
-    myKitData: Supplement[];
-  }
+interface AlarmModalItemsProps {
+  myKitData: Supplement[];
+}
 
 const AlarmModal:React.FC<AlarmModalItemsProps> = ({myKitData}) => {
   const dispatch = useDispatch();
