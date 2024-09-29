@@ -40,6 +40,7 @@ const AlarmScreen = () => {
   const dispatch = useDispatch();
   const openModal = useSelector((state: {openModal: boolean | null}) => state.openModal);
   const userSeq = useSelector((state: {userSeq: boolean | null}) => state.userSeq);
+  const [date, setDate] = useState<Date>(new Date());
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -72,7 +73,7 @@ const AlarmScreen = () => {
     };
 
     fetchPillData();
-  }, [token, myKitData]);
+  }, [token]);
 
   // 알람 목록 가지고 와
   useEffect(() => {
@@ -97,7 +98,7 @@ const AlarmScreen = () => {
     };
 
     fetchAlarmData();
-  })
+  }, [])
 
   // 앱에서 알람을 받을 수 있는지 확인
   const requestNotificationPermission = async () => {
@@ -218,7 +219,6 @@ const AlarmScreen = () => {
   const showAlarmModal = () => {
     dispatch(setOpenModal(true));
   };
-
 
   return (
     <View style={styles.container}>
