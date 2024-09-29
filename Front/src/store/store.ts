@@ -9,7 +9,10 @@ const initialState = {
   age: null as number | null,
   nickname: null as string | null,
   gender: null as string | null,
+  // 알람 설정 모달
   openModal: false,
+  // 알람을 수정 or 삭제 한 후 재렌더링 할 때 필요
+  resetAlarm: false,
 };
 
 // 액션 타입
@@ -20,6 +23,7 @@ const SET_AGE = 'SET_AGE';
 const SET_NICKNAME = 'SET_NICKNAME';
 const SET_GENDER = 'SET_GENDER';
 const SET_OPEN_MODAL = 'SET_OPEN_MODAL';
+const SET_RESET_ALARM = 'SET_RESET_ALARM';
 
 // 액션 생성자
 export const setUserId = (userId: string | null) => ({
@@ -53,6 +57,10 @@ export const setGender = (gender: string | null) => ({
 export const setOpenModal = (openModal: boolean) => ({
   type: SET_OPEN_MODAL,
   payload: openModal,
+});
+export const setResetAlarm = (resetAlarm: boolean) => ({
+  type: SET_RESET_ALARM,
+  payload: resetAlarm,
 });
 
 // 액션 타입 인터페이스 정의
@@ -88,6 +96,10 @@ interface setOpenMIdalAction extends Action {
   type: typeof SET_OPEN_MODAL;
   payload: boolean;
 }
+interface setResetAlarmAction extends Action {
+  type: typeof SET_RESET_ALARM;
+  payload: boolean;
+}
 
 // 액션 타입을 통합
 type MyActionTypes = 
@@ -97,7 +109,8 @@ type MyActionTypes =
   | SetAgeAction 
   | SetNicknameAction 
   | SetGenderAction
-  | setOpenMIdalAction;
+  | setOpenMIdalAction
+  | setResetAlarmAction;
 
 
 // 리듀서
@@ -117,6 +130,8 @@ const reducer = (state = initialState, action: MyActionTypes) => {
       return {...state, gender: action.payload};
     case SET_OPEN_MODAL:
       return {...state, openModal: action.payload};
+    case SET_RESET_ALARM:
+      return {...state, resetAlarm: action.payload};
     default:
       return state;
   }

@@ -5,7 +5,8 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { API_URL } from '@env';
-import moment from 'moment-timezone';
+import { setResetAlarm } from '../../store/store';
+import { useDispatch } from 'react-redux';
 
 interface AlarmModalItemsProps {
     pillName: string;
@@ -14,6 +15,7 @@ interface AlarmModalItemsProps {
 }
 
 const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementSeq, imageUrl}) => {
+  const dispatch = useDispatch();
     const [openAlarmModal, setOpenAlarmModal] = useState<boolean>(false);
     const [date, setDate] = useState<Date>(new Date());
     const [token, setToken] = useState<string | null>(null);
@@ -40,8 +42,6 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
     }
     // 백한테 보내자
     const alarmTime = new Date(alarmDate);
-    console.log('alarmTime', alarmTime)
-    console.log(alarmDate)
     try {
       const response = await axios.post(`${API_URL}/api/v1/alarm`, 
       {
@@ -54,23 +54,24 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
           access: `${token}`,
         },
       });
-
-    Alert.alert(`알람이 ${alertDate.toLocaleTimeString()}에 설정되었습니다`);
-  } catch(error) {
+      dispatch(setResetAlarm(true));
+      Alert.alert(`알람이 ${alertDate.toLocaleTimeString()}에 설정되었습니다`);
+    } catch(error) {
     console.error(error);
   }
 }
 
     // 시간을 설정한다
     const onChange = (event: DateTimePickerEvent, selected: Date | undefined) => {
-      const currentDate = selected || date;
-      setOpenAlarmModal(false);
-      console.log('내가 설정한 시간', currentDate)
-      const changeUTCTime = new Date(currentDate);
-      console.log('형식 바꿈', changeUTCTime)
-      changeUTCTime.setHours(changeUTCTime.getHours()+9)
-      console.log('시간 더함', changeUTCTime)
-      setAlarm(currentDate, changeUTCTime, supplementSeq);
+      if (event.type === 'set') {
+        const currentDate = selected || date;
+        setOpenAlarmModal(false)
+        const changeUTCTime = new Date(currentDate);
+        changeUTCTime.setHours(changeUTCTime.getHours()+9)
+        setAlarm(currentDate, changeUTCTime, supplementSeq)
+      } else if (event.type === 'dismissed') {
+        setOpenAlarmModal(false)
+      }
     };
 
   return (
