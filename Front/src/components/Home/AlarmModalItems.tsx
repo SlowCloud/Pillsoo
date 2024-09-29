@@ -16,9 +16,9 @@ interface AlarmModalItemsProps {
 
 const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementSeq, imageUrl}) => {
   const dispatch = useDispatch();
-    const [openAlarmModal, setOpenAlarmModal] = useState<boolean>(false);
-    const [date, setDate] = useState<Date>(new Date());
-    const [token, setToken] = useState<string | null>(null);
+  const [openAlarmModal, setOpenAlarmModal] = useState<boolean>(false);
+  const [date, setDate] = useState<Date>(new Date());
+  const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
       const fetchToken = async () => {
@@ -41,7 +41,6 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
       return ;
     }
     // 백한테 보내자
-    const alarmTime = new Date(alarmDate);
     try {
       const response = await axios.post(`${API_URL}/api/v1/alarm`, 
       {

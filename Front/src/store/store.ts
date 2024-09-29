@@ -1,6 +1,10 @@
 // store.ts
 import {createStore, Action} from 'redux';
 
+interface CheckAlarmType {
+  id: number;
+}
+
 // 초기 상태
 const initialState = {
   userId: null as string | null,
@@ -100,6 +104,7 @@ interface setResetAlarmAction extends Action {
   type: typeof SET_RESET_ALARM;
   payload: boolean;
 }
+
 
 // 액션 타입을 통합
 type MyActionTypes = 
