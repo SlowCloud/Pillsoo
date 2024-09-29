@@ -7,6 +7,7 @@ import {
   Alert,
   Platform,
   PermissionsAndroid,
+  ScrollView
 } from 'react-native';
 import PushNotification, { Importance } from 'react-native-push-notification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,6 +17,7 @@ import axios from 'axios';
 import { API_URL } from '@env';
 import AlarmModal from '../../components/Home/AlarmModal';
 import { setOpenModal } from '../../store/store';
+import MyAlarmListitems from '../../components/Home/MyAlarmListitems';
 
 interface Supplement {
   supplementSeq: number;
@@ -40,6 +42,7 @@ const AlarmScreen = () => {
   const dispatch = useDispatch();
   const openModal = useSelector((state: {openModal: boolean | null}) => state.openModal);
   const userSeq = useSelector((state: {userSeq: boolean | null}) => state.userSeq);
+  const [date, setDate] = useState<Date>(new Date());
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -72,7 +75,7 @@ const AlarmScreen = () => {
     };
 
     fetchPillData();
-  }, [token, myKitData]);
+  }, [token]);
 
   // 알람 목록 가지고 와
   useEffect(() => {
@@ -97,7 +100,7 @@ const AlarmScreen = () => {
     };
 
     fetchAlarmData();
-  })
+  }, [])
 
   // 앱에서 알람을 받을 수 있는지 확인
   const requestNotificationPermission = async () => {
@@ -219,10 +222,15 @@ const AlarmScreen = () => {
     dispatch(setOpenModal(true));
   };
 
-
   return (
     <View style={styles.container}>
       {openModal && <AlarmModal myKitData={myKitData}/>}
+      <ScrollView>
+        {myAlarms && myAlarms.map((alarm) => (
+            <MyAlarmListitems key={alarm.alarmSeq} myAlarm={alarm}/>
+          ))
+        }
+      </ScrollView>
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
           onPress={showAlarmModal}
@@ -232,7 +240,8 @@ const AlarmScreen = () => {
         </TouchableOpacity>
       </View>
     </View>
-  )}
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
