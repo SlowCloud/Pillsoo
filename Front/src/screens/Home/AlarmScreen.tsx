@@ -7,6 +7,7 @@ import {
   Alert,
   Platform,
   PermissionsAndroid,
+  ScrollView
 } from 'react-native';
 import PushNotification, { Importance } from 'react-native-push-notification';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,6 +17,7 @@ import axios from 'axios';
 import { API_URL } from '@env';
 import AlarmModal from '../../components/Home/AlarmModal';
 import { setOpenModal } from '../../store/store';
+import MyAlarmListitems from '../../components/Home/MyAlarmListitems';
 
 interface Supplement {
   supplementSeq: number;
@@ -223,6 +225,12 @@ const AlarmScreen = () => {
   return (
     <View style={styles.container}>
       {openModal && <AlarmModal myKitData={myKitData}/>}
+      <ScrollView>
+        {myAlarms && myAlarms.map((alarm) => (
+            <MyAlarmListitems key={alarm.alarmSeq} myAlarm={alarm}/>
+          ))
+        }
+      </ScrollView>
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
           onPress={showAlarmModal}
@@ -232,7 +240,8 @@ const AlarmScreen = () => {
         </TouchableOpacity>
       </View>
     </View>
-  )}
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
