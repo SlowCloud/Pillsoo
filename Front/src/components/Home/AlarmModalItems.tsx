@@ -5,7 +5,7 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { API_URL } from '@env';
-import { useFocusEffect } from '@react-navigation/native';
+import moment from 'moment-timezone';
 
 interface AlarmModalItemsProps {
     pillName: string;
@@ -17,7 +17,6 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
     const [openAlarmModal, setOpenAlarmModal] = useState<boolean>(false);
     const [date, setDate] = useState<Date>(new Date());
     const [token, setToken] = useState<string | null>(null);
-    const [currentSupplementSeq, setCurrentSupplementSeq] = useState<number | null>(null);
 
     useEffect(() => {
       const fetchToken = async () => {
@@ -28,19 +27,13 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
       fetchToken();
     }, [])
 
-  //   useEffect(() => {
-  //     if (currentSupplementSeq != null) {
-  //         setAlarm(date, currentSupplementSeq);
-  //     }
-  // }, [date]); 
-
     // 알람을 설정할 수 있는 모달을 연다
   const showAlarmModal = () => {
     setOpenAlarmModal(true);
   };
 
   // 알람 정보를 저장한다
-  const setAlarm = async (alarmDate: Date, supplementSeq: number) => {
+  const setAlarm = async (alarmDate: Date, alertDate: Date, supplementSeq: number) => {
     if (!alarmDate) {
       Alert.alert('알람 시간을 선택해 주세요.');
       return ;
@@ -62,7 +55,7 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
         },
       });
 
-    Alert.alert(`알람이 ${alarmDate.toLocaleTimeString()}에 설정되었습니다`);
+    Alert.alert(`알람이 ${alertDate.toLocaleTimeString()}에 설정되었습니다`);
   } catch(error) {
     console.error(error);
   }
@@ -72,10 +65,12 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
     const onChange = (event: DateTimePickerEvent, selected: Date | undefined) => {
       const currentDate = selected || date;
       setOpenAlarmModal(false);
-      setDate(currentDate);
-
-      const alarmDate = new Date(currentDate);
-      setAlarm(alarmDate, supplementSeq);
+      console.log('내가 설정한 시간', currentDate)
+      const changeUTCTime = new Date(currentDate);
+      console.log('형식 바꿈', changeUTCTime)
+      changeUTCTime.setHours(changeUTCTime.getHours()+9)
+      console.log('시간 더함', changeUTCTime)
+      setAlarm(currentDate, changeUTCTime, supplementSeq);
     };
 
   return (
@@ -96,6 +91,7 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
             value={date}
             mode="time"
             display="clock"
+            timeZoneName='Asia/Seoul'
             onChange={onChange}
           />
         )}

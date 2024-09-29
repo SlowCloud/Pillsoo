@@ -26,6 +26,7 @@
     "google-auth-library": "^9.14.1",
     "googleapis": "^144.0.0",
     "jwt-decode": "^4.0.0",
+    "moment-timezone": "^0.5.45",
     "node-stream-zip": "^1.15.0",
     "react": "18.2.0",
     "react-native": "0.72.6",

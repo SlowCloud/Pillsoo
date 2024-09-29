@@ -69,6 +69,7 @@ const AlarmScreen = () => {
           },
         );
       setMyKitData(response.data)
+      console.log('내 복용 영양제 정보 받아옴')
       } catch (error) {
         console.error(error);
       }
@@ -94,13 +95,14 @@ const AlarmScreen = () => {
           },
         );
         setMyAlarms(response.data)
+        console.log('내 알람 정보 받아옴')
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchAlarmData();
-  }, [])
+  }, [myKitData])
 
   // 앱에서 알람을 받을 수 있는지 확인
   const requestNotificationPermission = async () => {
