@@ -20,16 +20,16 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
   const [date, setDate] = useState<Date>(new Date());
   const [token, setToken] = useState<string | null>(null);
 
-    useEffect(() => {
-      const fetchToken = async () => {
-        const storedToken = await AsyncStorage.getItem('jwt_token');
-        setToken(storedToken);
-      };
-  
-      fetchToken();
-    }, [])
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await AsyncStorage.getItem('jwt_token');
+      setToken(storedToken);
+    };
 
-    // 알람을 설정할 수 있는 모달을 연다
+    fetchToken();
+  }, [])
+
+  // 알람을 설정할 수 있는 모달을 연다
   const showAlarmModal = () => {
     setOpenAlarmModal(true);
   };
@@ -48,7 +48,7 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
         alert: alarmDate,
         isTurnOn: true
       },
-        {
+      {
         headers: {
           access: `${token}`,
         },
@@ -57,21 +57,21 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
       Alert.alert(`알람이 ${alertDate.toLocaleTimeString()}에 설정되었습니다`);
     } catch(error) {
     console.error(error);
+    }
   }
-}
 
-    // 시간을 설정한다
-    const onChange = (event: DateTimePickerEvent, selected: Date | undefined) => {
-      if (event.type === 'set') {
-        const currentDate = selected || date;
-        setOpenAlarmModal(false)
-        const changeUTCTime = new Date(currentDate);
-        changeUTCTime.setHours(changeUTCTime.getHours()+9)
-        setAlarm(currentDate, changeUTCTime, supplementSeq)
-      } else if (event.type === 'dismissed') {
-        setOpenAlarmModal(false)
-      }
-    };
+  // 시간을 설정한다
+  const onChange = (event: DateTimePickerEvent, selected: Date | undefined) => {
+    if (event.type === 'set') {
+      const currentDate = selected || date;
+      setOpenAlarmModal(false)
+      const changeUTCTime = new Date(currentDate);
+      changeUTCTime.setHours(changeUTCTime.getHours()+9)
+      setAlarm(currentDate, changeUTCTime, supplementSeq)
+    } else if (event.type === 'dismissed') {
+      setOpenAlarmModal(false)
+    }
+  };
 
   return (
     <View>
@@ -82,9 +82,9 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
           />
         <Text>{pillName}</Text>
         <TouchableOpacity
-            onPress={showAlarmModal}
+          onPress={showAlarmModal}
         >
-            <Text>알람 추가</Text>
+          <Text>알람 추가</Text>
         </TouchableOpacity>
         {openAlarmModal && (
           <DateTimePicker

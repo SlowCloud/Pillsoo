@@ -9,19 +9,22 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 
 
 interface MyAlarmListitemsProps {
-    myAlarm: {
-        alarmSeq: number;
-        alert: Date;
-        pillName: string;
-        supplementSeq: number;
-        turnOn?: boolean;
-    };
+  myAlarm: {
+      alarmSeq: number;
+      alert: Date;
+      pillName: string;
+      supplementSeq: number;
+      turnOn?: boolean;
+  };
 }
 
 const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
   const [openAlarmModal, setOpenAlarmModal] = useState<boolean>(false);
   const [date, setDate] = useState<Date>(new Date());
   const dispatch = useDispatch();
+  const changeUTCTime = new Date(myAlarm.alert)
+  changeUTCTime.setHours(changeUTCTime.getHours()+9)
+  const LocalTime = changeUTCTime.toLocaleTimeString()
 
   // 알람 삭제
   const deleteAlarm = async () => {
@@ -42,9 +45,9 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
     }
   };
   
-    // 알람 수정
-    const updateAlarm = async() => {
-      setOpenAlarmModal(true);
+  // 알람 수정
+  const updateAlarm = async() => {
+    setOpenAlarmModal(true);
   };
 
   const setAlarm = async (alarmDate: Date, alertDate: Date, supplementSeq: number, alamSeq: number) => {
@@ -53,7 +56,7 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
       Alert.alert('알람 시간을 선택해 주세요.');
       return;
     }
-    console.log('도전!!!!!!!!!')
+
     try {
       const response = await axios.patch(
         `${API_URL}/api/v1/alarm/${alamSeq}`,
@@ -66,11 +69,12 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
           },
         }
       );
+      dispatch(setResetAlarm(true))
       Alert.alert(`'알람이 ${alertDate.toLocaleTimeString()}으로 변경되었습니다.`)
     } catch(error) {
       console.log(error)
     }
-  }
+  };
 
   const onChange = (event: DateTimePickerEvent, selected: Date | undefined) => {
     if (event.type === 'set') {
@@ -82,34 +86,34 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
     } else if (event.type === 'dismissed') {
       setOpenAlarmModal(false)
     }
-  }
+  };
 
   return (
     <View>
-        <Text>{myAlarm.pillName}</Text>
-        <Text>{myAlarm.alert.toString()}</Text>
-        <TouchableOpacity
-          onPress={deleteAlarm}
-        >
-          <Text>삭제</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={updateAlarm}
-        >
-          <Text>수정</Text>
-        </TouchableOpacity>
-        {openAlarmModal && (
-          <DateTimePicker 
-            value={date}
-            mode='time'
-            display='clock'
-            timeZoneName='Asia/Seoul'
-            onChange={onChange}
-          />
-        )}
+      <Text>{myAlarm.pillName}</Text>
+      <Text>{LocalTime}</Text>
+      <TouchableOpacity
+        onPress={deleteAlarm}
+      >
+        <Text>삭제</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={updateAlarm}
+      >
+        <Text>수정</Text>
+      </TouchableOpacity>
+      {openAlarmModal && (
+        <DateTimePicker 
+          value={date}
+          mode='time'
+          display='clock'
+          timeZoneName='Asia/Seoul'
+          onChange={onChange}
+        />
+      )}
     </View>
   )
-}
+};
 
 const styles = StyleSheet.create({});
 

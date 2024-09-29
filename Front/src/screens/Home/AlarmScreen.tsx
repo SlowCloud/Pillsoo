@@ -28,6 +28,7 @@ const AlarmScreen = () => {
   const [token, setToken] = useState<string | null>(null);
   const [myKitData, setMyKitData] = useState<Supplement[]>([]);
   const [myAlarms, setMyAlarms] = useState<AlarmList[]>([]);
+
   const dispatch = useDispatch();
   const openModal = useSelector((state: {openModal: boolean | null}) => state.openModal);
   const userSeq = useSelector((state: {userSeq: boolean | null}) => state.userSeq);
@@ -63,6 +64,7 @@ const AlarmScreen = () => {
         console.error(error);
       }
     };
+
     fetchPillData();
   }, [token]);
 
@@ -82,6 +84,7 @@ const AlarmScreen = () => {
             },
           },
         );
+        
         dispatch(setResetAlarm(false))
         setMyAlarms(response.data)
       } catch (error) {
