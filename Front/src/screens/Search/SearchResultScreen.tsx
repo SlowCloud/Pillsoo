@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import SearchBar from '../../components/common/SearchBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -49,7 +49,6 @@ const SearchResultScreen = () => {
         },
       });
       if (response.status === 200) {
-        console.log(response);
         if (newPage === 1) {
           setResults(response.data.content);
         } else {
@@ -65,6 +64,15 @@ const SearchResultScreen = () => {
       setIsFetchingMore(false);
     }
   };
+
+  // 화면이 포커스될 때 초기화
+  useFocusEffect(
+    useCallback(() => {
+      setSearchQuery('');
+      setResults([]);
+      setPage(1);
+    }, []),
+  );
 
   useEffect(() => {
     if (searchQuery.trim() === '') {
