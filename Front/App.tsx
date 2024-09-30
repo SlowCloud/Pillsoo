@@ -1,14 +1,15 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import AppNavigator from './src/navigation/AppNavigator';
-import {Provider} from 'react-redux';
-import { Alert, Platform, PermissionsAndroid } from 'react-native';
-import store from './src/store/store';
+import { Platform, PermissionsAndroid } from 'react-native';
+import { setFcmToken } from './src/store/store';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification, { Importance } from 'react-native-push-notification';
+import { useSelector, useDispatch } from 'react-redux';
 
 const App: React.FC = () => {
-  const [FCMToken, setFCMToken] = useState<string | null>(null);
+  const dispatch = useDispatch();
+  const fcmToken = useSelector((state: {fcmToken: string | null}) => state.fcmToken);
 
 
   // 앱에서 알람을 받을 수 있는지 확인
@@ -85,13 +86,19 @@ const App: React.FC = () => {
   const registerFCM = async () => {
     // 토큰을 가지고 온다
     const token = await messaging().getToken();
-    setFCMToken(token);
+    dispatch(setFcmToken(token));
     console.log('[App] onRegister: token :', token);
 
     // 토큰을 백엔드로 전송하는 함수 만들어라!!!!!!!!!!!!!!!!!!!!
 
     messaging().onMessage(async remoteMessage => {
       console.log('A new FCM message arrived!', remoteMessage);
+
+      PushNotification.localNotification({
+        title: remoteMessage.notification?.title || '알림',
+        message: remoteMessage.notification?.body || '메시지가 도착했습니다',
+        channelId: 'default_my_channel_id'
+      })
     });
 
     messaging().onNotificationOpenedApp(remoteMessage => {
@@ -107,11 +114,9 @@ const App: React.FC = () => {
 
 
   return (
-    <Provider store={store}>
       <NavigationContainer>
         <AppNavigator />
       </NavigationContainer>
-    </Provider>
   );
 };
 

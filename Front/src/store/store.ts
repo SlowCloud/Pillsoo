@@ -17,6 +17,7 @@ const initialState = {
   openModal: false,
   // 알람을 수정 or 삭제 한 후 재렌더링 할 때 필요
   resetAlarm: false,
+  fcmToken: null as string | null,
 };
 
 // 액션 타입
@@ -28,6 +29,7 @@ const SET_NICKNAME = 'SET_NICKNAME';
 const SET_GENDER = 'SET_GENDER';
 const SET_OPEN_MODAL = 'SET_OPEN_MODAL';
 const SET_RESET_ALARM = 'SET_RESET_ALARM';
+const SET_FCM_TOKEN = 'SET_FCM_TOKEN';
 
 // 액션 생성자
 export const setUserId = (userId: string | null) => ({
@@ -65,6 +67,10 @@ export const setOpenModal = (openModal: boolean) => ({
 export const setResetAlarm = (resetAlarm: boolean) => ({
   type: SET_RESET_ALARM,
   payload: resetAlarm,
+});
+export const setFcmToken = (fcmToken: string | null) => ({
+  type: SET_FCM_TOKEN,
+  payload: fcmToken,
 });
 
 // 액션 타입 인터페이스 정의
@@ -104,6 +110,10 @@ interface setResetAlarmAction extends Action {
   type: typeof SET_RESET_ALARM;
   payload: boolean;
 }
+interface setFcmTokenAction extends Action {
+  type: typeof SET_FCM_TOKEN;
+  payload: string | null;
+}
 
 
 // 액션 타입을 통합
@@ -115,7 +125,8 @@ type MyActionTypes =
   | SetNicknameAction 
   | SetGenderAction
   | setOpenMIdalAction
-  | setResetAlarmAction;
+  | setResetAlarmAction
+  | setFcmTokenAction;
 
 
 // 리듀서
@@ -137,6 +148,8 @@ const reducer = (state = initialState, action: MyActionTypes) => {
       return {...state, openModal: action.payload};
     case SET_RESET_ALARM:
       return {...state, resetAlarm: action.payload};
+    case SET_FCM_TOKEN:
+      return {...state, fcmToken: action.payload};
     default:
       return state;
   }

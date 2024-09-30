@@ -13,7 +13,7 @@ import {authNavigations} from '../../constants/navigations';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   setUserId as setReduxUserId,
   setUserSeq,
@@ -32,6 +32,8 @@ type LoginScreenProps = StackScreenProps<
 
 const LoginScreen = ({navigation}: LoginScreenProps) => {
   const dispatch = useDispatch();
+  const fcmToken = useSelector((state: {fcmToken: string | null}) => state.fcmToken);
+  console.log('보내낸내낸', fcmToken)
 
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -39,11 +41,13 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
 
   const handleLogin = async () => {
     try {
+      console.log('보낸다!!!!!!!!!!!!!!!', fcmToken)
       const response = await axios.post(
         `${API_URL}/api/v1/signin`,
         {
           username: userId,
           password,
+          fcmToken
         },
         {
           headers: {
