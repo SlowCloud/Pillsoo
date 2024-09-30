@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import SearchBar from '../../components/common/SearchBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -33,7 +33,7 @@ const SearchResultScreen = () => {
     fetchToken();
   }, []);
 
-  const fetchResults = async (newPage = 0) => {
+  const fetchResults = async (newPage = 1) => {
     if (!searchQuery.trim() || !token) return;
     setLoading(true);
     try {
@@ -49,7 +49,6 @@ const SearchResultScreen = () => {
         },
       });
       if (response.status === 200) {
-        console.log(response);
         if (newPage === 1) {
           setResults(response.data.content);
         } else {
@@ -59,16 +58,29 @@ const SearchResultScreen = () => {
         Alert.alert('검색 실패');
       }
     } catch (error) {
-      console.log(error);
-      Alert.alert('검색 실패');
+      Alert.alert('검색하신 영양제가 존재하지 않습니다.');
     } finally {
       setLoading(false);
       setIsFetchingMore(false);
     }
   };
 
+  // 화면이 포커스될 때 초기화
+  useFocusEffect(
+    useCallback(() => {
+      setSearchQuery('');
+      setResults([]);
+      setPage(1);
+    }, []),
+  );
+
   useEffect(() => {
-    fetchResults();
+    if (searchQuery.trim() === '') {
+      setResults([]); // 검색어가 비어있으면 결과를 빈 배열로 설정합니다.
+      setPage(1); // 페이지도 1로 초기화합니다.
+    } else {
+      fetchResults(1); // 검색어가 있을 때 결과를 가져옵니다.
+    }
   }, [searchQuery]);
 
   const handleLoadMore = () => {
@@ -92,40 +104,40 @@ const SearchResultScreen = () => {
   );
 
   return (
-    <>
-      <View style={styles.screen}>
-        <Text style={styles.headerText}>찾으시는 영양제를 검색해주세요 !</Text>
-        <View style={styles.searchBarContainer}>
-          <SearchBar
-            placeholder="검색어를 입력하세요 !"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-            onSearch={fetchResults}
-          />
-        </View>
-
-        <View style={styles.resultsContainer}>
-          {loading && page === 1 ? (
-            <ActivityIndicator size="large" color="#a4f87b" />
-          ) : results.length > 0 ? (
-            <FlatList
-              data={results}
-              keyExtractor={item => item.supplementSeq.toString()}
-              renderItem={renderItem}
-              onEndReached={handleLoadMore}
-              onEndReachedThreshold={0.5}
-              ListFooterComponent={
-                isFetchingMore ? (
-                  <ActivityIndicator size="small" color="#a4f87b" />
-                ) : null
-              }
-            />
-          ) : (
-            <Text style={styles.noResultsText}>검색 결과가 없습니다.</Text>
-          )}
-        </View>
+    <View style={styles.screen}>
+      <Text style={styles.headerText}>찾으시는 영양제를 검색해주세요 !</Text>
+      <View style={styles.searchBarContainer}>
+        <SearchBar
+          placeholder="검색어를 입력하세요 !"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          onSearch={fetchResults}
+        />
       </View>
-    </>
+
+      <View style={styles.resultsContainer}>
+        {loading && page === 1 ? (
+          <ActivityIndicator size="large" color="#a4f87b" />
+        ) : results.length > 0 ? (
+          <FlatList
+            data={results}
+            keyExtractor={item => item.supplementSeq.toString()}
+            renderItem={renderItem}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={
+              isFetchingMore ? (
+                <ActivityIndicator size="small" color="#a4f87b" />
+              ) : null
+            }
+          />
+        ) : searchQuery.trim() === '' ? (
+          <Text style={styles.noResultsText}>검색어를 입력하세요.</Text>
+        ) : (
+          <Text style={styles.noResultsText}>검색 결과가 없습니다.</Text>
+        )}
+      </View>
+    </View>
   );
 };
 
@@ -154,8 +166,6 @@ const styles = StyleSheet.create({
   },
   resultItem: {
     padding: 16,
-    // borderBottomWidth: 1,
-    // borderBottomColor: '#ccc',
     flexDirection: 'row',
     alignItems: 'center',
   },

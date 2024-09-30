@@ -1,16 +1,15 @@
 import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import AppNavigator from './src/navigation/AppNavigator';
-import { Platform, PermissionsAndroid } from 'react-native';
-import { setFcmToken } from './src/store/store';
+import {setFcmToken} from './src/store/store';
 import messaging from '@react-native-firebase/messaging';
-import PushNotification, { Importance } from 'react-native-push-notification';
-import { useSelector, useDispatch } from 'react-redux';
+import PushNotification, {Importance} from 'react-native-push-notification';
+import {useSelector, useDispatch} from 'react-redux';
+import {Platform, PermissionsAndroid} from 'react-native';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
   const fcmToken = useSelector((state: {fcmToken: string | null}) => state.fcmToken);
-
 
   // 앱에서 알람을 받을 수 있는지 확인
   const requestNotificationPermission = async () => {
@@ -21,12 +20,12 @@ const App: React.FC = () => {
         );
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           // 앱에서 알람을 받을 수 있음
-            console.log('Notification permission granted')
+          console.log('Notification permission granted');
         } else {
           console.log('Notification permission denied');
         }
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     }
   };
@@ -40,12 +39,11 @@ const App: React.FC = () => {
     requestNotificationPermission();
   }, []);
 
-
   // 채널이랑 연결
   const configurePushNotifications = () => {
     PushNotification.configure({
-      onNotification: function(notification) {
-        console.log('notifiation', notification)
+      onNotification: function (notification) {
+        console.log('notifiation', notification);
         if (notification.userInteraction) {
         }
       },
@@ -72,15 +70,18 @@ const App: React.FC = () => {
         },
         (created: boolean, error?: any) => {
           if (error) {
-            console.error('Channel creation failed', error)
+            console.log('Channel creation failed', error);
           } else {
-            console.log(created ? 'Channel created successfully' : 'Channel already exist or failed to create');
+            console.log(
+              created
+                ? 'Channel created successfully'
+                : 'Channel already exist or failed to create',
+            );
           }
-        }
+        },
       );
     }
   };
-
 
   // firebase 서버에서 수신받음
   const registerFCM = async () => {
@@ -102,16 +103,20 @@ const App: React.FC = () => {
     });
 
     messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log('Notification caused app to open from background state:', remoteMessage);
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage,
+      );
     });
 
-    messaging().getInitialNotification().then(remoteMessage => {
-      if (remoteMessage) {
-        console.log('App opend from quit state:', remoteMessage);
-      }
-    });
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log('App opend from quit state:', remoteMessage);
+        }
+      });
   };
-
 
   return (
       <NavigationContainer>

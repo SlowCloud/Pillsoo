@@ -71,7 +71,7 @@ const DetailReview: React.FC = () => {
             setHasWrittenReview(!!userReview); // 리뷰가 있으면 true, 없으면 false
           }
         } catch (error) {
-          console.error(error);
+          console.log(error);
         }
       };
 

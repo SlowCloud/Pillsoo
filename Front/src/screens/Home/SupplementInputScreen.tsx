@@ -7,7 +7,7 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
@@ -27,28 +27,30 @@ const SupplementInputScreen = () => {
     (state: {userSeq: string | null}) => state.userSeq,
   );
 
-  useEffect(() => {
-    const fetchMyKitData = async () => {
-      const token = await AsyncStorage.getItem('jwt_token');
+  const fetchMyKitData = async () => {
+    const token = await AsyncStorage.getItem('jwt_token');
 
-      try {
-        const response = await axios.get(`${API_URL}/api/v1/cabinet`, {
-          headers: {
-            access: `${token}`,
-          },
-          params: {
-            userSeq,
-          },
-        });
+    try {
+      const response = await axios.get(`${API_URL}/api/v1/cabinet`, {
+        headers: {
+          access: `${token}`,
+        },
+        params: {
+          userSeq,
+        },
+      });
 
-        setMyKitData(response.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+      setMyKitData(response.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-    fetchMyKitData();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchMyKitData();
+    }, []),
+  );
 
   const renderItem = ({item}: {item: Supplement}) => (
     <TouchableOpacity

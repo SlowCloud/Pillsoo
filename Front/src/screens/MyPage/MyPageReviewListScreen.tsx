@@ -52,7 +52,7 @@ const MyPageReviewListScreen = () => {
         });
         setMyAllReviews(response.data);
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     };
 
