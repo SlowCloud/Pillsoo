@@ -88,7 +88,7 @@ def search_in_elasticsearch(words):
                 "should": [
                     {
                         "match": {
-                            "preprocessed_text": words
+                            "functionality": words
                         }
                     }
                 ]
