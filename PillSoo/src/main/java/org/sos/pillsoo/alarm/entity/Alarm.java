@@ -5,10 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.sos.pillsoo.cabinet.entity.Cabinet;
-
-
 import java.time.LocalTime;
-
 
 @Entity
 @Getter

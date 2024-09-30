@@ -7,8 +7,9 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from ..database import get_db, r, mongo_collection
 from ..crud import get_functionality_items, get_supplements_by_age
-from ..similarity import calculate_similarity, preprocess_text
+from ..similarity import calculate_similarity, preprocess_text, search_in_elasticsearch
 from typing import List, Dict, Any
+import ray
 
 # FastAPI 라우터 설정
 router = APIRouter()
@@ -54,9 +55,29 @@ def recommend_supplements(client_text: str = Query(..., description="Client inpu
         for item in top_matches
     ]
 
-    # 4. MongoDB와 Redis에 결과 저장 (1분동안)
+    # 4. Elasticsearch에서 검색 수행
+    if result[0]['supplementSeq'] == 1:
+        
+        sep_word_ref = preprocess_text.remote(client_text)
+        sep_word = ray.get(sep_word_ref)  # ObjectRef를 실제 값으로 변환
+
+        # 엘라스틱서치 검색 호출
+        elasticsearch_results = search_in_elasticsearch(sep_word)
+        # print("Elasticsearch 검색 결과:", elasticsearch_results)  # Elasticsearch 결과 출력
+        
+        # Elasticsearch 결과를 Redis와 MongoDB에 저장
+        if r:
+            r.set(cache_key, json.dumps(elasticsearch_results), ex=3600)  # Redis에 저장
+        
+        # MongoDB에 만료 시간이 있는 문서 저장 (1주일 TTL)
+        expire_at = datetime.utcnow() + timedelta(seconds=604800)  # 현재 시간으로부터 1주일 후 만료
+        mongo_collection.insert_one({"client_text": client_text, "result": elasticsearch_results, "expireAt": expire_at})  # MongoDB에 저장
+        
+        return elasticsearch_results  # 필요에 따라 결과를 반환할 수 있음
+    
+    # 5. MongoDB와 Redis에 결과 저장 (1분동안)
     if r:
-        r.set(cache_key, json.dumps(result), ex=60)  # Redis에 저장
+        r.set(cache_key, json.dumps(result), ex=3600)  # Redis에 저장
 
     # MongoDB에 만료 시간이 있는 문서 저장 (1주일 TTL)
     expire_at = datetime.utcnow() + timedelta(seconds=604800)  # 현재 시간으로부터 1주일 후 만료
