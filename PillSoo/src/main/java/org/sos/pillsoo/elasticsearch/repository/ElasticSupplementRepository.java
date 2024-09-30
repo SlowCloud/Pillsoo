@@ -12,21 +12,16 @@ public interface ElasticSupplementRepository extends ElasticsearchRepository<Ela
     {
       "function_score": {
         "query": {
-          "match": {
-            "preprocessed_text": "#{#text}"
+          "multi_match": {
+            "query": "#{#text}",
+            "fields": ["pill_name^3", "functionality"]
           }
         },
-        "functions": [
-          {
-            "exp": {
-              "click_count": {
-                "origin": 1000,
-                "scale": 10
-              }
-            }
-          }
-        ],
-        "score_mode": "sum"
+        "field_value_factor": {
+          "field": "click_count",
+          "modifier": "log1p"
+        },
+        "boost_mode": "sum"
       }
     }
     """)
