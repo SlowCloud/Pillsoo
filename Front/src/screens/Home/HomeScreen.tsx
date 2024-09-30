@@ -4,7 +4,7 @@ import Kit from '../../components/Home/Kit';
 import Header from '../../components/common/Header';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-
+import SearchBar from '../../components/common/SearchBar';
 const HomeScreen = () => {
   const navigation = useNavigation();
   const nickname = useSelector(

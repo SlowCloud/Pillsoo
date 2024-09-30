@@ -123,7 +123,7 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <View style={styles.container}>
         <Image
           // source={images[imageNumber]}

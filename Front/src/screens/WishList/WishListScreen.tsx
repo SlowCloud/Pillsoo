@@ -77,7 +77,7 @@ const WishListScreen: React.FC = () => {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <View style={styles.container}>
         {/* <View style={styles.textContainer}>
           <Text style={styles.text}>나의 위시 리스트</Text>
