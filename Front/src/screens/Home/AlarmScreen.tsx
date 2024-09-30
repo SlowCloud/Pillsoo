@@ -24,7 +24,7 @@ interface Supplement {
 
 interface AlarmList {
   alarmSeq: number;
-  alert: Date;
+  time: string;
   pillName: string;
   supplementSeq: number;
   turnon: boolean;
@@ -63,15 +63,18 @@ const AlarmScreen = () => {
           headers: {
             access: `${token}`,
           },
-          params: {
-            userSeq: userSeq,
-          },
-        });
-
-        setMyKitData(response.data);
-      } catch (error) {
-        console.log(error);
-      }
+        );
+      
+      setMyKitData(response.data)
+      } catch(error) {
+        if (axios.isAxiosError(error)) {
+        // 서버가 응답했는데 요청 실패
+        console.error('Error Data:', error.response?.data);
+        console.error('Error status', error.response?.status);
+      } else {
+        // 요청이 이루어지지 않았거나 오류 발생
+        console.error('Error message:', (error as Error).message)
+      }}
     };
 
     fetchPillData();
@@ -86,13 +89,9 @@ const AlarmScreen = () => {
           headers: {
             access: `${token}`,
           },
-          params: {
-            userSeq: userSeq,
-          },
         });
-
-        dispatch(setResetAlarm(false));
-        setMyAlarms(response.data);
+        dispatch(setResetAlarm(false))
+        setMyAlarms(response.data)
       } catch (error) {
         console.error(error);
       }
@@ -101,6 +100,7 @@ const AlarmScreen = () => {
     fetchAlarmData();
   }, [token, resetAlarm]);
 
+
   // 알람을 설정할 수 있는 모달을 연다
   const showAlarmModal = () => {
     dispatch(setOpenModal(true));
@@ -108,16 +108,21 @@ const AlarmScreen = () => {
 
   return (
     <View style={styles.container}>
-      {openModal && <AlarmModal myKitData={myKitData} />}
-      <ScrollView>
-        {myAlarms &&
-          myAlarms.map(alarm => (
-            <MyAlarmListitems key={alarm.alarmSeq} myAlarm={alarm} />
-          ))}
-      </ScrollView>
+      {openModal && <AlarmModal myKitData={myKitData}/>}
+      <View style={styles.alarmContainer}>
+        <ScrollView>
+          {myAlarms && myAlarms.map((alarm) => (
+              <MyAlarmListitems key={alarm.alarmSeq} myAlarm={alarm}/>
+            ))
+          }
+        </ScrollView>
+      </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={showAlarmModal} style={styles.alarmAddBtn}>
-          <Text style={styles.alarmText}>+</Text>
+        <TouchableOpacity 
+          onPress={showAlarmModal}
+          style={styles.alarmAddBtn}
+          >
+        <Text style={styles.alarmAddText}>+</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -128,6 +133,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  alarmContainer: {
+    marginHorizontal: 25,
+    marginVertical: 35,
+  },
   buttonContainer: {
     flex: 1,
     alignItems: 'flex-end',
@@ -135,7 +144,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     marginRight: 30,
   },
-  alarmText: {
+  alarmAddText: {
     fontSize: 30,
   },
   alarmAddBtn: {

@@ -36,16 +36,24 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
 
   // 알람 정보를 저장한다
   const setAlarm = async (alarmDate: Date, alertDate: Date, supplementSeq: number) => {
+    const date = new Date(alarmDate);
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+    
+    const time = `${hours}:${minutes}:${seconds}.00`;
+    console.log(time);
     if (!alarmDate) {
       Alert.alert('알람 시간을 선택해 주세요.');
       return ;
     }
+
     // 백한테 보내자
     try {
       const response = await axios.post(`${API_URL}/api/v1/alarm`, 
       {
         supplementSeq: supplementSeq, 
-        alert: alarmDate,
+        time: time,
         isTurnOn: true
       },
       {
@@ -56,9 +64,15 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
       dispatch(setResetAlarm(true));
       Alert.alert(`알람이 ${alertDate.toLocaleTimeString()}에 설정되었습니다`);
     } catch(error) {
-    console.error(error);
-    }
-  }
+      if (axios.isAxiosError(error)) {
+      // 서버가 응답했는데 요청 실패
+      console.error('Error Data:', error.response?.data);
+      console.error('Error status', error.response?.status);
+    } else {
+      // 요청이 이루어지지 않았거나 오류 발생
+      console.error('Error message:', (error as Error).message)
+    }}
+  };
 
   // 시간을 설정한다
   const onChange = (event: DateTimePickerEvent, selected: Date | undefined) => {
@@ -98,7 +112,7 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
       </View>
     </View>
   )
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -110,5 +124,6 @@ const styles = StyleSheet.create({
         marginRight: 15,
       },
 });
+
 
 export default AlarmModalItems;

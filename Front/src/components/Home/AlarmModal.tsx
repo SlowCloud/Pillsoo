@@ -46,6 +46,7 @@ const AlarmModal:React.FC<AlarmModalItemsProps> = ({myKitData}) => {
 }
 
 const styles = StyleSheet.create({
+  
 });
 
 export default AlarmModal;
