@@ -82,7 +82,7 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
 
             navigation.navigate('AuthHome');
           } catch (error) {
-            console.error(error);
+            console.log(error);
           }
         },
       },
@@ -109,7 +109,7 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
               });
               navigation.navigate('AuthHome');
             } catch (error) {
-              console.error(error);
+              console.log(error);
             }
           },
         },

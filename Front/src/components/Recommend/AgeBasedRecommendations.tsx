@@ -5,6 +5,7 @@ import RecommendItem from '../../components/Recommend/RecommendItem';
 type RecommendPill = {
   id: number;
   imageUrl: string;
+  pillName: string;
 };
 
 interface Props {
@@ -24,6 +25,7 @@ const AgeBasedRecommendations = (props: Props) => {
           <RecommendItem
             id={recommendPill.id}
             imageUrl={recommendPill.imageUrl}
+            pillName={recommendPill.pillName}
           />
         ))}
       </View>
@@ -36,9 +38,10 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   recommendText: {
-    fontSize: 15,
+    fontSize: 18,
     color: 'black',
     marginBottom: 10,
+    fontWeight: 'bold',
   },
   itemsContainer: {
     flexDirection: 'row',

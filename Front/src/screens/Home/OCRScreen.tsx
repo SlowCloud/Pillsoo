@@ -61,7 +61,7 @@ const OCRScreen = () => {
   };
 
   const sendToOcr = async (base64Image: string) => {
-    console.log('hihi');
+    console.log('hhi');
 
     try {
       const response = await axios.post(
@@ -89,7 +89,7 @@ const OCRScreen = () => {
       );
       setOcrTexts(detectedTexts);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
@@ -135,10 +135,10 @@ const OCRScreen = () => {
       if (response.status === 200) {
         setResults(response.data.content);
       } else {
-        console.error(response.data);
+        console.log(response.data);
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -177,10 +177,10 @@ const OCRScreen = () => {
       if (response.status === 200) {
         console.log('복용 영양제 투입');
       } else {
-        console.error(response.data);
+        console.log(response.data);
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 

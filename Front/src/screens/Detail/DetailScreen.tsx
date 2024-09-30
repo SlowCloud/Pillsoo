@@ -8,6 +8,7 @@ import DetailInfo from '../../components/Detail/DetailInfo';
 import DetailReview from '../../components/Detail/DetailReview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSelector} from 'react-redux';
+import CommonModal from '../../components/common/Modal';
 
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
@@ -36,6 +37,10 @@ const DetailScreen: React.FC = () => {
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
   );
+  const [isModalVisible, setModalVisible] = useState(false); // 모달 상태 추가
+  const [modalMessage, setModalMessage] = useState(''); // 모달 메시지 상태 추가
+  const [modalImage, setModalImage] = useState<any>(null); // 모달 이미지 상태 추가
+
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem('jwt_token');
@@ -74,7 +79,7 @@ const DetailScreen: React.FC = () => {
         setMyWishList(data.inWishlist);
         setMyKit(data.inMykit);
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     };
 
@@ -103,6 +108,8 @@ const DetailScreen: React.FC = () => {
           },
         });
         setMyWishList(false);
+        setModalMessage('위시리스트에서 제거되었습니다!');
+        setModalImage(require('../../assets/wishlistremove.png'));
       } else {
         // 위시리스트에 추가
         await axios.post(
@@ -115,7 +122,15 @@ const DetailScreen: React.FC = () => {
           },
         );
         setMyWishList(true);
+        setModalMessage('위시리스트에 추가되었습니다!');
+        setModalImage(require('../../assets/wishlistadd.png'));
       }
+      setModalVisible(true);
+
+      // 1초 후에 모달을 숨김
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 2000);
     } catch (error) {
       console.log(error);
     }
@@ -125,9 +140,9 @@ const DetailScreen: React.FC = () => {
     try {
       if (myKit) {
         // 복용 중 목록에서 제거
-        const response = await axios.delete(`${API_URL}/api/v1/my-kit`, {
+        const response = await axios.delete(`${API_URL}/api/v1/cabinet`, {
           headers: {
-            accessn: `${token}`,
+            access: `${token}`,
           },
           params: {
             supplementSeq: id,
@@ -139,11 +154,13 @@ const DetailScreen: React.FC = () => {
 
         if (response.status === 200 || response.status === 204) {
           setMyKit(false);
+          setModalMessage('마이키트에서 제거되었습니다!');
+          setModalImage(require('../../assets/wishlistremove.png'));
         }
       } else {
         // 복용 중 목록에 추가
         const response = await axios.post(
-          `${API_URL}/api/v1/my-kit`,
+          `${API_URL}/api/v1/cabinet`,
           {supplementSeq: id},
           {
             headers: {
@@ -157,10 +174,18 @@ const DetailScreen: React.FC = () => {
 
         if (response.status === 200) {
           setMyKit(true);
+          setModalMessage('마이키트에 추가되었습니다!');
+          setModalImage(require('../../assets/wishlistadd.png'));
         }
       }
+      setModalVisible(true);
+
+      // 2초 후에 모달을 숨김
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 2000);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
@@ -240,6 +265,14 @@ const DetailScreen: React.FC = () => {
           <DetailReview id={pillData.id} />
         )}
       </View>
+
+      {/* 공통 모달 컴포넌트 사용 */}
+      <CommonModal
+        visible={isModalVisible}
+        message={modalMessage}
+        onClose={() => setModalVisible(false)}
+        imageSource={modalImage}
+      />
     </View>
   );
 };
@@ -280,11 +313,11 @@ const styles = StyleSheet.create({
   },
   rowContainer: {
     flexDirection: 'row',
-    alignItems: 'center', // 수직 가운데 정렬
+    alignItems: 'center',
     marginTop: 10,
   },
   dosageText: {
-    marginLeft: 10, // 이미지와 텍스트 사이 간격
+    marginLeft: 10,
   },
   canSelectMenu: {
     flexDirection: 'row',

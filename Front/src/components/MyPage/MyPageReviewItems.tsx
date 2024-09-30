@@ -46,7 +46,7 @@ const MyPageReviewItems: React.FC<Props> = ({
         );
         setPillData(response.data);
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     };
 
