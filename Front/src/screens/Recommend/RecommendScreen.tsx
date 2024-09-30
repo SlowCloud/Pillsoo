@@ -94,7 +94,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <View style={styles.container}>
         <AgeBasedRecommendations age={age} recommendPills={recommendPills} />
         <View style={styles.pillCategoryBox}>

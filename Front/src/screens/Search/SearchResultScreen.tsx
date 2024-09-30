@@ -22,9 +22,7 @@ const SearchResultScreen = () => {
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
-  // 현재 페이지
   const [isFetchingMore, setIsFetchingMore] = useState(false);
-  // 더 많은 결과를 가져오는지
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -35,7 +33,7 @@ const SearchResultScreen = () => {
     fetchToken();
   }, []);
 
-  const fetchResults = async (newPage = 1) => {
+  const fetchResults = async (newPage = 0) => {
     if (!searchQuery.trim() || !token) return;
     setLoading(true);
     try {
@@ -47,17 +45,15 @@ const SearchResultScreen = () => {
           searchtext: searchQuery,
           functionality: '',
           page: newPage,
-          // 새로운 페이지 번호 사용
           size: 10,
         },
       });
       if (response.status === 200) {
+        console.log(response);
         if (newPage === 1) {
           setResults(response.data.content);
-          // 결과 초기화
         } else {
           setResults(prevResults => [...prevResults, ...response.data.content]);
-          // 새로운 결과 추가
         }
       } else {
         Alert.alert('검색 실패');
@@ -73,18 +69,14 @@ const SearchResultScreen = () => {
 
   useEffect(() => {
     fetchResults();
-    // 페이지가 바뀔 때마다 결과를 가져옴
   }, [searchQuery]);
 
   const handleLoadMore = () => {
     if (!isFetchingMore && !loading) {
-      // 중복 요청 방지
       setIsFetchingMore(true);
       const nextPage = page + 1;
-      // 다음 페이지로 증가
       setPage(nextPage);
       fetchResults(nextPage);
-      // 다음 페이지 결과를 가져옴
     }
   };
 
@@ -102,6 +94,7 @@ const SearchResultScreen = () => {
   return (
     <>
       <View style={styles.screen}>
+        <Text style={styles.headerText}>찾으시는 영양제를 검색해주세요 !</Text>
         <View style={styles.searchBarContainer}>
           <SearchBar
             placeholder="검색어를 입력하세요 !"
@@ -111,27 +104,26 @@ const SearchResultScreen = () => {
           />
         </View>
 
-        {loading && page === 1 ? (
-          // 초기 로딩 상태
-          <ActivityIndicator size="large" color="#a4f87b" />
-        ) : results.length > 0 ? (
-          <FlatList
-            data={results}
-            keyExtractor={item => item.supplementSeq.toString()}
-            renderItem={renderItem}
-            onEndReached={handleLoadMore}
-            // 스크롤 시 더 많은 결과를 가져옴
-            onEndReachedThreshold={0.5}
-            // 리스트의 50%가 보일 때 호출
-            ListFooterComponent={
-              isFetchingMore ? (
-                <ActivityIndicator size="small" color="#a4f87b" />
-              ) : null
-            }
-          />
-        ) : (
-          <Text style={styles.noResultsText}>검색 결과가 없습니다.</Text>
-        )}
+        <View style={styles.resultsContainer}>
+          {loading && page === 1 ? (
+            <ActivityIndicator size="large" color="#a4f87b" />
+          ) : results.length > 0 ? (
+            <FlatList
+              data={results}
+              keyExtractor={item => item.supplementSeq.toString()}
+              renderItem={renderItem}
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={
+                isFetchingMore ? (
+                  <ActivityIndicator size="small" color="#a4f87b" />
+                ) : null
+              }
+            />
+          ) : (
+            <Text style={styles.noResultsText}>검색 결과가 없습니다.</Text>
+          )}
+        </View>
       </View>
     </>
   );
@@ -142,13 +134,28 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  headerText: {
+    alignSelf: 'flex-start',
+    marginLeft: 30,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+    marginTop: 30,
+  },
   searchBarContainer: {
+    paddingTop: 40,
     padding: 16,
+  },
+  resultsContainer: {
+    flex: 1,
+    margin: 16,
+    padding: 16,
+    backgroundColor: '#fff',
   },
   resultItem: {
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#ccc',
     flexDirection: 'row',
     alignItems: 'center',
   },

@@ -58,9 +58,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: 'black',
+    borderWidth: 1,
     borderRadius: 15,
     width: '100%',
-    backgroundColor: 'lightgray',
+    backgroundColor: 'white',
   },
   input: {
     height: 40,

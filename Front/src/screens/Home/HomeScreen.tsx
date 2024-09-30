@@ -4,6 +4,7 @@ import Kit from '../../components/Home/Kit';
 import Header from '../../components/common/Header';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
+import SearchBar from '../../components/common/SearchBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
   },
   mainTitle: {
     fontFamily: 'WavvePADO-Regular.ttf',
-    fontSize: 30
+    fontSize: 30,
   },
   container: {
     flex: 0.1,
