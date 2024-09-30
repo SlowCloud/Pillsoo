@@ -3,6 +3,7 @@ package org.sos.pillsoo.alarm.controller;
 
 import org.sos.pillsoo.alarm.dto.AlarmReqDto;
 import org.sos.pillsoo.alarm.dto.AlarmResDto;
+import org.sos.pillsoo.alarm.dto.GetAlarmsResDto;
 import org.sos.pillsoo.alarm.entity.Alarm;
 import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.alarm.service.AlarmService;
@@ -23,7 +24,7 @@ public class AlarmController {
 
     // 알람 목록 조회
     @GetMapping
-    public List<AlarmResDto> getAlarms() {
+    public List<GetAlarmsResDto> getAlarms() {
         // JWT 토큰에서 userSeq를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal(); // 사용자 정보에서 userSeq를 가져옴
