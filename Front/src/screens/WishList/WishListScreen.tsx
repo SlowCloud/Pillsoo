@@ -59,7 +59,7 @@ const WishListScreen: React.FC = () => {
             await fetchResults(storedToken);
           }
         } catch (error) {
-          console.error(error);
+          console.log(error);
         }
       };
 

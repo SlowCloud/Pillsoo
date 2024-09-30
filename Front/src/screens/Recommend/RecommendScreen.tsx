@@ -49,6 +49,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
       const pills = data.map((item: any) => ({
         id: item.supplementSeq,
         imageUrl: {uri: item.image_url},
+        pillName: item.pill_name,
       }));
 
       setRecommendPills(pills);
@@ -98,6 +99,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
       <View style={styles.container}>
         <AgeBasedRecommendations age={age} recommendPills={recommendPills} />
         <View style={styles.pillCategoryBox}>
+          <Text style={styles.categoryText}>건강 카테고리별 영양제 추천</Text>
           <FlatList
             data={chunkedCategories}
             renderItem={({item, index}) => (
@@ -151,21 +153,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
   },
+  categoryText: {
+    fontSize: 18,
+    color: 'black',
+    paddingBottom: 20,
+    fontWeight: 'bold',
+  },
   lastRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
   },
   recommendBtn: {
-    marginTop: 85,
+    marginTop: 60,
     height: 50,
     borderRadius: 8,
-    backgroundColor: '#D3EBCD',
+    backgroundColor: '#a4f87b',
     justifyContent: 'center',
     alignItems: 'center',
   },
   moreRecommendText: {
-    color: 'black',
+    color: 'white',
     fontSize: 16,
   },
 });

@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useSelector, useDispatch } from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import axios from 'axios';
-import { API_URL } from '@env';
+import {API_URL} from '@env';
 import AlarmModal from '../../components/Home/AlarmModal';
-import { setOpenModal } from '../../store/store';
-import { setResetAlarm } from '../../store/store';
+import {setOpenModal} from '../../store/store';
+import {setResetAlarm} from '../../store/store';
 import MyAlarmListitems from '../../components/Home/MyAlarmListitems';
 
 interface Supplement {
@@ -14,7 +20,7 @@ interface Supplement {
   pillName: string;
   functionality: string;
   imageUrl: string;
-};
+}
 
 interface AlarmList {
   alarmSeq: number;
@@ -22,7 +28,7 @@ interface AlarmList {
   pillName: string;
   supplementSeq: number;
   turnon: boolean;
-};
+}
 
 const AlarmScreen = () => {
   const [token, setToken] = useState<string | null>(null);
@@ -30,9 +36,15 @@ const AlarmScreen = () => {
   const [myAlarms, setMyAlarms] = useState<AlarmList[]>([]);
 
   const dispatch = useDispatch();
-  const openModal = useSelector((state: {openModal: boolean | null}) => state.openModal);
-  const userSeq = useSelector((state: {userSeq: boolean | null}) => state.userSeq);
-  const resetAlarm = useSelector((state: {resetAlarm: boolean | null}) => state.resetAlarm);
+  const openModal = useSelector(
+    (state: {openModal: boolean | null}) => state.openModal,
+  );
+  const userSeq = useSelector(
+    (state: {userSeq: boolean | null}) => state.userSeq,
+  );
+  const resetAlarm = useSelector(
+    (state: {resetAlarm: boolean | null}) => state.resetAlarm,
+  );
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -47,21 +59,18 @@ const AlarmScreen = () => {
     const fetchPillData = async () => {
       if (!token) return;
       try {
-        const response = await axios.get(
-          `${API_URL}/api/v1/cabinet`,
-          {
-            headers: {
-              access: `${token}`,
-            },
-            params: {
-              userSeq: userSeq,
-            },
+        const response = await axios.get(`${API_URL}/api/v1/cabinet`, {
+          headers: {
+            access: `${token}`,
           },
-        );
-      
-      setMyKitData(response.data)
+          params: {
+            userSeq: userSeq,
+          },
+        });
+
+        setMyKitData(response.data);
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     };
 
@@ -73,27 +82,24 @@ const AlarmScreen = () => {
     const fetchAlarmData = async () => {
       if (!token) return;
       try {
-        const response = await axios.get(
-          `${API_URL}/api/v1/alarm`,
-          {
-            headers: {
-              access: `${token}`,
-            },
-            params: {
-              userSeq: userSeq,
-            },
+        const response = await axios.get(`${API_URL}/api/v1/alarm`, {
+          headers: {
+            access: `${token}`,
           },
-        );
-        
-        dispatch(setResetAlarm(false))
-        setMyAlarms(response.data)
+          params: {
+            userSeq: userSeq,
+          },
+        });
+
+        dispatch(setResetAlarm(false));
+        setMyAlarms(response.data);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchAlarmData();
-  }, [token, resetAlarm])
+  }, [token, resetAlarm]);
 
   // 알람을 설정할 수 있는 모달을 연다
   const showAlarmModal = () => {
@@ -102,24 +108,21 @@ const AlarmScreen = () => {
 
   return (
     <View style={styles.container}>
-      {openModal && <AlarmModal myKitData={myKitData}/>}
+      {openModal && <AlarmModal myKitData={myKitData} />}
       <ScrollView>
-        {myAlarms && myAlarms.map((alarm) => (
-            <MyAlarmListitems key={alarm.alarmSeq} myAlarm={alarm}/>
-          ))
-        }
+        {myAlarms &&
+          myAlarms.map(alarm => (
+            <MyAlarmListitems key={alarm.alarmSeq} myAlarm={alarm} />
+          ))}
       </ScrollView>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          onPress={showAlarmModal}
-          style={styles.alarmAddBtn}
-          >
-        <Text style={styles.alarmText}>+</Text>
+        <TouchableOpacity onPress={showAlarmModal} style={styles.alarmAddBtn}>
+          <Text style={styles.alarmText}>+</Text>
         </TouchableOpacity>
       </View>
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

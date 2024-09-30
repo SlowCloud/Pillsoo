@@ -43,7 +43,7 @@ const SupplementInputScreen = () => {
 
         setMyKitData(response.data);
       } catch (err) {
-        console.error(err);
+        console.log(err);
       }
     };
 
