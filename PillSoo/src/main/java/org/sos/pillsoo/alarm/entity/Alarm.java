@@ -15,18 +15,12 @@ import java.time.LocalTime;
 @Setter
 @Table(name = "Alarm")
 public class Alarm {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long alarmSeq;
-
     @ManyToOne
     @JoinColumn(name = "cabinetSeq")
     private Cabinet cabinet;
-
     private boolean isTurnOn = true;
     private LocalTime time;
-
-    private int supplementSeq;
-    private int userSeq;
 }
