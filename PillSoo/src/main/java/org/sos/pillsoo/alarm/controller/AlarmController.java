@@ -1,9 +1,11 @@
-package org.sos.pillsoo.cabinet.controller;
+package org.sos.pillsoo.alarm.controller;
 
 
+import org.sos.pillsoo.alarm.dto.AlarmReqDto;
+import org.sos.pillsoo.alarm.dto.AlarmResDto;
+import org.sos.pillsoo.alarm.entity.Alarm;
 import org.sos.pillsoo.auth.dto.CustomUserDetails;
-import org.sos.pillsoo.cabinet.dto.AlarmDto;
-import org.sos.pillsoo.cabinet.service.AlarmService;
+import org.sos.pillsoo.alarm.service.AlarmService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,9 +20,10 @@ public class AlarmController {
     @Autowired
     private AlarmService alarmService;
 
+
     // 알람 목록 조회
     @GetMapping
-    public List<AlarmDto> getAlarms() {
+    public List<AlarmResDto> getAlarms() {
         // JWT 토큰에서 userSeq를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal(); // 사용자 정보에서 userSeq를 가져옴
@@ -31,19 +34,20 @@ public class AlarmController {
 
     // 알람 추가
     @PostMapping
-    public void addAlarm(@RequestBody AlarmDto alarmDto) {
+    public AlarmResDto addAlarm(@RequestBody AlarmReqDto alarmReqDto) {
         // JWT 토큰에서 userSeq를 가져옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal(); // 사용자 정보에서 userSeq를 가져옴
         int userSeq = userDetails.getUserSeq();
 
-        alarmService.addAlarm(userSeq, alarmDto.getSupplementSeq(), alarmDto);
+        return alarmService.addAlarm(userSeq, alarmReqDto);
     }
+
 
     // 알람 수정
     @PatchMapping("/{alarmSeq}")
-    public void updateAlarm(@PathVariable long alarmSeq, @RequestBody AlarmDto alarmDto) {
-        alarmService.updateAlarm(alarmSeq, alarmDto);
+    public AlarmResDto updateAlarm(@PathVariable long alarmSeq, @RequestBody AlarmReqDto alarmReqDto) {
+        return alarmService.updateAlarm(alarmSeq, alarmReqDto);
     }
 
     // 알람 제거
@@ -51,4 +55,5 @@ public class AlarmController {
     public void removeAlarm(@PathVariable long alarmSeq) {
         alarmService.removeAlarm(alarmSeq);
     }
+
 }

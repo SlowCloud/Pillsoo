@@ -58,6 +58,10 @@ public class CustomUserDetails implements UserDetails {
         return userEntity.getUserId();
     }
 
+    public String getFcmToken(){
+        return userEntity.getFcmToken();
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
