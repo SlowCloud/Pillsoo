@@ -44,11 +44,12 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    // FCM 토큰 받는 api
-    @PostMapping("/fcm-token")
-    public ResponseEntity<?> updateFcmToken(@AuthenticationPrincipal CustomUserDetails customUserDetails,
-                                            @RequestBody String fcmToken) {
-        userService.updateFcmToken(customUserDetails.getUserSeq(), fcmToken);
-        return ResponseEntity.ok().build();
-    }
+//    안쓰는 코드인 듯
+//    // FCM 토큰 받는 api
+//    @PostMapping("/fcm-token")
+//    public ResponseEntity<?> updateFcmToken(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+//                                            @RequestBody String fcmToken) {
+//        userService.updateFcmToken(customUserDetails.getUserSeq(), fcmToken);
+//        return ResponseEntity.ok().build();
+//    }
 }

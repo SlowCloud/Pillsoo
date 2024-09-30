@@ -57,6 +57,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String fcmToken = request.getParameter("fcmToken");
 
         // FCM 토큰을 사용자 정보에 저장.
+        // 차후에 로그인 할 때 fcmToken 없으면 로그인 못하도록 바꾸던가 하는게 좋을 듯?
         User user = userRepository.findByUserId(userId);
         if (user == null) {
             throw new RuntimeException("User not found");

@@ -58,13 +58,13 @@ public class UserService {
         userRepository.save(user);
     }
 
-
-    // fcm push 알림을 받기위해 클라이언트로부터 fcm 토큰을 저장
-    public void updateFcmToken(int userSeq, String fcmToken) {
-        User user = userRepository.findById(userSeq)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        user.setFcmToken(fcmToken);
-        userRepository.save(user);
-    }
+//    안쓰는 코드
+//    // fcm push 알림을 받기위해 클라이언트로부터 fcm 토큰을 저장
+//    public void updateFcmToken(int userSeq, String fcmToken) {
+//        User user = userRepository.findById(userSeq)
+//                .orElseThrow(() -> new RuntimeException("User not found"));
+//        user.setFcmToken(fcmToken);
+//        userRepository.save(user);
+//    }
 
 }
