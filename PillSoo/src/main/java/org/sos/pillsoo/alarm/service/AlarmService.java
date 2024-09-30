@@ -2,10 +2,13 @@ package org.sos.pillsoo.alarm.service;
 
 
 
+import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.alarm.dto.AlarmReqDto;
 import org.sos.pillsoo.alarm.dto.AlarmResDto;
+import org.sos.pillsoo.alarm.dto.GetAlarmsResDto;
 import org.sos.pillsoo.alarm.entity.Alarm;
 import org.sos.pillsoo.alarm.fcm.FCMService;
+import org.sos.pillsoo.alarm.mapper.AlarmMapper;
 import org.sos.pillsoo.cabinet.entity.Cabinet;
 import org.sos.pillsoo.alarm.repository.AlarmRepository;
 import org.sos.pillsoo.cabinet.repository.CabinetRepository;
@@ -17,22 +20,19 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class AlarmService {
 
-    @Autowired
-    private AlarmRepository alarmRepository;
-
-    @Autowired
-    private CabinetRepository cabinetRepository;
-
-    @Autowired
-    private FCMService fcmService;
+    private final AlarmRepository alarmRepository;
+    private final CabinetRepository cabinetRepository;
+    private final FCMService fcmService;
+    private final AlarmMapper alarmMapper;
 
     // 알람 목록 조회
-    public List<AlarmResDto> getAlarmsByUserSeq(int userSeq) {
+    public List<GetAlarmsResDto> getAlarmsByUserSeq(int userSeq) {
         List<Alarm> alarms = alarmRepository.findByCabinet_User_UserSeq(userSeq);
-        return alarms.stream().map(this::convertAlarmToDto).collect(Collectors.toList());
+        return alarms.stream().map(alarmMapper::toGetAlarmsResDto).collect(Collectors.toList());
     }
 
     // 알람 추가
