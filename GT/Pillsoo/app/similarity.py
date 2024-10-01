@@ -15,6 +15,16 @@ def preprocess_text(text: str) -> str:
     nouns = okt.nouns(text)
     return ' '.join(nouns)
 
+'''
+# 명사 뿐만 아니라 형용사, 동사 등도 포함한 전처리
+@ray.remote
+def preprocess_text(text: str) -> str:
+    okt = Okt()
+    tokens = okt.pos(text, stem=True)  # 형태소 분석 및 어근 추출
+    important_words = [word for word, pos in tokens if pos in ['Noun', 'Verb', 'Adjective']]  # 명사, 동사, 형용사만 추출
+    return ' '.join(important_words)
+'''
+
 # 단일 단어에 대한 유사도 계산 함수 (Ray 병렬 처리)
 @ray.remote
 def calculate_similarity_for_word(word: str, db_items: List[Tuple[int, str, str, str, str]]) -> List[Tuple[int, str, str, str, str, float]]:
@@ -36,7 +46,7 @@ def calculate_similarity_for_word(word: str, db_items: List[Tuple[int, str, str,
 def calculate_similarity(input_text: str, db_items: List[Tuple[int, str, str, str, str]]) -> List[Tuple[int, str, str, str, str]]:
     # 입력 텍스트를 명사로 추출 (Ray로 병렬 처리)
     preprocessed_text = ray.get(preprocess_text.remote(input_text))
-    # print(f"Preprocessed text:{preprocessed_text}")
+    print(f"Preprocessed text:{preprocessed_text}")
 
     
     # 명사 추출된 텍스트를 단어로 분리
@@ -88,7 +98,7 @@ def search_in_elasticsearch(words):
                 "should": [
                     {
                         "match": {
-                            "functionality": words
+                            "preprocessed_text": words
                         }
                     }
                 ]

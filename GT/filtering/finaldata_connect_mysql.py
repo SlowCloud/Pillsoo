@@ -12,16 +12,16 @@ conn = mysql.connector.connect(
 cursor = conn.cursor()
 
 # JSON 파일 열기
-with open('new_supplement_data.json', 'r', encoding='utf-8') as file:
+with open('new_supplement_data_without_jul_su.json', 'r', encoding='utf-8') as file:
     data = json.load(file)
     
 # 데이터 삽입
 for record in data:
     fields = record['fields']
     cursor.execute("""
-        INSERT INTO Supplement_backup_copy 
-        (PILL_NAME, EXPIRATION_DATE, appearance, DOSE_AMOUNT, STORAGE_METHOD, DOSE_GUIDE, functionality, IMAGE_URL, PREPROCESSED_TEXT)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO Supplement_backup 
+        (PILL_NAME, EXPIRATION_DATE, appearance, DOSE_AMOUNT, STORAGE_METHOD, DOSE_GUIDE, functionality, IMAGE_URL, PREPROCESSED_TEXT, preprocessed)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
     """, (
         fields['PILL_NAME'],
         fields['EXPIRATION_DATE'],
@@ -31,7 +31,8 @@ for record in data:
         fields['DOSE_GUIDE'],
         fields['functionality'],
         fields['IMAGE_URL'],
-        fields['PREPROCESSED_TEXT']
+        fields['PREPROCESSED_TEXT'],
+        fields['preprocessed']
     ))
 
 # 커밋 및 연결 닫기
