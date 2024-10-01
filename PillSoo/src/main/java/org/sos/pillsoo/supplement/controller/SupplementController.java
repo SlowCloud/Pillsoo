@@ -1,5 +1,6 @@
 package org.sos.pillsoo.supplement.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.supplement.dto.SupplementDto;
 import org.sos.pillsoo.supplement.entity.EffectCategories;
@@ -10,12 +11,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/supplement")
 public class SupplementController {
 
-    @Autowired
-    private SupplementService supplementService;
+    private final SupplementService supplementService;
 
     // 영양제 상세 정보 조회 (userSeq를 JWT에서 추출)
     @GetMapping("/{supplementSeq}")

@@ -1,5 +1,6 @@
 package org.sos.pillsoo.supplement.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.supplement.dto.WishListDto;
 import org.sos.pillsoo.supplement.service.WishListService;
@@ -10,12 +11,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/wishlist")
 public class WishListController {
 
-    @Autowired
-    private WishListService wishListService;
+    private final WishListService wishListService;
 
     // JWT에서 userSeq 추출하는 메서드
     private int getUserSeqFromJWT() {

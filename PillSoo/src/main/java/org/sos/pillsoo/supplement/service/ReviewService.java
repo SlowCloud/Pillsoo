@@ -1,5 +1,6 @@
 package org.sos.pillsoo.supplement.service;
 
+import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.auth.repository.UserRepository;
 import org.sos.pillsoo.supplement.dto.ReviewDto;
@@ -13,14 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class ReviewService {
 
-    @Autowired
-    private ReviewRepository reviewRepository;
-
-    @Autowired
-    private UserRepository userRepository; // 추가: User 정보를 조회하기 위한 UserRepository 주입
+    private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository; // 추가: User 정보를 조회하기 위한 UserRepository 주입
 
     // 리뷰 목록 조회
     public List<ReviewDto> getReviews(int supplementSeq) {
@@ -70,6 +69,7 @@ public class ReviewService {
     }
 
     // Review -> ReviewDto로 변환하는 메서드
+    @Deprecated
     private ReviewDto convertToDto(Review review) {
         ReviewDto dto = new ReviewDto();
         dto.setReviewSeq(review.getReviewSeq());
