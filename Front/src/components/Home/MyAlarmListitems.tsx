@@ -12,7 +12,7 @@ interface MyAlarmListitemsProps {
   myAlarm: {
       alarmSeq: number;
       time: string;
-      pillName: string;
+      supplementName: string;
       supplementSeq: number;
       turnOn?: boolean;
   };
@@ -22,7 +22,11 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
   const [openAlarmModal, setOpenAlarmModal] = useState<boolean>(false);
   const [date, setDate] = useState<Date>(new Date());
   const dispatch = useDispatch();
-  const alarmTime = myAlarm.time
+  
+  const initialPillName = myAlarm.supplementName.length > 11
+  ? myAlarm.supplementName.slice(0, 11) + '...'
+  : myAlarm.supplementName;
+  
 
   // 알람 삭제
   const deleteAlarm = async () => {
@@ -48,8 +52,14 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
     setOpenAlarmModal(true);
   };
 
-  const setAlarm = async (alarmDate: Date, alertDate: Date, supplementSeq: number, alamSeq: number) => {
+  const setAlarm = async (alarmDate: Date, supplementSeq: number, alamSeq: number) => {
     const storedToken = await AsyncStorage.getItem('jwt_token');
+
+    const date = new Date(alarmDate);
+    const hours = date.getUTCHours().toString().padStart(2, '0');
+    const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+    const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+    const time = `${hours}:${minutes}:${seconds}.00`;
     if (!alarmDate) {
       Alert.alert('알람 시간을 선택해 주세요.');
       return;
@@ -59,7 +69,7 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
       const response = await axios.patch(
         `${API_URL}/api/v1/alarm/${alamSeq}`,
         {
-          alert: alarmDate, 
+          time: time, 
         },
         {
           headers: {
@@ -68,7 +78,7 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
         }
       );
       dispatch(setResetAlarm(true))
-      Alert.alert(`'알람이 ${alertDate.toLocaleTimeString()}으로 변경되었습니다.`)
+      Alert.alert(`'알람이 ${alarmDate.toLocaleTimeString()}으로 변경되었습니다.`)
     } catch(error) {
       console.log(error)
     }
@@ -80,7 +90,7 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
       setOpenAlarmModal(false)
       const changeUTCTime = new Date(currentDate)
       changeUTCTime.setHours(changeUTCTime.getHours()+9)
-      setAlarm(currentDate, changeUTCTime, myAlarm.supplementSeq, myAlarm.alarmSeq)
+      setAlarm(changeUTCTime, myAlarm.supplementSeq, myAlarm.alarmSeq)
     } else if (event.type === 'dismissed') {
       setOpenAlarmModal(false)
     }
@@ -89,8 +99,8 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
   return (
     <View style={styles.container}>
       <View style={styles.alarmTextContainer}>
-        <Text style={styles.pillName}>{myAlarm.pillName}</Text>
-        <Text style={styles.time}>{alarmTime}</Text>
+        <Text style={styles.pillName}>{initialPillName}</Text>
+        <Text style={styles.time}>{myAlarm.time}</Text>
       </View>
       <View style={styles.alarmUpdateBtn}>
         <TouchableOpacity
@@ -121,20 +131,18 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    width: '100%',
-    height: 90,
-    borderWidth: 1,
-    borderRadius: 20,
-    marginVertical: 10,
-    shadowColor: '#000',
+    height: 85,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    elevation: 3,
     shadowOffset: {
       width: 0,
-      height: 3
+      height: 1,
     },
-    shadowOpacity: 0.27,
-    shadowRadius: 0.65,
-    elevation: 2,
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    marginBottom: 20,
+    overflow: 'hidden',
   },
   alarmTextContainer: {
     flex: 2,
