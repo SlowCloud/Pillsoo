@@ -92,7 +92,6 @@ const SignUpScreen = ({navigation}: SignUpScreenProps) => {
       if (response.status === 200) {
         Alert.alert('회원가입 성공', '로그인 페이지로 이동합니다.');
         navigation.navigate(authNavigations.LOGIN);
-        console.log(userId, password, userName, age, genderValue);
       }
     } catch (error) {
       Alert.alert('회원가입 실패', '다시 시도해주세요.');

@@ -53,8 +53,6 @@ const DetailScreen: React.FC = () => {
   // 보충제 데이터 들고오기 (상세 데이터)
   useEffect(() => {
     const fetchPillData = async () => {
-      console.log(token);
-      console.log(id);
       if (!token) return;
       try {
         const response = await axios.get(`${API_URL}/api/v1/supplement/${id}`, {

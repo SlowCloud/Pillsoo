@@ -25,7 +25,7 @@ interface Supplement {
 interface AlarmList {
   alarmSeq: number;
   time: string;
-  pillName: string;
+  supplementName: string;
   supplementSeq: number;
   turnon: boolean;
 }
@@ -36,15 +36,8 @@ const AlarmScreen = () => {
   const [myAlarms, setMyAlarms] = useState<AlarmList[]>([]);
 
   const dispatch = useDispatch();
-  const openModal = useSelector(
-    (state: {openModal: boolean | null}) => state.openModal,
-  );
-  const userSeq = useSelector(
-    (state: {userSeq: boolean | null}) => state.userSeq,
-  );
-  const resetAlarm = useSelector(
-    (state: {resetAlarm: boolean | null}) => state.resetAlarm,
-  );
+  const openModal = useSelector((state: {openModal: boolean | null}) => state.openModal);
+  const resetAlarm = useSelector((state: {resetAlarm: boolean | null}) => state.resetAlarm);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -53,6 +46,7 @@ const AlarmScreen = () => {
     };
 
     fetchToken();
+    dispatch(setOpenModal(false))
   }, []);
 
   useEffect(() => {
@@ -63,7 +57,7 @@ const AlarmScreen = () => {
           headers: {
             access: `${token}`,
           },
-        );
+      });
       
       setMyKitData(response.data)
       } catch(error) {
@@ -90,8 +84,8 @@ const AlarmScreen = () => {
             access: `${token}`,
           },
         });
-        dispatch(setResetAlarm(false))
         setMyAlarms(response.data)
+        dispatch(setResetAlarm(false))
       } catch (error) {
         console.error(error);
       }
@@ -109,6 +103,9 @@ const AlarmScreen = () => {
   return (
     <View style={styles.container}>
       {openModal && <AlarmModal myKitData={myKitData}/>}
+      <View style={styles.alarmTitleContainer}>
+        <Text style={styles.alarmTitle}>알람</Text>
+      </View>
       <View style={styles.alarmContainer}>
         <ScrollView>
           {myAlarms && myAlarms.map((alarm) => (
@@ -132,6 +129,7 @@ const AlarmScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   alarmContainer: {
     marginHorizontal: 25,
@@ -143,6 +141,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginBottom: 30,
     marginRight: 30,
+  },
+  alarmTitleContainer: {
+    alignItems: 'center',
+    marginTop: 30,
+    marginBottom: 20,
+  },
+  alarmTitle: {
+    fontWeight: 'bold',
+    fontSize: 27,
+    color: 'black',
   },
   alarmAddText: {
     fontSize: 30,
