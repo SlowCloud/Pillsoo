@@ -18,3 +18,5 @@ class Age_Prefer(Base):
     PILL_pk = Column(Integer, ForeignKey('Supplement.supplementSeq'))
     AGE_GROUPS = Column(String(50))
     dose_guide = Column(String, index=True)
+
+

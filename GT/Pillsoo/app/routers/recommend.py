@@ -32,9 +32,9 @@ def recommend_supplements(client_text: str = Query(..., description="Client inpu
     # 2. MongoDB에서 캐시된 결과 가져오기
     mongo_result = mongo_collection.find_one({"client_text": client_text})
     if mongo_result:
-        # MongoDB에 결과가 있으면 Redis에 저장하고 반환 (1분동안)
+        # MongoDB에 결과가 있으면 Redis에 저장하고 반환 (1일 동안)
         if r:
-            r.set(cache_key, json.dumps(mongo_result['result']), ex=60)
+            r.set(cache_key, json.dumps(mongo_result['result']), ex=86400)
         return mongo_result['result']
     
     # 3. MySQL 데이터베이스에서 아이템 가져오기
@@ -67,7 +67,7 @@ def recommend_supplements(client_text: str = Query(..., description="Client inpu
         
         # Elasticsearch 결과를 Redis와 MongoDB에 저장
         if r:
-            r.set(cache_key, json.dumps(elasticsearch_results), ex=3600)  # Redis에 저장
+            r.set(cache_key, json.dumps(elasticsearch_results), ex=86400)  # Redis에 저장
         
         # MongoDB에 만료 시간이 있는 문서 저장 (1주일 TTL)
         expire_at = datetime.utcnow() + timedelta(seconds=604800)  # 현재 시간으로부터 1주일 후 만료
@@ -77,7 +77,7 @@ def recommend_supplements(client_text: str = Query(..., description="Client inpu
     
     # 5. MongoDB와 Redis에 결과 저장 (1분동안)
     if r:
-        r.set(cache_key, json.dumps(result), ex=3600)  # Redis에 저장
+        r.set(cache_key, json.dumps(result), ex=86400)  # Redis에 저장
 
     # MongoDB에 만료 시간이 있는 문서 저장 (1주일 TTL)
     expire_at = datetime.utcnow() + timedelta(seconds=604800)  # 현재 시간으로부터 1주일 후 만료
