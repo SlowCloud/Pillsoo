@@ -7,6 +7,7 @@ import axios from 'axios';
 import { API_URL } from '@env';
 import { setResetAlarm } from '../../store/store';
 import { useDispatch } from 'react-redux';
+import CommonModal from '../common/Modal';
 
 interface AlarmModalItemsProps {
     pillName: string;
@@ -17,6 +18,9 @@ interface AlarmModalItemsProps {
 const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementSeq, imageUrl}) => {
   const dispatch = useDispatch();
   const [openAlarmModal, setOpenAlarmModal] = useState<boolean>(false);
+  const [visible, setVisible] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>('');
+  const [messageImageUrl, setMessageImageUrl] = useState<any>(require('../../assets/warning.png'));
   const [date, setDate] = useState<Date>(new Date());
   const [token, setToken] = useState<string | null>(null);
 
@@ -35,7 +39,7 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
   };
 
   // 알람 정보를 저장한다
-  const setAlarm = async (alarmDate: Date, alertDate: Date, supplementSeq: number) => {
+  const setAlarm = async (alarmDate: Date, supplementSeq: number) => {
     const date = new Date(alarmDate);
     const hours = date.getUTCHours().toString().padStart(2, '0');
     const minutes = date.getUTCMinutes().toString().padStart(2, '0');
@@ -62,7 +66,9 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
         },
       });
       dispatch(setResetAlarm(true));
-      Alert.alert(`알람이 ${alertDate.toLocaleTimeString()}에 설정되었습니다`);
+      setVisible(true);
+      setMessage(`알람이 ${alarmDate.toLocaleTimeString()}으로 만들어졌습니다.`)
+      setMessageImageUrl(require('../../assets/alarmadd.png'))
     } catch(error) {
       if (axios.isAxiosError(error)) {
       // 서버가 응답했는데 요청 실패
@@ -81,48 +87,92 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
       setOpenAlarmModal(false)
       const changeUTCTime = new Date(currentDate);
       changeUTCTime.setHours(changeUTCTime.getHours()+9)
-      setAlarm(currentDate, changeUTCTime, supplementSeq)
+      setAlarm(changeUTCTime, supplementSeq)
     } else if (event.type === 'dismissed') {
       setOpenAlarmModal(false)
     }
   };
 
   return (
-    <View>
-      <View style={styles.container}>
-        <Image 
-          source={{uri: imageUrl}} 
-          style={styles.itemImage}
-          />
-        <Text>{pillName}</Text>
+    <View style={styles.container}>
+      <Image 
+        source={{uri: imageUrl}} 
+        style={styles.itemImage}
+        />
+      <View>
+        <View style={styles.pillNameContainer}>
+          <Text style={styles.pillName}>{pillName}</Text>
+        </View>
         <TouchableOpacity
           onPress={showAlarmModal}
         >
-          <Text>알람 추가</Text>
+          <View style={styles.alarmAddContainer}>
+            <Text style={styles.alarmAddText}>알람 추가</Text>
+          </View>
         </TouchableOpacity>
-        {openAlarmModal && (
-          <DateTimePicker
-            value={date}
-            mode="time"
-            display="clock"
-            timeZoneName='Asia/Seoul'
-            onChange={onChange}
-          />
-        )}
       </View>
+      {openAlarmModal && (
+        <DateTimePicker
+          value={date}
+          mode="time"
+          display="clock"
+          timeZoneName='Asia/Seoul'
+          onChange={onChange}
+        />
+      )}
+      {visible && (
+        <CommonModal 
+          visible={visible} 
+          message={message} 
+          onClose={() => setVisible(false)}
+          imageSource={messageImageUrl}
+        />
+      )}
     </View>
   )
 };
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 2,
+    width: 160,
+    height: 230,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    elevation: 3,
+    marginLeft: 10,
+    alignItems: 'center',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    marginBottom: 20,
+    overflow: 'hidden',
   },
-    itemImage: {
-        width: 50,
-        height: 50,
-        marginRight: 15,
-      },
+  itemImage: {
+    width: 135,
+    height: 135,
+    marginRight: 15,
+  },
+  pillNameContainer: {
+    height: 63,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  pillName: {
+    color: 'black'
+  },
+  alarmAddContainer: {
+    width: 160,
+    height: 40,
+    backgroundColor: '#a4f87b',
+    alignItems: 'center',
+  },
+  alarmAddText: {
+    color: 'black',
+    marginTop: 8,
+  }
 });
 
 

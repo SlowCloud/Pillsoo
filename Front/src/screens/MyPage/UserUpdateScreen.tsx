@@ -27,8 +27,7 @@ const UserUpdateScreen = () => {
   const nickname = useSelector((state: {nickname: string}) => state.nickname);
   const age = useSelector((state: {age: number | null}) => state.age);
   const gender = useSelector((state: {gender: string | null}) => state.gender);
-  console.log('회원정보 수정에서 내 젇보!!!!!!!!', nickname, age, gender);
-
+  
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem('jwt_token');
@@ -61,7 +60,6 @@ const UserUpdateScreen = () => {
       if (newPassword) {
         updateData.password = newPassword;
       }
-      console.log('나 회원정보 바꿀거임', updateData);
       const response = await axios.patch(
         `${API_URL}/api/v1/update`,
         updateData,
