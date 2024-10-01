@@ -36,15 +36,8 @@ const AlarmScreen = () => {
   const [myAlarms, setMyAlarms] = useState<AlarmList[]>([]);
 
   const dispatch = useDispatch();
-  const openModal = useSelector(
-    (state: {openModal: boolean | null}) => state.openModal,
-  );
-  const userSeq = useSelector(
-    (state: {userSeq: boolean | null}) => state.userSeq,
-  );
-  const resetAlarm = useSelector(
-    (state: {resetAlarm: boolean | null}) => state.resetAlarm,
-  );
+  const openModal = useSelector((state: {openModal: boolean | null}) => state.openModal);
+  const resetAlarm = useSelector((state: {resetAlarm: boolean | null}) => state.resetAlarm);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -53,6 +46,7 @@ const AlarmScreen = () => {
     };
 
     fetchToken();
+    dispatch(setOpenModal(false))
   }, []);
 
   useEffect(() => {

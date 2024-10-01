@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -6,6 +6,7 @@ import {API_URL} from '@env';
 import { setResetAlarm } from '../../store/store';
 import { useDispatch } from 'react-redux';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import CommonModal from '../../components/common/Modal';
 
 
 interface MyAlarmListitemsProps {
@@ -19,9 +20,28 @@ interface MyAlarmListitemsProps {
 }
 
 const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
+  const [visible, setVisible] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>('');
   const [openAlarmModal, setOpenAlarmModal] = useState<boolean>(false);
+  const [imageUrl, setImageUrl] = useState<any>(require('../../assets/warning.png'));
   const [date, setDate] = useState<Date>(new Date());
+  const [timer, setTimer] = useState<number>(2);
+  const [interValId, setInterValId] = useState<NodeJS.Timeout | null>(null);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      if (interValId) {
+        clearInterval(interValId);
+      }
+    };
+  }, [interValId]);
+
+  useEffect(() => {
+    if (visible) {
+      setMessage(`알람이 삭제되었습니다.\n이 창은 ${timer}초 후에 자동으로 닫힙니다.`)
+    }
+  }, [timer, visible])
   
   const initialPillName = myAlarm.supplementName.length > 11
   ? myAlarm.supplementName.slice(0, 11) + '...'
@@ -41,7 +61,23 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
           },
         },
       )
-      dispatch(setResetAlarm(true))
+      setVisible(true);
+      setMessage(`알람이 삭제되었습니다.\n이 창은 ${timer}초 후에 자동으로 닫힙니다.`)
+      setImageUrl(require('../../assets/alarmremove.png'))
+
+      // 타이머 시작
+      const id = setInterval(() => {
+        setTimer(prev => {
+          if (prev <= 0) {
+            clearInterval(id);
+            dispatch(setResetAlarm(true))
+            return 0;
+          }
+          return prev - 1;
+        })
+      }, 1000);
+
+      setInterValId(id);
     } catch(error) {
       console.error(error)
     }
@@ -78,7 +114,9 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
         }
       );
       dispatch(setResetAlarm(true))
-      Alert.alert(`'알람이 ${alarmDate.toLocaleTimeString()}으로 변경되었습니다.`)
+      setVisible(true);
+      setMessage(`알람이 ${alarmDate.toLocaleTimeString()}으로 변경되었습니다.`)
+      setImageUrl(require('../../assets/alarmupdate.png'))
     } catch(error) {
       console.log(error)
     }
@@ -123,6 +161,14 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
           display='clock'
           timeZoneName='Asia/Seoul'
           onChange={onChange}
+        />
+      )}
+      {visible && (
+        <CommonModal 
+          visible={visible} 
+          message={message} 
+          onClose={() => setVisible(false)}
+          imageSource={imageUrl}
         />
       )}
     </View>
