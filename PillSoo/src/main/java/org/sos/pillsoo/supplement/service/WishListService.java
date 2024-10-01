@@ -6,6 +6,7 @@ import org.sos.pillsoo.auth.repository.UserRepository;
 import org.sos.pillsoo.supplement.dto.WishListDto;
 import org.sos.pillsoo.supplement.entity.Supplement;
 import org.sos.pillsoo.supplement.entity.WishList;
+import org.sos.pillsoo.supplement.mapper.WishlistMapper;
 import org.sos.pillsoo.supplement.repository.WishListRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,20 +20,13 @@ public class WishListService {
 
     private final WishListRepository wishListRepository;
     private final UserRepository userRepository;
+    private final WishlistMapper wishlistMapper;
 
     // 유저 시퀀스로 위시리스트 조회
     public List<WishListDto> getWishListByUserSeq(int userSeq) {
         List<WishList> wishLists = wishListRepository.findByUser_UserSeq(userSeq);
         return wishLists.stream()
-                .map(wishList -> {
-                    WishListDto dto = new WishListDto();
-                    dto.setUserSeq(userSeq);
-                    dto.setSupplementSeq(wishList.getSupplement().getSupplementSeq());
-                    dto.setPillName(wishList.getSupplement().getPillName());
-                    dto.setFunctionality(wishList.getSupplement().getFunctionality());
-                    dto.setImageUrl(wishList.getSupplement().getImageUrl());
-                    return dto;
-                })
+                .map(wishlistMapper::toWishlistDto)
                 .collect(Collectors.toList());
     }
 
