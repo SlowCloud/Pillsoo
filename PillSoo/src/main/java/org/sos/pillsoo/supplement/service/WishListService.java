@@ -1,5 +1,6 @@
 package org.sos.pillsoo.supplement.service;
 
+import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.auth.repository.UserRepository;
 import org.sos.pillsoo.supplement.dto.WishListDto;
@@ -13,14 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class WishListService {
 
-    @Autowired
-    private WishListRepository wishListRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final WishListRepository wishListRepository;
+    private final UserRepository userRepository;
 
     // 유저 시퀀스로 위시리스트 조회
     public List<WishListDto> getWishListByUserSeq(int userSeq) {

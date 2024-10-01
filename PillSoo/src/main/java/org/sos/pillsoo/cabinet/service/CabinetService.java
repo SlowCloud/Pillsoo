@@ -1,5 +1,6 @@
 package org.sos.pillsoo.cabinet.service;
 
+import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.auth.repository.UserRepository;
 import org.sos.pillsoo.cabinet.dto.CabinetDto;
@@ -13,15 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 @Transactional
 public class CabinetService {
 
-    @Autowired
-    private CabinetRepository cabinetRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final CabinetRepository cabinetRepository;
+    private final UserRepository userRepository;
 
     // 복용 중인 영양제 목록 조회
     public List<CabinetDto> getCabinetByUserSeq(int userSeq) {
