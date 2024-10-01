@@ -5,7 +5,6 @@ import org.sos.pillsoo.supplement.dto.ReviewDto;
 import org.sos.pillsoo.supplement.entity.Review;
 import org.sos.pillsoo.supplement.mapper.ReviewMapper;
 import org.sos.pillsoo.supplement.repository.ReviewRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

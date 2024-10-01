@@ -5,7 +5,6 @@ import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.supplement.dto.SupplementDto;
 import org.sos.pillsoo.supplement.entity.EffectCategories;
 import org.sos.pillsoo.supplement.service.SupplementService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

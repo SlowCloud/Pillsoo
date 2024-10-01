@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.supplement.dto.WishListDto;
 import org.sos.pillsoo.supplement.service.WishListService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;

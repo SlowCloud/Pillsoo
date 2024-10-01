@@ -1,10 +1,7 @@
 package org.sos.pillsoo.supplement.mapper;
 
-import org.hibernate.sql.ast.tree.from.TableAliasResolver;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.supplement.dto.ReviewDto;
 import org.sos.pillsoo.supplement.entity.Review;
 

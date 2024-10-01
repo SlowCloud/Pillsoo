@@ -3,7 +3,6 @@ package org.sos.pillsoo.supplement.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.mapstruct.ValueMapping;
 import org.sos.pillsoo.elasticsearch.entity.ElasticSupplement;
 import org.sos.pillsoo.supplement.dto.SupplementDto;
 import org.sos.pillsoo.supplement.entity.Supplement;
