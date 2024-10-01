@@ -1,14 +1,12 @@
 package org.sos.pillsoo.cabinet.service;
 
 
-
 import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.cabinet.dto.AlarmDto;
 import org.sos.pillsoo.cabinet.entity.Alarm;
 import org.sos.pillsoo.cabinet.entity.Cabinet;
 import org.sos.pillsoo.cabinet.repository.AlarmRepository;
 import org.sos.pillsoo.cabinet.repository.CabinetRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

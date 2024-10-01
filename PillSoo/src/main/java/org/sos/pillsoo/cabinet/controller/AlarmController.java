@@ -5,9 +5,7 @@ import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.cabinet.dto.AlarmDto;
 import org.sos.pillsoo.cabinet.service.AlarmService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

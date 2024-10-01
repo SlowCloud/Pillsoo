@@ -7,7 +7,6 @@ import org.sos.pillsoo.cabinet.dto.CabinetDto;
 import org.sos.pillsoo.cabinet.entity.Cabinet;
 import org.sos.pillsoo.cabinet.repository.CabinetRepository;
 import org.sos.pillsoo.supplement.entity.Supplement;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
