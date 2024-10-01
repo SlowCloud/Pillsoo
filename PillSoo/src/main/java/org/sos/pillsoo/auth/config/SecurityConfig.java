@@ -7,6 +7,7 @@ import org.sos.pillsoo.auth.jwt.filter.JWTFilter;
 import org.sos.pillsoo.auth.jwt.filter.LoginFilter;
 import org.sos.pillsoo.auth.jwt.filter.RefreshTokenFilter;
 import org.sos.pillsoo.auth.repository.RefreshRepository;
+import org.sos.pillsoo.auth.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -32,11 +33,13 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+    private final UserRepository userRepository;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshRepository refreshRepository) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RefreshRepository refreshRepository, UserRepository userRepository) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
+        this.userRepository = userRepository;
     }
 
     @Bean
@@ -70,7 +73,7 @@ public class SecurityConfig {
 
         http.addFilterBefore(refreshTokenFilter, JWTFilter.class);
 
-        var loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository);
+        var loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository, userRepository);
         loginFilter.setFilterProcessesUrl("/api/v1/signin");
         http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
 

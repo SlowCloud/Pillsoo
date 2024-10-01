@@ -27,4 +27,7 @@ public class User {
     private Timestamp createdAt;
     private Timestamp withdrawalAt;
     private String role;
+
+    @Column(nullable = true)
+    private String fcmToken;
 }
