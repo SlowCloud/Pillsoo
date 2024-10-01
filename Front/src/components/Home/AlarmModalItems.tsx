@@ -35,7 +35,7 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
   };
 
   // 알람 정보를 저장한다
-  const setAlarm = async (alarmDate: Date, alertDate: Date, supplementSeq: number) => {
+  const setAlarm = async (alarmDate: Date, supplementSeq: number) => {
     const date = new Date(alarmDate);
     const hours = date.getUTCHours().toString().padStart(2, '0');
     const minutes = date.getUTCMinutes().toString().padStart(2, '0');
@@ -62,7 +62,7 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
         },
       });
       dispatch(setResetAlarm(true));
-      Alert.alert(`알람이 ${alertDate.toLocaleTimeString()}에 설정되었습니다`);
+      Alert.alert(`알람이 ${alarmDate.toLocaleTimeString()}에 설정되었습니다`);
     } catch(error) {
       if (axios.isAxiosError(error)) {
       // 서버가 응답했는데 요청 실패
@@ -81,7 +81,7 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
       setOpenAlarmModal(false)
       const changeUTCTime = new Date(currentDate);
       changeUTCTime.setHours(changeUTCTime.getHours()+9)
-      setAlarm(currentDate, changeUTCTime, supplementSeq)
+      setAlarm(changeUTCTime, supplementSeq)
     } else if (event.type === 'dismissed') {
       setOpenAlarmModal(false)
     }

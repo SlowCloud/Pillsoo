@@ -63,7 +63,7 @@ const AlarmScreen = () => {
           headers: {
             access: `${token}`,
           },
-        );
+      });
       
       setMyKitData(response.data)
       } catch(error) {
