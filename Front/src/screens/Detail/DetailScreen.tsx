@@ -34,9 +34,8 @@ const DetailScreen: React.FC = () => {
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<boolean>(false);
   const [myKit, setMyKit] = useState<boolean>(false);
-  const userSeq = useSelector(
-    (state: {userSeq: number | null}) => state.userSeq,
-  );
+  const [pillImageUrl, setPillImageUrl] = useState<string>()
+  const userSeq = useSelector((state: {userSeq: number | null}) => state.userSeq);
   const [isModalVisible, setModalVisible] = useState(false); // 모달 상태 추가
   const [modalMessage, setModalMessage] = useState(''); // 모달 메시지 상태 추가
   const [modalImage, setModalImage] = useState<any>(null); // 모달 이미지 상태 추가
@@ -190,7 +189,15 @@ const DetailScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.infoBox}>
-        <Image source={ pillData.imageUrl ? {uri: pillData.imageUrl} : require('../../assets/noImage.png')} style={styles.image} />
+        <Image
+          source={
+            pillData.imageUrl && pillData.imageUrl.trim() !== ''
+            ? { uri: pillData.imageUrl }
+            : require('../../assets/noImage.png')
+          }
+          style={styles.image} 
+        />
+        <Image source={{uri: pillData.imageUrl}} style={styles.image} />
         <View style={styles.infoContainer}>
           <Text style={styles.pillName}>
             {pillData.name}

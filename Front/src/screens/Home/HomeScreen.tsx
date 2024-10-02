@@ -1,6 +1,5 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image, TouchableNativeFeedback} from 'react-native';
-import Kit from '../../components/Home/Kit';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import MyKit from '../../components/Home/MyKit';

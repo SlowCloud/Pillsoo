@@ -47,6 +47,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
         },
       );
       const data = response.data;
+      console.log('영양제 추천', response.data)
       const pills = data.map((item: any) => ({
         id: item.supplementSeq,
         imageUrl: {uri: item.image_url},
