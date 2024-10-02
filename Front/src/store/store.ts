@@ -18,6 +18,8 @@ const initialState = {
   // 알람을 수정 or 삭제 한 후 재렌더링 할 때 필요
   resetAlarm: false,
   fcmToken: null as string | null,
+  // 로그아웃 모달
+  openLogoutModal: false
 };
 
 // 액션 타입
@@ -30,6 +32,7 @@ const SET_GENDER = 'SET_GENDER';
 const SET_OPEN_MODAL = 'SET_OPEN_MODAL';
 const SET_RESET_ALARM = 'SET_RESET_ALARM';
 const SET_FCM_TOKEN = 'SET_FCM_TOKEN';
+const SET_OPEN_LOGOUT_MODAL = 'SET_OPEN_LOGOUT_MODAL';
 
 // 액션 생성자
 export const setUserId = (userId: string | null) => ({
@@ -71,6 +74,10 @@ export const setResetAlarm = (resetAlarm: boolean) => ({
 export const setFcmToken = (fcmToken: string | null) => ({
   type: SET_FCM_TOKEN,
   payload: fcmToken,
+});
+export const setOpenLogoutModal = (openLogoutModal: boolean) => ({
+  type: SET_OPEN_LOGOUT_MODAL,
+  payload: openLogoutModal,
 });
 
 // 액션 타입 인터페이스 정의
@@ -114,6 +121,10 @@ interface setFcmTokenAction extends Action {
   type: typeof SET_FCM_TOKEN;
   payload: string | null;
 }
+interface setOpenLogoutModalAction extends Action {
+  type: typeof SET_OPEN_LOGOUT_MODAL;
+  payload: boolean;
+}
 
 
 // 액션 타입을 통합
@@ -126,7 +137,8 @@ type MyActionTypes =
   | SetGenderAction
   | setOpenMIdalAction
   | setResetAlarmAction
-  | setFcmTokenAction;
+  | setFcmTokenAction
+  | setOpenLogoutModalAction;
 
 
 // 리듀서
@@ -150,6 +162,8 @@ const reducer = (state = initialState, action: MyActionTypes) => {
       return {...state, resetAlarm: action.payload};
     case SET_FCM_TOKEN:
       return {...state, fcmToken: action.payload};
+    case SET_OPEN_LOGOUT_MODAL:
+      return {...state, openLogoutModal: action.payload};
     default:
       return state;
   }

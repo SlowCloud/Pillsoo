@@ -190,9 +190,9 @@ const DetailScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.infoBox}>
-        <Image source={{uri: pillData.imageUrl}} style={styles.image} />
+        <Image source={ pillData.imageUrl ? {uri: pillData.imageUrl} : require('../../assets/noImage.png')} style={styles.image} />
         <View style={styles.infoContainer}>
-          <Text style={styles.pillName} numberOfLines={1} ellipsizeMode="tail">
+          <Text style={styles.pillName}>
             {pillData.name}
           </Text>
           <View style={styles.rowContainer}>
