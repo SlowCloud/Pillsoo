@@ -19,4 +19,3 @@ class Age_Prefer(Base):
     AGE_GROUPS = Column(String(50))
     dose_guide = Column(String, index=True)
 
-
