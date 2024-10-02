@@ -33,7 +33,7 @@ const SearchResultScreen = () => {
     fetchToken();
   }, []);
 
-  const fetchResults = async (newPage = 1) => {
+  const fetchResults = async (newPage = 0) => {
     if (!searchQuery.trim() || !token) return;
     setLoading(true);
     try {
@@ -77,9 +77,9 @@ const SearchResultScreen = () => {
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setResults([]); // 검색어가 비어있으면 결과를 빈 배열로 설정합니다.
-      setPage(1); // 페이지도 1로 초기화합니다.
+      setPage(0); // 페이지도 1로 초기화합니다.
     } else {
-      fetchResults(1); // 검색어가 있을 때 결과를 가져옵니다.
+      fetchResults(0); // 검색어가 있을 때 결과를 가져옵니다.
     }
   }, [searchQuery]);
 

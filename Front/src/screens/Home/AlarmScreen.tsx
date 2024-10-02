@@ -36,8 +36,12 @@ const AlarmScreen = () => {
   const [myAlarms, setMyAlarms] = useState<AlarmList[]>([]);
 
   const dispatch = useDispatch();
-  const openModal = useSelector((state: {openModal: boolean | null}) => state.openModal);
-  const resetAlarm = useSelector((state: {resetAlarm: boolean | null}) => state.resetAlarm);
+  const openModal = useSelector(
+    (state: {openModal: boolean | null}) => state.openModal,
+  );
+  const resetAlarm = useSelector(
+    (state: {resetAlarm: boolean | null}) => state.resetAlarm,
+  );
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -46,7 +50,7 @@ const AlarmScreen = () => {
     };
 
     fetchToken();
-    dispatch(setOpenModal(false))
+    dispatch(setOpenModal(false));
   }, []);
 
   useEffect(() => {
@@ -57,18 +61,19 @@ const AlarmScreen = () => {
           headers: {
             access: `${token}`,
           },
-      });
-      
-      setMyKitData(response.data)
-      } catch(error) {
+        });
+
+        setMyKitData(response.data);
+      } catch (error) {
         if (axios.isAxiosError(error)) {
-        // 서버가 응답했는데 요청 실패
-        console.error('Error Data:', error.response?.data);
-        console.error('Error status', error.response?.status);
-      } else {
-        // 요청이 이루어지지 않았거나 오류 발생
-        console.error('Error message:', (error as Error).message)
-      }}
+          // 서버가 응답했는데 요청 실패
+          console.error('Error Data:', error.response?.data);
+          console.error('Error status', error.response?.status);
+        } else {
+          // 요청이 이루어지지 않았거나 오류 발생
+          console.error('Error message:', (error as Error).message);
+        }
+      }
     };
 
     fetchPillData();
@@ -84,8 +89,8 @@ const AlarmScreen = () => {
             access: `${token}`,
           },
         });
-        setMyAlarms(response.data)
-        dispatch(setResetAlarm(false))
+        setMyAlarms(response.data);
+        dispatch(setResetAlarm(false));
       } catch (error) {
         console.error(error);
       }
@@ -94,7 +99,6 @@ const AlarmScreen = () => {
     fetchAlarmData();
   }, [token, resetAlarm]);
 
-
   // 알람을 설정할 수 있는 모달을 연다
   const showAlarmModal = () => {
     dispatch(setOpenModal(true));
@@ -102,24 +106,21 @@ const AlarmScreen = () => {
 
   return (
     <View style={styles.container}>
-      {openModal && <AlarmModal myKitData={myKitData}/>}
+      {openModal && <AlarmModal myKitData={myKitData} />}
       <View style={styles.alarmTitleContainer}>
         <Text style={styles.alarmTitle}>알람</Text>
       </View>
       <View style={styles.alarmContainer}>
         <ScrollView>
-          {myAlarms && myAlarms.map((alarm) => (
-              <MyAlarmListitems key={alarm.alarmSeq} myAlarm={alarm}/>
-            ))
-          }
+          {myAlarms &&
+            myAlarms.map(alarm => (
+              <MyAlarmListitems key={alarm.alarmSeq} myAlarm={alarm} />
+            ))}
         </ScrollView>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          onPress={showAlarmModal}
-          style={styles.alarmAddBtn}
-          >
-        <Text style={styles.alarmAddText}>+</Text>
+        <TouchableOpacity onPress={showAlarmModal} style={styles.alarmAddBtn}>
+          <Text style={styles.alarmAddText}>+</Text>
         </TouchableOpacity>
       </View>
     </View>
