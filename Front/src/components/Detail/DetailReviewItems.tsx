@@ -2,16 +2,17 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
-// import {API_URL} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TextInput} from 'react-native-gesture-handler';
 import {API_URL} from '@env';
+
 type Props = {
   userName: string;
   content: string;
   supplementId: number;
   userSeq: number;
   reviewId: number;
+  nickName: string;
 };
 
 const DetailReviewItems: React.FC<Props> = ({
@@ -20,13 +21,12 @@ const DetailReviewItems: React.FC<Props> = ({
   supplementId,
   userSeq,
   reviewId,
+  nickName,
 }) => {
-  const myName = useSelector(
-    (state: {nickname: string | null}) => state.nickname,
-  );
+  const storedUserSeq = useSelector((state: {userSeq: number | null}) => state.userSeq);
+
   const [token, setToken] = useState<string | null>(null);
   const [updateContent, setUpdateContent] = useState<boolean>(false);
-
   const [updateReview, setUpdateReview] = useState<string>('');
 
   useEffect(() => {
@@ -50,11 +50,10 @@ const DetailReviewItems: React.FC<Props> = ({
     try {
       const response = await axios.patch(
         `${API_URL}/api/v1/supplement/${supplementId}/reviews`,
-        // `http://10.0.2.2:8080/api/v1/supplement/${supplementId}/reviews`,
         {reviewSeq: reviewId, content: updateReview},
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            access: `${token}`,
           },
         },
       );
@@ -63,56 +62,52 @@ const DetailReviewItems: React.FC<Props> = ({
     }
   };
 
-  const UPdateMyReview = (
-    <View>
-      <TextInput
-        value={updateReview}
-        placeholder={content}
-        autoCorrect={false}
-        multiline
-        onChangeText={handleUpdateTextChange}></TextInput>
-      <TouchableOpacity onPress={clickedUpdateBtn}>
-        <Text>수정 완료</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
   const handleDelete = async () => {
     if (!token) return;
     try {
       const response = await axios.delete(
         `${API_URL}/api/v1/supplement/${supplementId}/reviews`,
-        // `http://10.0.2.2:8080/api/v1/supplement/${supplementId}/reviews`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            access: `${token}`,
           },
         },
       );
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
-  const updateAndDelete = (
-    <View>
-      <TouchableOpacity onPress={() => setUpdateContent(true)}>
-        <Text>수정</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleDelete}>
-        <Text>삭제</Text>
-      </TouchableOpacity>
-    </View>
-  );
   return (
     <View style={styles.container}>
-      <Text>📣{myName}</Text>
+      <Text>📣 {nickName}</Text>
       {updateContent ? (
-        UPdateMyReview
+        <View>
+          <TextInput
+            value={updateReview}
+            placeholder={content}
+            autoCorrect={false}
+            multiline
+            onChangeText={handleUpdateTextChange}
+          />
+          <TouchableOpacity onPress={clickedUpdateBtn}>
+            <Text>수정 완료</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
         <Text style={styles.reviewContent}>{content}</Text>
       )}
-      {userName == myName ? updateAndDelete : null}
+
+      {storedUserSeq === userSeq && !updateContent && (
+        <View>
+          <TouchableOpacity onPress={() => setUpdateContent(true)}>
+            <Text>수정</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleDelete}>
+            <Text>삭제</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };

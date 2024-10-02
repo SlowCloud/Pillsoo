@@ -13,7 +13,7 @@ import {authNavigations} from '../../constants/navigations';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {
   setUserId as setReduxUserId,
   setUserSeq,
@@ -32,6 +32,7 @@ type LoginScreenProps = StackScreenProps<
 
 const LoginScreen = ({navigation}: LoginScreenProps) => {
   const dispatch = useDispatch();
+  const fcmToken = useSelector((state: {fcmToken: string | null}) => state.fcmToken);
 
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -44,6 +45,7 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
         {
           username: userId,
           password,
+          fcmToken
         },
         {
           headers: {
@@ -54,7 +56,6 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
 
       if (response.status === 200) {
         const token = response.headers['access'];
-        console.log('로그인', token);
         if (token) {
           await AsyncStorage.setItem('jwt_token', token);
 
@@ -76,14 +77,13 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
           dispatch(setGender(dec.gender));
           dispatch(setAge(dec.age));
           navigation.navigate('Main');
-          Alert.alert('로그인 성공');
         } else {
           Alert.alert('토큰이 없습니다. 로그인 실패');
         }
       }
     } catch (error) {
-      Alert.alert('로그인 실패');
-      console.error(error);
+      Alert.alert('아이디나 비밀번호가 일치하지 않습니다.');
+      console.log(error);
     }
   };
 
@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
+    backgroundColor: '#fff',
   },
   title: {
     fontSize: 24,

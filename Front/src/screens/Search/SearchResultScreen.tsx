@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import SearchBar from '../../components/common/SearchBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -21,6 +21,9 @@ const SearchResultScreen = () => {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  console.log(searchQuery)
+  const [page, setPage] = useState(1);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -31,49 +34,79 @@ const SearchResultScreen = () => {
     fetchToken();
   }, []);
 
-  const fetchResults = async () => {
+  const fetchResults = async (newPage = 0) => {
     if (!searchQuery.trim() || !token) return;
     setLoading(true);
     try {
       const response = await axios.get(`${API_URL}/api/v1/supplement/search`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          access: `${token}`,
         },
         params: {
           searchtext: searchQuery,
           functionality: '',
-          page: 1,
+          page: newPage,
           size: 10,
         },
       });
       if (response.status === 200) {
-        setResults(response.data.content);
+        if (newPage === 0) {
+          setResults(response.data.content);
+        } else {
+          setResults(prevResults => [...prevResults, ...response.data.content]);
+        }
       } else {
         Alert.alert('검색 실패');
       }
     } catch (error) {
-      console.log(error);
-      Alert.alert('검색 실패');
+      Alert.alert('검색하신 영양제가 존재하지 않습니다.');
     } finally {
       setLoading(false);
+      setIsFetchingMore(false);
     }
   };
 
+  // 화면이 포커스될 때 초기화
+  useFocusEffect(
+    useCallback(() => {
+      setSearchQuery('');
+      setResults([]);
+      setPage(1);
+    }, []),
+  );
+
   useEffect(() => {
-    fetchResults();
+    if (searchQuery.trim() === '') {
+      setResults([]); // 검색어가 비어있으면 결과를 빈 배열로 설정합니다.
+      setPage(0); // 페이지도 1로 초기화합니다.
+    } else {
+      fetchResults(0); // 검색어가 있을 때 결과를 가져옵니다.
+    }
   }, [searchQuery]);
+
+  const handleLoadMore = () => {
+    if (!isFetchingMore && !loading) {
+      setIsFetchingMore(true);
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchResults(nextPage);
+    }
+  };
 
   const renderItem = ({item}: {item: any}) => (
     <TouchableOpacity
       style={styles.resultItem}
       onPress={() => navigation.navigate('Detail', {id: item.supplementSeq})}>
       <Image source={{uri: item.imageUrl}} style={styles.image} />
-      <Text style={styles.pillName}>{item.pillName}</Text>
+      <Text style={styles.pillName} numberOfLines={1} ellipsizeMode="tail">
+        {item.pillName}
+      </Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.screen}>
+      <Text style={styles.headerText}>찾으시는 영양제를 검색해주세요 !</Text>
       <View style={styles.searchBarContainer}>
         <SearchBar
           placeholder="검색어를 입력하세요 !"
@@ -83,17 +116,29 @@ const SearchResultScreen = () => {
         />
       </View>
 
-      {loading ? (
-        <ActivityIndicator size="large" color="#a4f87b" />
-      ) : results.length > 0 ? (
-        <FlatList
+      <View style={styles.resultsContainer}>
+        {loading && page === 1 ? (
+          <ActivityIndicator size="large" color="#a4f87b" />
+        ) : results.length > 0 ? (
+          <FlatList
           data={results}
-          keyExtractor={item => item.supplementSeq.toString()}
+          keyExtractor={(item, index) => `${item.supplementSeq}-${index}`}
           renderItem={renderItem}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isFetchingMore ? (
+              <ActivityIndicator size="small" color="#a4f87b" />
+            ) : null
+          }
         />
-      ) : (
-        <Text style={styles.noResultsText}>검색 결과가 없습니다.</Text>
-      )}
+        
+        ) : searchQuery.trim() === '' ? (
+          <Text style={styles.noResultsText}>검색어를 입력하세요.</Text>
+        ) : (
+          <Text style={styles.noResultsText}>검색 결과가 없습니다.</Text>
+        )}
+      </View>
     </View>
   );
 };
@@ -101,14 +146,28 @@ const SearchResultScreen = () => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+    backgroundColor: '#fff',
+  },
+  headerText: {
+    alignSelf: 'flex-start',
+    marginLeft: 30,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+    marginTop: 30,
   },
   searchBarContainer: {
+    paddingTop: 40,
     padding: 16,
+  },
+  resultsContainer: {
+    flex: 1,
+    margin: 16,
+    padding: 16,
+    backgroundColor: '#fff',
   },
   resultItem: {
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -120,6 +179,7 @@ const styles = StyleSheet.create({
   pillName: {
     fontSize: 18,
     fontWeight: 'bold',
+    maxWidth: '80%',
   },
   noResultsText: {
     textAlign: 'center',

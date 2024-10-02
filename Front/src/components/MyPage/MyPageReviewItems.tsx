@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, Text, Image} from 'react-native';
 import axios from 'axios';
-import { API_URL } from '@env';
+import {API_URL} from '@env';
 
 type Props = {
   content: string;
@@ -15,28 +15,38 @@ interface PillInfo {
   imageUrl: string;
 }
 
-const MyPageReviewItems: React.FC<Props> = ({ content, userNickname, supplementSeq, token }) => {
-  const [pillData, setPillData] = useState<PillInfo | null>(null); 
+const MyPageReviewItems: React.FC<Props> = ({
+  content,
+  userNickname,
+  supplementSeq,
+  token,
+}) => {
+  const [pillData, setPillData] = useState<PillInfo | null>(null);
 
   useEffect(() => {
     const fetchMyReview = async () => {
       if (!token) {
-        console.log("마이페이지에서 영양제 상세 정보 가져오고 싶은데 토큰이 없다.");
+        console.log(
+          '마이페이지에서 영양제 상세 정보 가져오고 싶은데 토큰이 없다.',
+        );
         return;
       }
 
       try {
-        const response = await axios.get(`${API_URL}/api/v1/supplement/${supplementSeq}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        const response = await axios.get(
+          `${API_URL}/api/v1/supplement/${supplementSeq}`,
+          {
+            headers: {
+              access: `${token}`,
+            },
+            params: {
+              supplementSeq: supplementSeq,
+            },
           },
-          params: {
-            supplementSeq: supplementSeq,
-          },
-        });
+        );
         setPillData(response.data);
       } catch (error) {
-        console.error(error);
+        console.log(error);
       }
     };
 
@@ -45,13 +55,17 @@ const MyPageReviewItems: React.FC<Props> = ({ content, userNickname, supplementS
 
   return (
     <View style={styles.container}>
-      <Image
-        source={{ uri: pillData?.imageUrl }}
-        style={styles.myReviewImage}
-      />
+      <Image source={{uri: pillData?.imageUrl}} style={styles.myReviewImage} />
       <View style={styles.myReviewBox}>
-        <Text>💊{pillData?.pillName}</Text>
-        <Text style={styles.myReviewContent}>{content}</Text>
+        <Text numberOfLines={1} ellipsizeMode="tail">
+          💊{pillData?.pillName}
+        </Text>
+        <Text
+          style={styles.myReviewContent}
+          numberOfLines={1}
+          ellipsizeMode="tail">
+          {content}
+        </Text>
       </View>
     </View>
   );
@@ -81,6 +95,7 @@ const styles = StyleSheet.create({
   },
   myReviewBox: {
     marginLeft: 10,
+    maxWidth: '80%',
   },
   pillName: {
     marginTop: 5,

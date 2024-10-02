@@ -1,12 +1,15 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {View, StyleSheet} from 'react-native';
 import DetailReviewInput from './DetailReviewInput';
 import DetailReviewItems from './DetailReviewItems';
 import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
 import {RouteProp, useRoute} from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL } from '@env';
+import {API_URL} from '@env';
+import {useSelector} from 'react-redux';
+
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
 interface Review {
@@ -15,6 +18,7 @@ interface Review {
   supplementSeq: number;
   userName: string;
   userSeq: number;
+  nickName: string;
 }
 
 const DetailReview: React.FC = () => {
@@ -22,39 +26,58 @@ const DetailReview: React.FC = () => {
   const {id} = route.params;
   const [token, setToken] = useState<string | null>(null);
   const [reviewList, setReviewList] = useState<Review[]>([]);
+  const [hasWrittenReview, setHasWrittenReview] = useState<boolean>(false);
+  // 리뷰 작성 여부 상태
 
-  useEffect(() => {
-    const fetchToken = async () => {
-      const storedToken = await AsyncStorage.getItem('jwt_token');
-      setToken(storedToken);
-    };
+  // Redux에서 userSeq 가져오기
+  const currentUserSeq = useSelector(
+    (state: {userSeq: number | null}) => state.userSeq,
+  );
 
-    fetchToken();
-  }, []);
+  // 토큰 가져오기
+  useFocusEffect(
+    useCallback(() => {
+      const fetchToken = async () => {
+        const storedToken = await AsyncStorage.getItem('jwt_token');
+        setToken(storedToken);
+      };
 
-  useEffect(() => {
-    const fetchReviews = async () => {
-      if (!token) return;
+      fetchToken();
+    }, []),
+  );
 
-      try {
-        const response = await axios.get(
-          `${API_URL}/api/v1/supplement/${id}/reviews`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
+  // 리뷰 가져오기
+  useFocusEffect(
+    useCallback(() => {
+      const fetchReviews = async () => {
+        if (!token) return;
+
+        try {
+          const response = await axios.get(
+            `${API_URL}/api/v1/supplement/${id}/reviews`,
+            {
+              headers: {
+                access: `${token}`,
+              },
             },
-          },
-        );
-        if (response.status === 200) {
-          setReviewList(response.data);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
+          );
+          if (response.status === 200) {
+            setReviewList(response.data);
 
-    fetchReviews();
-  }, [id, token, reviewList]);
+            // 현재 사용자가 작성한 리뷰가 있는지 확인
+            const userReview = response.data.find(
+              (review: Review) => review.userSeq === currentUserSeq,
+            );
+            setHasWrittenReview(!!userReview); // 리뷰가 있으면 true, 없으면 false
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchReviews();
+    }, [id, token, currentUserSeq, reviewList]),
+  );
 
   return (
     <View style={styles.container}>
@@ -67,9 +90,12 @@ const DetailReview: React.FC = () => {
             content={reviewItem.content}
             supplementId={reviewItem.supplementSeq}
             reviewId={reviewItem.reviewSeq}
+            nickName={reviewItem.nickName}
           />
         ))}
-        <DetailReviewInput />
+
+        {/* 사용자가 이미 리뷰를 작성한 경우 리뷰 입력란 숨기기 */}
+        {!hasWrittenReview && <DetailReviewInput />}
       </View>
     </View>
   );

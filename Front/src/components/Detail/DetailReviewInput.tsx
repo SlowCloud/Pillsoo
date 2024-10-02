@@ -35,6 +35,7 @@ const DetailReviewInput: React.FC = () => {
   };
 
   const clickedSubmitBtn = async () => {
+    console.log('hihi')
     if (!token) return;
 
     try {
@@ -44,13 +45,13 @@ const DetailReviewInput: React.FC = () => {
         {content: review},
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            access: `${token}`,
           },
         },
       );
       if (response.status === 200) {
-        console.log(response);
         setReview('');
+        console.log(response)
       } else {
         Alert.alert('리뷰 작성 실패');
       }

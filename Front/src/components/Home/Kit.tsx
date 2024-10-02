@@ -17,6 +17,7 @@ const Kit = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.headerText}>복용하시는 영양제를 관리해보세요 💊</Text>
       <TouchableNativeFeedback
         onPress={() =>
           navigation.navigate('Home', {
@@ -27,7 +28,6 @@ const Kit = () => {
           source={require('../../assets/Pill.png')}
           style={styles.buttonImage}
         />
-        {/* <Text style={styles.buttonText}>복용 영양제 목록 보기</Text> */}
       </TouchableNativeFeedback>
     </View>
   );
@@ -42,6 +42,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopEndRadius: 50,
     borderTopStartRadius: 50,
+  },
+  headerText: {
+    alignSelf: 'flex-start',
+    marginLeft: 30,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+    bottom: 100,
   },
   buttonText: {
     color: 'black',
