@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.auth.entity.RefreshEntity;
 import org.sos.pillsoo.auth.jwt.JWTUtil;
@@ -21,22 +22,17 @@ import org.sos.pillsoo.auth.entity.User;
 
 import java.util.Date;
 
+@RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
-    public static final int ACCESS_TOKEN_EXPIRED_MS = 1000L * 60 * 60;
-    public static final int REFRESH_TOKEN_EXPIRED_MS = 1000L * 60 * 60 * 12;
+    public static final int ACCESS_TOKEN_EXPIRED_MS = 1000 * 60 * 60;
+    public static final int REFRESH_TOKEN_EXPIRED_MS = 1000 * 60 * 60 * 12;
     public static final String FCM_TOKEN = "fcmToken";
+
     private final JWTUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final RefreshRepository refreshRepository;
     private final UserRepository userRepository;
-
-    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RefreshRepository refreshRepository, UserRepository userRepository) {
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-        this.refreshRepository = refreshRepository;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -94,7 +90,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private Cookie createCookie(String key, String value) {
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(REFRESH_TOKEN_EXPIRED_MS);
+        cookie.setMaxAge(REFRESH_TOKEN_EXPIRED_MS / 1000);
         cookie.setHttpOnly(true);
         return cookie;
     }
