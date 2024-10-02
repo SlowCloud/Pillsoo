@@ -22,6 +22,7 @@ export type Props = {
 export type RecommendPill = {
   id: number;
   imageUrl: any;
+  _random: boolean;
 };
 
 const RecommendScreen: React.FC<Props> = ({navigation}) => {
@@ -52,8 +53,8 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
         id: item.supplementSeq,
         imageUrl: {uri: item.image_url},
         pillName: item.pill_name,
+        isRandom: item._random
       }));
-
       setRecommendPills(pills);
     } catch (error) {
       console.log(error);
