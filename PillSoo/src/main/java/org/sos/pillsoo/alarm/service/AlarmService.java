@@ -12,6 +12,9 @@ import org.sos.pillsoo.alarm.mapper.AlarmMapper;
 import org.sos.pillsoo.cabinet.entity.Cabinet;
 import org.sos.pillsoo.alarm.repository.AlarmRepository;
 import org.sos.pillsoo.cabinet.repository.CabinetRepository;
+import org.sos.pillsoo.exception.PillSooException;
+import org.sos.pillsoo.exception.errorCode.AlarmErrorCode;
+import org.sos.pillsoo.exception.errorCode.CabinetErrorCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -38,7 +41,7 @@ public class AlarmService {
     // 알람 추가
     public AlarmResDto addAlarm(int userSeq, AlarmReqDto alarmReqDto) {
         Cabinet cabinet = cabinetRepository.findByUser_UserSeqAndSupplement_SupplementSeq(userSeq, alarmReqDto.getSupplementSeq())
-                .orElseThrow(() -> new RuntimeException("Cabinet entry not found"));
+                .orElseThrow(() -> new PillSooException(CabinetErrorCode.CABINET_NOT_FOUND));
 
         Alarm alarm = new Alarm();
         alarm.setCabinet(cabinet);
@@ -51,7 +54,8 @@ public class AlarmService {
 
     // 알람 수정
     public AlarmResDto updateAlarm(long alarmSeq, AlarmReqDto alarmReqDto) {
-        Alarm alarm = alarmRepository.findById(alarmSeq).orElseThrow(() -> new RuntimeException("Alarm not found"));
+        Alarm alarm = alarmRepository.findById(alarmSeq)
+                .orElseThrow(() -> new PillSooException(AlarmErrorCode.ALARM_NOT_FOUND));
         alarm.setTime(alarmReqDto.getTime());
         Alarm updatedAlarm = alarmRepository.save(alarm);
         return convertAlarmToDto(updatedAlarm);
