@@ -11,4 +11,5 @@ public class RecommendResDto {
     private String functionality;
     private String image_url;
     private String dose_guide;
+    private boolean is_random;
 }
