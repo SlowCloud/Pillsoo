@@ -101,7 +101,11 @@ function MyKit() {
                                 >
                                     <CarouselItem>
                                         <Image
-                                            source={{ uri: item.imageUrl }}
+                                            source={
+                                                item.imageUrl && item.imageUrl.trim() !== ''
+                                                ? { uri: item.imageUrl }
+                                                : require('../../assets/noImage.png')
+                                              }
                                             resizeMode='cover'
                                             style={styles.image}
                                         />

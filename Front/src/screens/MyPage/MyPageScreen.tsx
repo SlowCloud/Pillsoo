@@ -6,13 +6,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
-  Modal
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import axios from 'axios';
 import {API_URL} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setOpenLogoutModal } from '../../store/store';
 import LogoutModal from '../../components/MyPage/LogoutModal';
 
 const images = [
@@ -50,7 +50,7 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
   const openLogoutModal = useSelector((state: {openLogoutModal: boolean}) => state.openLogoutModal);
   const age = useSelector((state: {age: string | null}) => state.age);
   const [token, setToken] = useState<string | null>(null);
-  const [logoutModal, setLogoutModal] = useState<boolean>(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -65,34 +65,10 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
   const imageNumber = userSeq ? userSeq % 10 : 0;
 
   const goLogout = () => {
-    setLogoutModal(true);
-    // Alert.alert('로그아웃', '로그아웃하시겠습니까?', [
-    //   {
-    //     text: '예',
-    //     onPress: async () => {
-    //       try {
-    //         const response = await axios.post(`${API_URL}/api/v1/signout`, {
-    //           headers: {
-    //             access: `${token}`,
-    //           },
-    //         });
-    //         AsyncStorage.clear();
-
-    //         navigation.navigate('AuthHome');
-    //       } catch (error) {
-    //         console.log(error);
-    //       }
-    //     },
-    //   },
-    //   {
-    //     text: '아니요',
-    //     style: 'cancel',
-    //   },
-    // ]);
+    dispatch(setOpenLogoutModal(true))
   };
 
   const goDeleteAccount = () => {
-    setLogoutModal(false);
     Alert.alert(
       '회원 탈퇴',
       '모든 정보가 삭제됩니다.그래도 탈퇴하시겠습니까?',
@@ -119,12 +95,6 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
       ],
     );
   };
-
-  const openLogoutModal =
-    <Modal style={styles.logoutModalContainer}>
-      <Text>안녕</Text>
-    </Modal>
-  
 
   return (
     <>
@@ -168,7 +138,7 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
           </View>
         </View>
       </View>
-      {logoutModal ? <LogoutModal /> : null}
+      {openLogoutModal && <LogoutModal navigation={navigation} />}
     </>
   );
 };
