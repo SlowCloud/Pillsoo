@@ -1,5 +1,6 @@
 package org.sos.pillsoo.exception;
 
+import org.sos.pillsoo.exception.errorCode.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;

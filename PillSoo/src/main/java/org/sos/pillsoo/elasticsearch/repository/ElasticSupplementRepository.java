@@ -14,6 +14,7 @@ public interface ElasticSupplementRepository extends ElasticsearchRepository<Ela
         "query": {
           "multi_match": {
             "query": "#{#text}",
+            "fuzziness": "AUTO",
             "fields": ["pill_name^3", "functionality"]
           }
         },

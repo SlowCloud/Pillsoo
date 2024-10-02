@@ -1,27 +1,27 @@
 package org.sos.pillsoo.cabinet.service;
 
+import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.auth.repository.UserRepository;
 import org.sos.pillsoo.cabinet.dto.CabinetDto;
 import org.sos.pillsoo.cabinet.entity.Cabinet;
 import org.sos.pillsoo.cabinet.repository.CabinetRepository;
+import org.sos.pillsoo.exception.PillSooException;
+import org.sos.pillsoo.exception.errorCode.UserErrorCode;
 import org.sos.pillsoo.supplement.entity.Supplement;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 @Transactional
 public class CabinetService {
 
-    @Autowired
-    private CabinetRepository cabinetRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final CabinetRepository cabinetRepository;
+    private final UserRepository userRepository;
 
     // 복용 중인 영양제 목록 조회
     public List<CabinetDto> getCabinetByUserSeq(int userSeq) {
@@ -36,10 +36,7 @@ public class CabinetService {
 
         // User 객체를 데이터베이스에서 조회
         User user = userRepository.findById(userSeq)
-                .orElseThrow(() -> {
-                    System.out.println("User with userSeq " + userSeq + " not found.");
-                    return new IllegalArgumentException("유효하지 않은 사용자입니다.");
-                });
+                .orElseThrow(() -> new PillSooException(UserErrorCode.USER_NOT_FOUND));
 
         // Supplement 객체 생성
         Supplement supplement = new Supplement(supplementSeq);

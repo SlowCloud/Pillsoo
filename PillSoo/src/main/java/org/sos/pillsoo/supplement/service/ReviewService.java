@@ -1,31 +1,33 @@
 package org.sos.pillsoo.supplement.service;
 
+import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.auth.repository.UserRepository;
+import org.sos.pillsoo.exception.PillSooException;
+import org.sos.pillsoo.exception.errorCode.UserErrorCode;
 import org.sos.pillsoo.supplement.dto.ReviewDto;
 import org.sos.pillsoo.supplement.entity.Review;
 import org.sos.pillsoo.supplement.entity.Supplement;
+import org.sos.pillsoo.supplement.mapper.ReviewMapper;
 import org.sos.pillsoo.supplement.repository.ReviewRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class ReviewService {
 
-    @Autowired
-    private ReviewRepository reviewRepository;
-
-    @Autowired
-    private UserRepository userRepository; // 추가: User 정보를 조회하기 위한 UserRepository 주입
+    private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository; // 추가: User 정보를 조회하기 위한 UserRepository 주입
+    private final ReviewMapper reviewMapper;
 
     // 리뷰 목록 조회
     public List<ReviewDto> getReviews(int supplementSeq) {
         List<Review> reviews = reviewRepository.findBySupplement_SupplementSeq(supplementSeq);
-        return reviews.stream().map(this::convertToDto).collect(Collectors.toList());
+        return reviews.stream().map(reviewMapper::toReviewDto).collect(Collectors.toList());
     }
 
     // 리뷰 작성 (userSeq는 JWT에서 받음)
@@ -33,7 +35,7 @@ public class ReviewService {
         // userSeq로 User 정보를 조회
         User user = userRepository.findByUserSeq(userSeq);
         if (user == null) {
-            throw new IllegalArgumentException("User not found for userSeq: " + userSeq);
+            throw new PillSooException(UserErrorCode.USER_NOT_FOUND);
         }
 
         // User에서 nickname 가져오기
@@ -46,7 +48,7 @@ public class ReviewService {
 
         // createdAt은 @PrePersist로 자동 설정됨
         reviewRepository.save(review);
-        return convertToDto(review);
+        return reviewMapper.toReviewDto(review);
     }
 
     // 리뷰 삭제
@@ -61,32 +63,12 @@ public class ReviewService {
 
         // 수정하려는 리뷰가 해당 유저가 작성한 것인지 확인
         if (review.getUserSeq() != userSeq) {
-            throw new IllegalArgumentException("유저는 자신의 리뷰만 수정할 수 있습니다.");
+            throw new PillSooException(UserErrorCode.NOT_CURRENT_USER);
         }
 
         review.setContent(reviewDto.getContent());  // content만 수정
         reviewRepository.save(review);
-        return convertToDto(review);
+        return reviewMapper.toReviewDto(review);
     }
 
-    // Review -> ReviewDto로 변환하는 메서드
-    private ReviewDto convertToDto(Review review) {
-        ReviewDto dto = new ReviewDto();
-        dto.setReviewSeq(review.getReviewSeq());
-        dto.setUserSeq(review.getUserSeq());
-        dto.setNickName(review.getNickName());
-        dto.setSupplementSeq(review.getSupplement().getSupplementSeq());
-
-        // userSeq로 User 정보를 조회하여 UserName 설정
-        User user = userRepository.findByUserSeq(review.getUserSeq());
-        if (user != null) {
-            dto.setUserName(user.getUserId());  // User의 userId 또는 적절한 필드 설정
-        } else {
-            dto.setUserName("Unknown User");  // userSeq가 없는 경우 기본값 설정
-        }
-
-        dto.setContent(review.getContent());
-        dto.setCreatedAt(review.getCreatedAt());  // Timestamp로 저장
-        return dto;
-    }
 }
