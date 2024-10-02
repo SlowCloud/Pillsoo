@@ -6,6 +6,8 @@ import org.sos.pillsoo.auth.repository.UserRepository;
 import org.sos.pillsoo.cabinet.dto.CabinetDto;
 import org.sos.pillsoo.cabinet.entity.Cabinet;
 import org.sos.pillsoo.cabinet.repository.CabinetRepository;
+import org.sos.pillsoo.exception.PillSooException;
+import org.sos.pillsoo.exception.errorCode.UserErrorCode;
 import org.sos.pillsoo.supplement.entity.Supplement;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,10 +36,7 @@ public class CabinetService {
 
         // User 객체를 데이터베이스에서 조회
         User user = userRepository.findById(userSeq)
-                .orElseThrow(() -> {
-                    System.out.println("User with userSeq " + userSeq + " not found.");
-                    return new IllegalArgumentException("유효하지 않은 사용자입니다.");
-                });
+                .orElseThrow(() -> new PillSooException(UserErrorCode.USER_NOT_FOUND));
 
         // Supplement 객체 생성
         Supplement supplement = new Supplement(supplementSeq);

@@ -73,7 +73,7 @@ public class SecurityConfig {
 
         http.addFilterBefore(refreshTokenFilter, JWTFilter.class);
 
-        var loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository, userRepository);
+        var loginFilter = new LoginFilter(jwtUtil, authenticationManager(authenticationConfiguration), refreshRepository, userRepository);
         loginFilter.setFilterProcessesUrl("/api/v1/signin");
         http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
 

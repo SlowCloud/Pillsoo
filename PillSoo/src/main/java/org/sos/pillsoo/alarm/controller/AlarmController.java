@@ -5,13 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.alarm.dto.AlarmReqDto;
 import org.sos.pillsoo.alarm.dto.AlarmResDto;
 import org.sos.pillsoo.alarm.dto.GetAlarmsResDto;
-import org.sos.pillsoo.alarm.entity.Alarm;
-import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.alarm.service.AlarmService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
+import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -3,6 +3,8 @@ package org.sos.pillsoo.supplement.service;
 import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.auth.repository.UserRepository;
+import org.sos.pillsoo.exception.PillSooException;
+import org.sos.pillsoo.exception.errorCode.UserErrorCode;
 import org.sos.pillsoo.supplement.dto.ReviewDto;
 import org.sos.pillsoo.supplement.entity.Review;
 import org.sos.pillsoo.supplement.entity.Supplement;
@@ -33,7 +35,7 @@ public class ReviewService {
         // userSeq로 User 정보를 조회
         User user = userRepository.findByUserSeq(userSeq);
         if (user == null) {
-            throw new IllegalArgumentException("User not found for userSeq: " + userSeq);
+            throw new PillSooException(UserErrorCode.USER_NOT_FOUND);
         }
 
         // User에서 nickname 가져오기
@@ -61,7 +63,7 @@ public class ReviewService {
 
         // 수정하려는 리뷰가 해당 유저가 작성한 것인지 확인
         if (review.getUserSeq() != userSeq) {
-            throw new IllegalArgumentException("유저는 자신의 리뷰만 수정할 수 있습니다.");
+            throw new PillSooException(UserErrorCode.NOT_CURRENT_USER);
         }
 
         review.setContent(reviewDto.getContent());  // content만 수정
