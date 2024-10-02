@@ -7,6 +7,7 @@ import org.sos.pillsoo.supplement.entity.EffectCategories;
 import org.sos.pillsoo.supplement.service.SupplementService;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,15 +20,9 @@ public class SupplementController {
 
     // 영양제 상세 정보 조회 (userSeq를 JWT에서 추출)
     @GetMapping("/{supplementSeq}")
-    public SupplementDto getSupplement(@PathVariable int supplementSeq) {
-        // JWT 토큰에서 userSeq를 가져옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();  // 사용자 정보에서 userSeq를 가져옴
+    public SupplementDto getSupplement(@PathVariable int supplementSeq, @AuthenticationPrincipal CustomUserDetails userDetails) {
         int userSeq = userDetails.getUserSeq();
-
         supplementService.recordClickCount(supplementSeq, userSeq);
-
-        // 서비스에 userSeq와 supplementSeq 전달
         return supplementService.getSupplementById(supplementSeq, userSeq);
     }
 
