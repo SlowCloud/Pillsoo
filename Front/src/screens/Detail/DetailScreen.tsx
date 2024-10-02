@@ -189,14 +189,14 @@ const DetailScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.infoBox}>
-        <Image
+        {/* <Image
           source={
             pillData.imageUrl && pillData.imageUrl.trim() !== ''
             ? { uri: pillData.imageUrl }
             : require('../../assets/noImage.png')
           }
           style={styles.image} 
-        />
+        /> */}
         <Image source={{uri: pillData.imageUrl}} style={styles.image} />
         <View style={styles.infoContainer}>
           <Text style={styles.pillName}>

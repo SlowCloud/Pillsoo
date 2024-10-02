@@ -21,6 +21,7 @@ const SearchResultScreen = () => {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  console.log(searchQuery)
   const [page, setPage] = useState(1);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
@@ -49,7 +50,7 @@ const SearchResultScreen = () => {
         },
       });
       if (response.status === 200) {
-        if (newPage === 1) {
+        if (newPage === 0) {
           setResults(response.data.content);
         } else {
           setResults(prevResults => [...prevResults, ...response.data.content]);
