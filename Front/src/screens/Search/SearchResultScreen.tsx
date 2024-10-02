@@ -120,17 +120,18 @@ const SearchResultScreen = () => {
           <ActivityIndicator size="large" color="#a4f87b" />
         ) : results.length > 0 ? (
           <FlatList
-            data={results}
-            keyExtractor={item => item.supplementSeq.toString()}
-            renderItem={renderItem}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={
-              isFetchingMore ? (
-                <ActivityIndicator size="small" color="#a4f87b" />
-              ) : null
-            }
-          />
+          data={results}
+          keyExtractor={(item, index) => `${item.supplementSeq}-${index}`}
+          renderItem={renderItem}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isFetchingMore ? (
+              <ActivityIndicator size="small" color="#a4f87b" />
+            ) : null
+          }
+        />
+        
         ) : searchQuery.trim() === '' ? (
           <Text style={styles.noResultsText}>검색어를 입력하세요.</Text>
         ) : (

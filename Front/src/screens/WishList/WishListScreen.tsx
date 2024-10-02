@@ -5,15 +5,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Linking,
 } from 'react-native';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import Header from '../../components/common/Header';
-import WishListItem from '../../components/WishList/WishListItem';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {API_URL} from '@env';
 import {useSelector} from 'react-redux';
+import WishListItem from '../../components/WishList/WishListItem';
 
 interface Wish {
   userSeq: number;
@@ -75,32 +73,37 @@ const WishListScreen: React.FC = () => {
     navigation.navigate('Detail', {id: supplementSeq});
   };
 
+  const handleRecommendationPress = () => {
+    navigation.navigate('영양제 추천');
+  };
+
   return (
-    <>
-      {/* <Header /> */}
-      <View style={styles.container}>
-        {/* <View style={styles.textContainer}>
-          <Text style={styles.text}>나의 위시 리스트</Text>
-        </View> */}
-        <ScrollView>
-          {myWishList.length > 0 ? (
-            myWishList.map((myWish, index) => (
-              <View key={index} style={styles.cardContainer}>
-                <TouchableOpacity
-                  onPress={() => handleItemPress(myWish.supplementSeq)}>
-                  <WishListItem
-                    pillName={myWish.pillName}
-                    imageUrl={myWish.imageUrl}
-                  />
-                </TouchableOpacity>
-              </View>
-            ))
-          ) : (
-            <Text>위시리스트가 비어 있습니다.</Text>
-          )}
-        </ScrollView>
-      </View>
-    </>
+    <View style={styles.container}>
+      <ScrollView>
+        {myWishList.length > 0 ? (
+          myWishList.map((myWish, index) => (
+            <View key={index} style={styles.cardContainer}>
+              <TouchableOpacity
+                onPress={() => handleItemPress(myWish.supplementSeq)}>
+                <WishListItem
+                  pillName={myWish.pillName}
+                  imageUrl={myWish.imageUrl}
+                />
+              </TouchableOpacity>
+            </View>
+          ))
+        ) : (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>위시리스트가 비어 있습니다.</Text>
+            <TouchableOpacity onPress={handleRecommendationPress}>
+              <Text style={styles.recommendationText}>
+                영양제를 추천받으시겠습니까?
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
 };
 
@@ -111,13 +114,6 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 60,
-  },
-  textContainer: {
-    margin: 30,
-  },
-  text: {
-    textAlign: 'center',
-    fontSize: 28,
   },
   cardContainer: {
     backgroundColor: '#fff',
@@ -131,6 +127,23 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     marginBottom: 30,
     overflow: 'hidden',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 50, 
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: 20,
+  },
+  recommendationText: {
+    fontSize: 16,
+    color: '#a4f87b',
+    textDecorationLine: 'underline',
   },
 });
 
