@@ -19,7 +19,7 @@ const HomeNavigator = () => {
       <Stack.Screen
         name="SupplementInput"
         component={SupplementInputScreen}
-        options={{headerShown: false, presentation: 'modal'}}
+        options={{headerShown: true, headerTitle: ' '}}
       />
       <Stack.Screen
         name="OCR"
@@ -29,7 +29,7 @@ const HomeNavigator = () => {
       <Stack.Screen
         name="Alarm"
         component={AlarmScreen}
-        options={{headerShown: false}}
+        options={{headerShown: true, headerTitle: ' '}}
       />
       <Stack.Screen
         name="SearchResult"

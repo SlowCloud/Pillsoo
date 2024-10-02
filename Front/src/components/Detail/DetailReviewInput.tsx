@@ -35,6 +35,7 @@ const DetailReviewInput: React.FC = () => {
   };
 
   const clickedSubmitBtn = async () => {
+    console.log('hihi')
     if (!token) return;
 
     try {
@@ -50,6 +51,7 @@ const DetailReviewInput: React.FC = () => {
       );
       if (response.status === 200) {
         setReview('');
+        console.log(response)
       } else {
         Alert.alert('리뷰 작성 실패');
       }

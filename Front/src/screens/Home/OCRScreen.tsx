@@ -34,6 +34,7 @@ const OCRScreen = () => {
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem('jwt_token');
+      console.log('Stored token:', storedToken);
       setToken(storedToken);
     };
 
@@ -41,28 +42,46 @@ const OCRScreen = () => {
   }, []);
 
   const handleCapture = async () => {
-    const result = await launchCamera({
-      mediaType: 'photo',
-      includeBase64: true,
-    });
+    try {
+      console.log('Launching camera...');
+      const result = await launchCamera({
+        mediaType: 'photo',
+        includeBase64: true,
+      });
 
-    if (result.didCancel) {
-      console.log('Camera closed');
-      return;
+      console.log('Camera result:', result);
+
+      if (result.didCancel) {
+        console.log('User cancelled the camera');
+        return;
+      }
+
+      if (result.errorCode) {
+        console.log('Camera error:', result.errorMessage);
+        return;
+      }
+
+      if (result.assets && result.assets.length > 0) {
+        const base64Image = result.assets[0].base64;
+        console.log('Captured image base64 length:', base64Image.length);
+
+        if (base64Image) {
+          console.log('Proceeding with OCR...');
+          await sendToOcr(base64Image);
+        } else {
+          console.log('No base64 image data found');
+        }
+      } else {
+        console.log('No assets found in camera result');
+      }
+    } catch (error) {
+      console.error('Error in handleCapture:', error);
     }
-
-    if (result.errorCode) {
-      console.log(result.errorMessage);
-      return;
-    }
-
-    const base64Image = result.assets[0].base64;
-    await sendToOcr(base64Image);
   };
 
   const sendToOcr = async (base64Image: string) => {
-    console.log('hhi');
-
+    console.log('Sending image to OCR API...');
+    console.log('hihi')
     try {
       const response = await axios.post(
         'https://vision.googleapis.com/v1/images:annotate',
@@ -84,12 +103,20 @@ const OCRScreen = () => {
         },
       );
 
-      const detectedTexts = response.data.responses[0].textAnnotations.map(
+      console.log('OCR API response:', response.data);
+
+      const detectedTexts = response.data.responses[0]?.textAnnotations?.map(
         item => item.description,
       );
-      setOcrTexts(detectedTexts);
+
+      if (detectedTexts) {
+        console.log('Detected texts:', detectedTexts);
+        setOcrTexts(detectedTexts);
+      } else {
+        console.log('No text annotations found');
+      }
     } catch (error) {
-      console.log(error);
+      console.error('OCR API request error:', error);
     }
   };
 
@@ -118,6 +145,8 @@ const OCRScreen = () => {
   };
 
   const sendSavedTextToApi = async (text: string) => {
+    console.log('Sending saved text to API:', text);
+
     setLoading(true);
     try {
       const response = await axios.get(`${API_URL}/api/v1/supplement/search`, {
@@ -132,13 +161,16 @@ const OCRScreen = () => {
         },
       });
 
+      console.log('API response:', response.data);
+
       if (response.status === 200) {
+        console.log('Search results:', response.data.content);
         setResults(response.data.content);
       } else {
-        console.log(response.data);
+        console.log('Unexpected status code:', response.status);
       }
     } catch (error) {
-      console.log(error);
+      console.error('API request error:', error);
     } finally {
       setLoading(false);
     }
@@ -175,12 +207,12 @@ const OCRScreen = () => {
       );
 
       if (response.status === 200) {
-        console.log('복용 영양제 투입');
+        console.log('Supplement added successfully');
       } else {
-        console.log(response.data);
+        console.log('Unexpected status code:', response.status);
       }
     } catch (error) {
-      console.log(error);
+      console.error('Error adding supplement:', error);
     }
   };
 

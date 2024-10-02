@@ -33,7 +33,7 @@ const SearchResultScreen = () => {
     fetchToken();
   }, []);
 
-  const fetchResults = async (newPage = 1) => {
+  const fetchResults = async (newPage = 0) => {
     if (!searchQuery.trim() || !token) return;
     setLoading(true);
     try {
@@ -77,9 +77,9 @@ const SearchResultScreen = () => {
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setResults([]); // 검색어가 비어있으면 결과를 빈 배열로 설정합니다.
-      setPage(1); // 페이지도 1로 초기화합니다.
+      setPage(0); // 페이지도 1로 초기화합니다.
     } else {
-      fetchResults(1); // 검색어가 있을 때 결과를 가져옵니다.
+      fetchResults(0); // 검색어가 있을 때 결과를 가져옵니다.
     }
   }, [searchQuery]);
 
@@ -120,17 +120,18 @@ const SearchResultScreen = () => {
           <ActivityIndicator size="large" color="#a4f87b" />
         ) : results.length > 0 ? (
           <FlatList
-            data={results}
-            keyExtractor={item => item.supplementSeq.toString()}
-            renderItem={renderItem}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={
-              isFetchingMore ? (
-                <ActivityIndicator size="small" color="#a4f87b" />
-              ) : null
-            }
-          />
+          data={results}
+          keyExtractor={(item, index) => `${item.supplementSeq}-${index}`}
+          renderItem={renderItem}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isFetchingMore ? (
+              <ActivityIndicator size="small" color="#a4f87b" />
+            ) : null
+          }
+        />
+        
         ) : searchQuery.trim() === '' ? (
           <Text style={styles.noResultsText}>검색어를 입력하세요.</Text>
         ) : (
