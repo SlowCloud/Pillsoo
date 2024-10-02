@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.sos.pillsoo.auth.dto.CustomUserDetails;
 import org.sos.pillsoo.auth.entity.RefreshEntity;
+import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.auth.jwt.JWTUtil;
 import org.sos.pillsoo.auth.repository.RefreshRepository;
 import org.sos.pillsoo.auth.repository.UserRepository;
@@ -18,7 +19,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.sos.pillsoo.auth.entity.User;
 
 import java.util.Date;
 

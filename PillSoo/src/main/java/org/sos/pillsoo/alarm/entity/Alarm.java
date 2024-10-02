@@ -3,8 +3,8 @@ package org.sos.pillsoo.alarm.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import org.sos.pillsoo.cabinet.entity.Cabinet;
+
 import java.time.LocalTime;
 
 @Entity

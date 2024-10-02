@@ -5,7 +5,6 @@ import org.sos.pillsoo.auth.dto.UserUpdateDto;
 import org.sos.pillsoo.auth.entity.User;
 import org.sos.pillsoo.auth.repository.UserRepository;
 import org.sos.pillsoo.exception.PillSooException;
-import org.sos.pillsoo.exception.errorCode.InputErrorCode;
 import org.sos.pillsoo.exception.errorCode.UserErrorCode;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
