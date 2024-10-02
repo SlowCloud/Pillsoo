@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {StyleSheet, View, ScrollView, Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {API_URL} from '@env';
 import {useSelector} from 'react-redux';
+import {useFocusEffect} from '@react-navigation/native';
 import styled from '@emotion/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -49,28 +50,30 @@ function MyKit() {
         }
     };
 
-    useEffect(() => {
-        const fetchMyKitData = async () => {
-            const storedToken = await AsyncStorage.getItem('jwt_token');
-
-            try {
-                const response = await axios.get(
-                    `${API_URL}/api/v1/cabinet`, {
-                        headers: {
-                            access: `${storedToken}`,
-                        },
-                        params: {
-                            userSeq: userSeq,
-                        },
-                    }
-                );
-                setMyKitData(response.data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        fetchMyKitData();
-    }, [userSeq]);
+    useFocusEffect(
+        useCallback(() => {
+            const fetchMyKitData = async () => {
+                const storedToken = await AsyncStorage.getItem('jwt_token');
+    
+                try {
+                    const response = await axios.get(
+                        `${API_URL}/api/v1/cabinet`, {
+                            headers: {
+                                access: `${storedToken}`,
+                            },
+                            params: {
+                                userSeq: userSeq,
+                            },
+                        }
+                    );
+                    setMyKitData(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+            fetchMyKitData();
+        }, [myKitData])
+    );
 
     return (
         <View style={styles.container}>
@@ -112,7 +115,7 @@ function MyKit() {
                             <TouchableOpacity
                             key={index}
                             style={[styles.dot, currentIndex === index && styles.activeDot]}
-                            onPress={() => handleScrollToIndex(index)} // 여기서 호출됨
+                            onPress={() => handleScrollToIndex(index)} 
                         />
                         ))}
                     </View>
