@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
+  Alert,
 } from 'react-native';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
@@ -69,6 +70,7 @@ const SupplementInputScreen = () => {
         setIsModalVisible(false);
       }
     } catch (err) {
+      Alert.alert('알람 설정을 먼저 해제해주세요 !')
       console.log(err);
       setIsModalVisible(false); 
     }
