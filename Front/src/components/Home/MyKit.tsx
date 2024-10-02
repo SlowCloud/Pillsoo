@@ -133,8 +133,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     image: {
-        height: '75%',
+        height: '70%',
         width: '75%',
+        resizeMode: 'contain',
         marginTop: 20,
     },
     pagination: {

@@ -6,15 +6,14 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Modal
 } from 'react-native';
-import Header from '../../components/common/Header';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {navigations} from '../../constants/navigations';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
 import {API_URL} from '@env';
-import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LogoutModal from '../../components/MyPage/LogoutModal';
 
 const images = [
   require('../../assets/profile/0.png'),
@@ -45,15 +44,13 @@ export type Props = {
 };
 
 const MyPageScreen: React.FC<Props> = ({navigation}) => {
-  const nickname = useSelector(
-    (state: {nickname: string | null}) => state.nickname,
-  );
+  const nickname = useSelector((state: {nickname: string | null}) => state.nickname);
   const userId = useSelector((state: {userId: string | null}) => state.userId);
-  const userSeq = useSelector(
-    (state: {userSeq: string | null}) => state.userSeq,
-  );
+  const userSeq = useSelector((state: {userSeq: number | null}) => state.userSeq);
+  const openLogoutModal = useSelector((state: {openLogoutModal: boolean}) => state.openLogoutModal);
   const age = useSelector((state: {age: string | null}) => state.age);
   const [token, setToken] = useState<string | null>(null);
+  const [logoutModal, setLogoutModal] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -65,35 +62,37 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
   }, []);
 
   // 랜덤 프사
-  // const imageNumber = myInfo[0].id % 10;
+  const imageNumber = userSeq ? userSeq % 10 : 0;
 
   const goLogout = () => {
-    Alert.alert('로그아웃', '로그아웃하시겠습니까?', [
-      {
-        text: '예',
-        onPress: async () => {
-          try {
-            const response = await axios.post(`${API_URL}/api/v1/signout`, {
-              headers: {
-                access: `${token}`,
-              },
-            });
-            AsyncStorage.clear();
+    setLogoutModal(true);
+    // Alert.alert('로그아웃', '로그아웃하시겠습니까?', [
+    //   {
+    //     text: '예',
+    //     onPress: async () => {
+    //       try {
+    //         const response = await axios.post(`${API_URL}/api/v1/signout`, {
+    //           headers: {
+    //             access: `${token}`,
+    //           },
+    //         });
+    //         AsyncStorage.clear();
 
-            navigation.navigate('AuthHome');
-          } catch (error) {
-            console.log(error);
-          }
-        },
-      },
-      {
-        text: '아니요',
-        style: 'cancel',
-      },
-    ]);
+    //         navigation.navigate('AuthHome');
+    //       } catch (error) {
+    //         console.log(error);
+    //       }
+    //     },
+    //   },
+    //   {
+    //     text: '아니요',
+    //     style: 'cancel',
+    //   },
+    // ]);
   };
 
   const goDeleteAccount = () => {
+    setLogoutModal(false);
     Alert.alert(
       '회원 탈퇴',
       '모든 정보가 삭제됩니다.그래도 탈퇴하시겠습니까?',
@@ -121,17 +120,27 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
     );
   };
 
+  const openLogoutModal =
+    <Modal style={styles.logoutModalContainer}>
+      <Text>안녕</Text>
+    </Modal>
+  
+
   return (
     <>
       {/* <Header /> */}
       <View style={styles.container}>
-        <Image
-          // source={images[imageNumber]}
-          source={require('../../assets/profile/메타츄.png')}
-          style={styles.ProfileImage}
-        />
-        <View style={styles.profileNameBox}>
-          <Text style={styles.profileName}>{nickname}</Text>
+        <View style={styles.myPageInfo}>
+          <Image
+            source={images[imageNumber]}
+            // source={require('../../assets/profile/메타츄.png')}
+            style={styles.ProfileImage}
+          />
+          <View style={styles.profileBox}>
+            <Text style={styles.profileAge}>{age}세</Text>
+            <Text style={styles.profileName}>{nickname}</Text>
+            <Text style={styles.profileId}>@{userId}</Text>
+          </View>
         </View>
         <View style={styles.myPageMenuBox}>
           <TouchableOpacity
@@ -146,18 +155,20 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
             <Text style={styles.eachMenuText}>회원정보 수정</Text>
             <Text>{'>'}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.eachMenuBox} onPress={goLogout}>
-            <Text style={styles.eachMenuText}>로그아웃</Text>
-            <Text>{'>'}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.eachMenuBox}
-            onPress={goDeleteAccount}>
-            <Text style={styles.eachMenuText}>회원탈퇴</Text>
-            <Text>{'>'}</Text>
-          </TouchableOpacity>
+          <View style={styles.profileInfoContainer}>
+            <TouchableOpacity
+              onPress={goLogout}>
+              <Text style={styles.eachMenuText}>로그아웃</Text>
+            </TouchableOpacity>
+            <Text> | </Text>
+            <TouchableOpacity
+              onPress={goDeleteAccount}>
+              <Text style={styles.eachMenuText}>회원탈퇴</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
+      {logoutModal ? <LogoutModal /> : null}
     </>
   );
 };
@@ -166,6 +177,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  myPageInfo: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   ProfileImage: {
     width: '40%',
@@ -178,29 +193,48 @@ const styles = StyleSheet.create({
     fontSize: 25,
     color: 'black',
   },
-  profileNameBox: {
-    marginTop: '-10%',
+  profileAge: {
+    fontSize: 19,
+  },
+  profileId: {
+    fontSize: 16,
+  },
+  profileBox: {
+    marginTop: '5%',
     justifyContent: 'center',
     alignItems: 'center',
+    height: 85,
+    width: '85%',
   },
   myPageMenuBox: {
-    marginVertical: 60,
+    marginTop: '-7%',
     // gap: 2,
   },
   eachMenuBox: {
     flexDirection: 'row',
-    height: '16%',
+    height: '20%',
     alignItems: 'center',
     borderTopColor: 'gray',
     borderBottomWidth: 1.2,
     borderBottomColor: '#F6F5F2',
-    backgroundColor: '#D3EBCD',
     paddingHorizontal: 10,
     justifyContent: 'space-between',
   },
   eachMenuText: {
     color: 'black',
   },
+  profileInfoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: "center",
+    marginTop: 35,
+  },
+  logoutModalContainer: {
+    zIndex: 2,
+    width: '20%',
+    height: '15%',
+    // top: '50%'
+  }
 });
 
 export default MyPageScreen;

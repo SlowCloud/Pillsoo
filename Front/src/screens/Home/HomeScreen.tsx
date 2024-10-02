@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   kitNicknameContainer: {
     marginTop: -85,
     marginBottom: -5,
-    marginLeft: -100,
+    marginLeft: -60,
   },
   kitNickname: {
     fontSize: 15,
@@ -108,15 +108,24 @@ const styles = StyleSheet.create({
   myMenuBtn: {
     width: '40%',
     height: '60%',
-    borderWidth: 1,
     borderRadius: 7,
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 10,
     marginTop: 25,
+    backgroundColor: '#fff',
+    elevation: 2.5,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    marginBottom: 20,
+    overflow: 'hidden',
   },
   myMenuImage: {
-    width: '40%',
+    width: '37%',
     height: '65%',
     resizeMode: 'contain',
     bottom: 10,

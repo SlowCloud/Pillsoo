@@ -23,7 +23,7 @@ const DetailReviewItems: React.FC<Props> = ({
   reviewId,
   nickName,
 }) => {
-  const myName = useSelector((state: {userId: string | null}) => state.userId);
+  const storedUserSeq = useSelector((state: {userSeq: number | null}) => state.userSeq);
 
   const [token, setToken] = useState<string | null>(null);
   const [updateContent, setUpdateContent] = useState<boolean>(false);
@@ -98,7 +98,7 @@ const DetailReviewItems: React.FC<Props> = ({
         <Text style={styles.reviewContent}>{content}</Text>
       )}
 
-      {myName === userName && !updateContent && (
+      {storedUserSeq === userSeq && !updateContent && (
         <View>
           <TouchableOpacity onPress={() => setUpdateContent(true)}>
             <Text>수정</Text>

@@ -106,6 +106,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
                   key={category}
                   category={category}
                   navigation={navigation}
+                  style={{ marginRight: 10}}
                 />
               ))}
             </View>
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
   },
   lastRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     marginBottom: 10,
   },
   recommendBtn: {
