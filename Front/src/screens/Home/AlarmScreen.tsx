@@ -66,11 +66,9 @@ const AlarmScreen = () => {
         setMyKitData(response.data);
       } catch (error) {
         if (axios.isAxiosError(error)) {
-          // 서버가 응답했는데 요청 실패
           console.error('Error Data:', error.response?.data);
           console.error('Error status', error.response?.status);
         } else {
-          // 요청이 이루어지지 않았거나 오류 발생
           console.error('Error message:', (error as Error).message);
         }
       }
@@ -79,7 +77,6 @@ const AlarmScreen = () => {
     fetchPillData();
   }, [token]);
 
-  // 알람 목록 가지고 와
   useEffect(() => {
     const fetchAlarmData = async () => {
       if (!token) return;
@@ -99,7 +96,6 @@ const AlarmScreen = () => {
     fetchAlarmData();
   }, [token, resetAlarm]);
 
-  // 알람을 설정할 수 있는 모달을 연다
   const showAlarmModal = () => {
     dispatch(setOpenModal(true));
   };
@@ -111,12 +107,15 @@ const AlarmScreen = () => {
         <Text style={styles.alarmTitle}>알람</Text>
       </View>
       <View style={styles.alarmContainer}>
-        <ScrollView>
-          {myAlarms &&
-            myAlarms.map(alarm => (
+        {myAlarms.length > 0 ? (
+          <ScrollView>
+            {myAlarms.map(alarm => (
               <MyAlarmListitems key={alarm.alarmSeq} myAlarm={alarm} />
             ))}
-        </ScrollView>
+          </ScrollView>
+        ) : (
+          <Text style={styles.noAlarmText}>알람설정한 영양제가 없습니다.</Text>
+        )}
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={showAlarmModal} style={styles.alarmAddBtn}>
@@ -133,11 +132,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   alarmContainer: {
+    flex: 1,
+    justifyContent: 'center', // 세로 정렬을 가운데로 설정
+    alignItems: 'center', // 가로 정렬을 가운데로 설정
     marginHorizontal: 25,
-    marginVertical: 35,
   },
   buttonContainer: {
-    flex: 1,
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
     marginBottom: 30,
@@ -163,6 +163,11 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  noAlarmText: {
+    textAlign: 'center',
+    fontSize: 18,
+    color: 'gray',
   },
 });
 
