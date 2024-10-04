@@ -80,8 +80,8 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
 
       setRecommendPills(newPage === 0 ? pills : [...recommendPills, ...pills]);
     } catch (error) {
-      console.error(error);
-      Alert.alert('데이터를 불러오는 중 문제가 발생했습니다.');
+      // console.error(error);
+      // Alert.alert('데이터를 불러오는 중 문제가 발생했습니다.');
     } finally {
       setLoading(false);
       setIsFetchingMore(false);
@@ -101,7 +101,7 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
         pillName: response.data.pillName,
       };
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return {imageUrl: '', pillName: ''}; // 오류 발생 시 빈 이미지와 이름 반환
     }
   };
@@ -161,6 +161,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center',
+    color: 'black',
   },
   pillItem: {
     marginBottom: 10,

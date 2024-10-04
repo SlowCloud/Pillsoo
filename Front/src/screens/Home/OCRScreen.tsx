@@ -117,7 +117,7 @@ const OCRScreen = () => {
           },
         },
       );
-      console.log('hi');
+      console.log('hhii');
       console.log('OCR API response:', response.data);
 
       const detectedTexts = response.data.responses[0]?.textAnnotations?.map(
