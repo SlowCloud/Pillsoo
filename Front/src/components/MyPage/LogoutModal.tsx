@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, Text, Modal, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, Modal, TouchableOpacity, Image} from 'react-native';
 import { setOpenLogoutModal } from '../../store/store';
 import { useDispatch } from 'react-redux';
 import axios from 'axios';
@@ -52,25 +52,33 @@ const LogoutModal: React.FC<Props> = ({navigation}) => {
     >
       <View style={styles.container}>
         <View style={styles.modalContentContainer}>
-          <TouchableOpacity
-            onPress={() => dispatch(setOpenLogoutModal(false))}
-          >
-            <View>
-              <Text style={styles.message2}>로그아웃 하시겠습니까?</Text>
-            </View>
-            <View style={styles.messageContainer}>
-              <TouchableOpacity
-                onPress={goLogout}
-              >
-                <Text style={styles.message1}>예</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => dispatch(setOpenLogoutModal(false))}
-              >
-                <Text style={styles.message2}>아니요</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
+          <Image 
+            source={require('../../assets/logout.png')}
+            style={styles.logoutImage}
+            ></Image>
+            <TouchableOpacity
+              onPress={() => dispatch(setOpenLogoutModal(false))}
+            >
+              <View>
+                <Text style={styles.message2}>로그아웃 하시겠습니까?</Text>
+              </View>
+              <View style={styles.messageContainer}>
+                <TouchableOpacity
+                  onPress={goLogout}
+                >
+                  <View style={styles.message1Container}>
+                    <Text style={styles.message1}>예</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => dispatch(setOpenLogoutModal(false))}
+                >
+                  <View style={styles.message3Container}>
+                    <Text style={styles.message2}>아니요</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -96,18 +104,31 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     },
+    logoutImage: {
+      width: 75,
+      height: 75,
+      bottom: 15,
+      resizeMode: 'contain'
+    },
     messageContainer: {
       flexDirection: 'row',
       marginTop: 20,
       alignItems: 'center',
       justifyContent: 'center'
     },
+    message1Container: {
+      borderRadius: 5,
+      backgroundColor: '#a4f87b',
+      width: 65,
+      height: 35,
+    },
     message1: {
       fontSize: 18,
       textAlign: 'center',
       fontWeight: 'bold',
-      color: 'red',
-      marginHorizontal: 10,
+      color: 'white',
+      marginHorizontal: 15,
+      marginVertical: 2,
     },
     message2: {
       fontSize: 18,
@@ -115,6 +136,13 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       marginHorizontal: 10,
     },
+    message3Container: {
+      borderRadius: 5,
+      width: 85,
+      height: 35,
+      bottom: -3,
+      
+    }
 });
 
 export default LogoutModal;
