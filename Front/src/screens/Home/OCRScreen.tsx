@@ -81,7 +81,7 @@ const OCRScreen = () => {
 
   const sendToOcr = async (base64Image: string) => {
     console.log('Sending image to OCR API...');
-    console.log('hihihi')
+    console.log('hihihi');
     try {
       const response = await axios.post(
         'https://vision.googleapis.com/v1/images:annotate',

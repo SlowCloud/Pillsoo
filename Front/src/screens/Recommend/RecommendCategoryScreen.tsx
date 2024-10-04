@@ -42,9 +42,7 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  // 현재 페이지
   const [isFetchingMore, setIsFetchingMore] = useState(false);
-  // 추가 데이터를 가져오는 중인지 여부
 
   useEffect(() => {
     const fetchSupplements = async () => {
@@ -54,7 +52,7 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
     fetchSupplements();
   }, []);
 
-  const CategorySupplements = async (newPage = 1) => {
+  const CategorySupplements = async (newPage = 0) => {
     try {
       const token = await AsyncStorage.getItem('jwt_token');
       setLoading(true);
@@ -72,7 +70,6 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
         },
       );
       const data = response.data.content;
-      console.log(data);
       const pills = await Promise.all(
         data.map(async (item: any) => {
           const pillId = item.supplementSeq;
@@ -86,10 +83,8 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
       );
       if (newPage === 1) {
         setRecommendPills(pills);
-        // 새로운 페이지로 초기화
       } else {
         setRecommendPills(prevPills => [...prevPills, ...pills]);
-        // 기존 결과에 추가
       }
     } catch (error) {
       console.log(error);
@@ -109,12 +104,12 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
         },
       });
       return {
-        imageUrl: response.data.imageUrl,
+        imageUrl: response.data.imageUrl || '', // 이미지가 없는 경우 빈 문자열
         pillName: response.data.pillName,
       };
     } catch (error) {
       console.log(error);
-      return {imageUrl: '', pillName: ''};
+      return {imageUrl: '', pillName: ''}; // 오류 발생 시 빈 이미지와 이름 반환
     }
   };
 
@@ -124,13 +119,10 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
 
   const handleLoadMore = () => {
     if (!isFetchingMore && !loading) {
-      // 중복 요청 방지
       setIsFetchingMore(true);
       const nextPage = page + 1;
-      // 다음 페이지로 증가
       setPage(nextPage);
       CategorySupplements(nextPage);
-      // 다음 페이지의 결과를 가져옴
     }
   };
 
@@ -141,22 +133,23 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
         data={recommendPills}
         renderItem={({item}) => (
           <TouchableOpacity
+            key={item.id}
             onPress={() => handlePillPress(item.id)}
             style={styles.pillItem}>
-            <Image source={{uri: item.imageUrl}} style={styles.image} />
+            {item.imageUrl ? ( // 이미지 URL이 있을 경우에만 Image 컴포넌트를 렌더링
+              <Image source={{uri: item.imageUrl}} style={styles.image} />
+            ) : null}
             <Text>{item.pillName}</Text>
           </TouchableOpacity>
         )}
         keyExtractor={item => item.id.toString()}
         onEndReached={handleLoadMore}
-        // 스크롤 시 더 많은 결과를 가져옴
         onEndReachedThreshold={0.5}
-        // 리스트의 50%가 보일 때 호출
         ListFooterComponent={
           isFetchingMore ? (
             <ActivityIndicator size="small" color="#a4f87b" />
           ) : null
-        } // 추가 로딩 인디케이터
+        }
       />
       {loading && page === 1 && (
         <ActivityIndicator size="large" color="#a4f87b" />
