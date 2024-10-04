@@ -9,6 +9,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
 import {useSelector} from 'react-redux';
+import { ScrollView } from 'react-native-gesture-handler';
 
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
@@ -81,22 +82,23 @@ const DetailReview: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.reviewContents}>
-        {reviewList.map(reviewItem => (
-          <DetailReviewItems
-            key={reviewItem.reviewSeq}
-            userName={reviewItem.userName}
-            userSeq={reviewItem.userSeq}
-            content={reviewItem.content}
-            supplementId={reviewItem.supplementSeq}
-            reviewId={reviewItem.reviewSeq}
-            nickName={reviewItem.nickName}
-          />
-        ))}
-
+      {/* <ScrollView> */}
+        <View style={styles.reviewContents}>
+          {reviewList.map(reviewItem => (
+            <DetailReviewItems
+              key={reviewItem.reviewSeq}
+              userName={reviewItem.userName}
+              userSeq={reviewItem.userSeq}
+              content={reviewItem.content}
+              supplementId={reviewItem.supplementSeq}
+              reviewId={reviewItem.reviewSeq}
+              nickName={reviewItem.nickName}
+            />
+          ))}
+        </View>
+      {/* </ScrollView> */}
         {/* 사용자가 이미 리뷰를 작성한 경우 리뷰 입력란 숨기기 */}
         {!hasWrittenReview && <DetailReviewInput />}
-      </View>
     </View>
   );
 };
@@ -106,10 +108,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   reviewContents: {
-    height: '75%',
-    width: '90%',
+    height: '70%',
+    width: '95%',
     marginTop: 25,
-    marginLeft: 15,
+    // borderWidth: 1,
+    marginLeft: 10,
   },
 });
 

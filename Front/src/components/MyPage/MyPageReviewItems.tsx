@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
+import {StyleSheet, View, Text, Image, ScrollView} from 'react-native';
 import axios from 'axios';
 import {API_URL} from '@env';
 
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '90%',
     height: 80,
-    backgroundColor: '#D3EBCD',
+    backgroundColor: '#ffff',
     borderRadius: 10,
     marginHorizontal: 20,
     marginVertical: 5,

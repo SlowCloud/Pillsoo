@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View, Text, Modal, Image, TouchableOpacity} from 'react-native';
 import { useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,6 +11,7 @@ import { setOpenDeleteAccountMOdal } from '../../store/store';
 // }
 
 function DeleteAccountModal() {
+    const [lastModal, setLastModal] = useState<boolean>(false);
     const dispatch = useDispatch()
 
     const goDeleteAccount = async () => {
@@ -27,7 +28,47 @@ function DeleteAccountModal() {
         console.log(error);
       }
     }
-  
+
+    const golastModal = () => {
+        setLastModal(true)
+    };
+    
+    const goCloselastModal = () => {
+        setLastModal(false)
+        dispatch(setOpenDeleteAccountMOdal(false))
+    }
+
+    const loastModalContainer = 
+    <Modal 
+    style={styles.modalContainer}
+    transparent={true}
+  >
+    <View style={styles.container}>
+      <View style={styles.modalContentContainer}>
+        <Image 
+          source={require('../../assets/danbi.jpg')}
+          style={styles.danbiImage}
+          ></Image>
+          <TouchableOpacity
+            onPress={() => dispatch(setOpenDeleteAccountMOdal(false))}
+          >
+            <View>
+              <Text style={styles.message2}>넌 못 가 바보야</Text>
+            </View>
+            <View style={styles.messageContainer}>
+              <TouchableOpacity
+                onPress={goCloselastModal}
+              >
+                <View style={styles.message1Container}>
+                  <Text style={styles.message1}>닫기</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+      </View>
+    </View>
+  </Modal>
+   
   
     return (
       <Modal 
@@ -37,25 +78,27 @@ function DeleteAccountModal() {
         <View style={styles.container}>
           <View style={styles.modalContentContainer}>
             <Image 
-              source={require('../../assets/logout.png')}
+              source={require('../../assets/deleteaccount.png')}
               style={styles.logoutImage}
               ></Image>
               <TouchableOpacity
                 onPress={() => dispatch(setOpenDeleteAccountMOdal(false))}
               >
                 <View>
-                  <Text style={styles.message2}>모든 정보가 사라집니다. 그래도 탈퇴하시겠습니까?</Text>
+                  <Text style={styles.message2}>모든 정보가 사라집니다.</Text>
+                  <Text style={styles.message2}>그래도</Text>
+                  <Text style={styles.message2}>탈퇴하시겠습니까?</Text>
                 </View>
                 <View style={styles.messageContainer}>
                   <TouchableOpacity
-                    onPress={goDeleteAccount}
+                    onPress={golastModal}
                   >
                     <View style={styles.message1Container}>
                       <Text style={styles.message1}>예</Text>
                     </View>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => dispatch(setOpenDeleteAccountMOdal(false))}
+                    onPress={goCloselastModal}
                   >
                     <View style={styles.message3Container}>
                       <Text style={styles.message2}>아니요</Text>
@@ -65,6 +108,7 @@ function DeleteAccountModal() {
               </TouchableOpacity>
           </View>
         </View>
+        {lastModal && loastModalContainer}
       </Modal>
     )
   };
@@ -91,6 +135,12 @@ function DeleteAccountModal() {
       logoutImage: {
         width: 75,
         height: 75,
+        bottom: 15,
+        resizeMode: 'contain'
+      },
+      danbiImage: {
+        width: 80,
+        height: 70,
         bottom: 15,
         resizeMode: 'contain'
       },

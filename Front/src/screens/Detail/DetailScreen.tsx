@@ -363,9 +363,9 @@ const styles = StyleSheet.create({
   },
   selectedContent: {
     height: '65%',
-    borderWidth: 1,
-    borderColor: '#939185',
-    borderBlockStartColor: '#F7F7F7',
+    // borderWidth: 1,
+    // borderColor: '#939185',
+    // borderBlockStartColor: '#F7F7F7',
   },
   wishListBtn: {
     width: 30,
