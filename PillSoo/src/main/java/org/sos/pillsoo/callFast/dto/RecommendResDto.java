@@ -1,10 +1,8 @@
 package org.sos.pillsoo.callFast.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Setter
-@Getter
+@Data
 public class RecommendResDto {
     private int supplementSeq;
     private String pill_name;

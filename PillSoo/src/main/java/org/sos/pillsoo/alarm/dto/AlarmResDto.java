@@ -1,12 +1,10 @@
 package org.sos.pillsoo.alarm.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalTime;
 
-@Getter
-@Setter
+@Data
 public class AlarmResDto {
 
     private long alarmSeq;
