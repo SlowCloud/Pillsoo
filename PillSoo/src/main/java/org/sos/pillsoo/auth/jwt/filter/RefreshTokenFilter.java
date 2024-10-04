@@ -57,8 +57,8 @@ public class RefreshTokenFilter extends OncePerRequestFilter {
         int age = jwtUtil.getAge(refreshToken);
 
         //make new JWT
-        String newAccess = jwtUtil.createJwt("access",  role, userId, userSeq, nickname, gender, age, 600000L);
-        String newRefresh = jwtUtil.createJwt("refresh", role, userId, userSeq, nickname, gender, age, 100000000L);
+        String newAccess = jwtUtil.createJwt("access",  role, userId, userSeq, nickname, gender, age, 60 * 60 * 1000L); // 1시간
+        String newRefresh = jwtUtil.createJwt("refresh", role, userId, userSeq, nickname, gender, age, 12 * 60 * 60 * 1000L); // 12시간
 
 //        refreshRepository.deleteByRefreshToken(refreshToken);
 //        addRefreshEntity(userId, newRefresh, 8640000L);

@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
 
@@ -55,6 +56,8 @@ public class JwtLogoutHandler implements LogoutHandler {
         //로그아웃 진행
         Cookie cookie = new Cookie("refresh", null);
         cookie.setMaxAge(0);
+
+        SecurityContextHolder.getContextHolderStrategy().clearContext();
 
         response.addCookie(cookie);
         response.setStatus(HttpServletResponse.SC_OK);

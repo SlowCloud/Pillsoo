@@ -3,12 +3,14 @@ package org.sos.pillsoo.auth.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.Timestamp;
 
-@Entity
 @Setter
 @Getter
+@ToString
+@Entity
 public class User {
 
     @Id
@@ -25,4 +27,7 @@ public class User {
     private Timestamp createdAt;
     private Timestamp withdrawalAt;
     private String role;
+
+    @Column(nullable = true)
+    private String fcmToken;
 }

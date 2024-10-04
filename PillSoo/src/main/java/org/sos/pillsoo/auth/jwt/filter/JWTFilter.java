@@ -52,9 +52,6 @@ public class JWTFilter extends OncePerRequestFilter {
             String gender = jwtUtil.getGender(token);
             int age = jwtUtil.getAge(token);
 
-
-            System.out.println("Extracted userSeq from JWT: " + userSeq);  // 디버그 로그
-
             // User 객체 생성
             User userEntity = new User();
             userEntity.setUserSeq(userSeq);
@@ -68,7 +65,7 @@ public class JWTFilter extends OncePerRequestFilter {
             CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
             Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
 
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+            SecurityContextHolder.getContextHolderStrategy().getContext().setAuthentication(authToken);
         } catch (Exception e) {
             System.out.println("JWT parsing error: " + e.getMessage());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

@@ -41,12 +41,19 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.2'
     implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
 
+    implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+
     // jwt 24.09.10
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
     implementation 'javax.servlet:javax.servlet-api:4.0.1' // 또는 필요한 버전
+
+    // firebase 24.09.27
+    // https://mvnrepository.com/artifact/com.google.firebase/firebase-admin
+    implementation group: 'com.google.firebase', name: 'firebase-admin', version: '9.3.0'
+
 }
 
 tasks.named('test') {
