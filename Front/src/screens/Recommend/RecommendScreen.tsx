@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, FlatList, ScrollView} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
@@ -48,12 +48,12 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
         },
       );
       const data = response.data;
-      console.log('영양제 추천', response.data)
+      console.log('영양제 추천', response.data);
       const pills = data.map((item: any) => ({
         id: item.supplementSeq,
         imageUrl: {uri: item.image_url},
         pillName: item.pill_name,
-        isRandom: item._random
+        isRandom: item._random,
       }));
       setRecommendPills(pills);
     } catch (error) {
@@ -95,7 +95,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
   const lastRow = chunkedCategories.pop();
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <AgeBasedRecommendations age={age} recommendPills={recommendPills} />
       <View style={styles.pillCategoryBox}>
         <Text style={styles.categoryText}>건강 카테고리별 영양제 추천</Text>
@@ -108,7 +108,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
                   key={category}
                   category={category}
                   navigation={navigation}
-                  style={{ marginRight: 10}}
+                  style={{marginRight: 10}}
                 />
               ))}
             </View>
@@ -133,7 +133,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
         onPress={() => navigation.navigate('MoreRecommend')}>
         <Text style={styles.moreRecommendText}>더 많은 영양제 추천받기</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   recommendBtn: {
-    marginTop: 60,
+    marginTop: 30,
     height: 50,
     borderRadius: 8,
     backgroundColor: '#a4f87b',
