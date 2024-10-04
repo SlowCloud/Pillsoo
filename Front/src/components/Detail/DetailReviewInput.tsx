@@ -61,11 +61,8 @@ const DetailReviewInput: React.FC = () => {
   };
 
   return (
-    <View>
-      <TouchableOpacity style={styles.inputBtn} onPress={clickedSubmitBtn}>
-        <Text style={styles.inputBtnText}>입력</Text>
-      </TouchableOpacity>
-      <KeyboardAwareScrollView>
+      // <KeyboardAwareScrollView>
+    <View style={styles.container}>
         <TextInput
           autoCorrect={false}
           multiline
@@ -73,33 +70,43 @@ const DetailReviewInput: React.FC = () => {
           value={review}
           onChangeText={handleTextChange}
         />
-      </KeyboardAwareScrollView>
+      <TouchableOpacity style={styles.inputBtn} onPress={clickedSubmitBtn}>
+        <Text style={styles.inputBtnText}>입력</Text>
+      </TouchableOpacity>
     </View>
+      // </KeyboardAwareScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 10,
+    // position: 'absolute',
+    // bottom: 30,
+    // alignItems: 'center',
+    // justifyContent: 'center'
+  },
   inputBox: {
-    height: 100,
-    width: '95%',
+    height: '90%',
+    width: '100%',
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: 'gray',
     borderRadius: 10,
-    marginLeft: '2%',
   },
   inputBtnText: {
     color: 'white',
   },
   inputBtn: {
     width: '20%',
-    // height: 40,
+    height: '30%',
     borderRadius: 5,
     backgroundColor: '#0B2F9F',
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: '76%',
-    marginBottom: 20,
+    bottom: -10,
   },
 });
 

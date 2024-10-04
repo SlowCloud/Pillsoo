@@ -12,8 +12,9 @@ import {useSelector, useDispatch} from 'react-redux';
 import axios from 'axios';
 import {API_URL} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { setOpenLogoutModal } from '../../store/store';
+import { setOpenLogoutModal, setOpenDeleteAccountMOdal } from '../../store/store';
 import LogoutModal from '../../components/MyPage/LogoutModal';
+import DeleteAccountModal from '../../components/MyPage/DeleteAccountModal';
 
 const images = [
   require('../../assets/profile/0.png'),
@@ -48,6 +49,7 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
   const userId = useSelector((state: {userId: string | null}) => state.userId);
   const userSeq = useSelector((state: {userSeq: number | null}) => state.userSeq);
   const openLogoutModal = useSelector((state: {openLogoutModal: boolean}) => state.openLogoutModal);
+  const openDeleteAccountModal = useSelector((state: {openDeleteAccountModal: boolean}) => state.openDeleteAccountModal);
   const age = useSelector((state: {age: string | null}) => state.age);
   const [token, setToken] = useState<string | null>(null);
   const dispatch = useDispatch();
@@ -69,31 +71,7 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
   };
 
   const goDeleteAccount = () => {
-    Alert.alert(
-      '회원 탈퇴',
-      '모든 정보가 삭제됩니다.그래도 탈퇴하시겠습니까?',
-      [
-        {
-          text: '예',
-          onPress: async () => {
-            try {
-              const response = await axios.delete(`${API_URL}/api/v1/quit`, {
-                headers: {
-                  access: `${token}`,
-                },
-              });
-              navigation.navigate('AuthHome');
-            } catch (error) {
-              console.log(error);
-            }
-          },
-        },
-        {
-          text: '아니요',
-          style: 'cancel',
-        },
-      ],
-    );
+    dispatch(setOpenDeleteAccountMOdal(true))
   };
 
   return (
@@ -139,6 +117,7 @@ const MyPageScreen: React.FC<Props> = ({navigation}) => {
         </View>
       </View>
       {openLogoutModal && <LogoutModal navigation={navigation} />}
+      {openDeleteAccountModal && <DeleteAccountModal />}
     </>
   );
 };
@@ -199,12 +178,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 35,
   },
-  logoutModalContainer: {
-    zIndex: 2,
-    width: '20%',
-    height: '15%',
-    // top: '50%'
-  }
 });
 
 export default MyPageScreen;

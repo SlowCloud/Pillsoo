@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, Modal} from 'react-native';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,6 +27,7 @@ const DetailReviewItems: React.FC<Props> = ({
 
   const [token, setToken] = useState<string | null>(null);
   const [updateContent, setUpdateContent] = useState<boolean>(false);
+  const [deleteReview, setDeleteReview] = useState<boolean>(false);
   const [updateReview, setUpdateReview] = useState<string>('');
 
   useEffect(() => {
@@ -73,14 +74,46 @@ const DetailReviewItems: React.FC<Props> = ({
           },
         },
       );
+      console.log('안녕ㅇㅇㅇㅇㅇㅇㅇ')
+      setDeleteReview(true);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const clseDeleteModal = () => {
+    setDeleteReview(false)
+  }
+
+  const openDeleteModal =
+    <Modal>
+      <View>
+        <Text></Text>
+        <TouchableOpacity
+          onPress={clseDeleteModal}
+        >
+          <Text>닫아</Text>
+        </TouchableOpacity>
+      </View>
+    </Modal>
+
+
   return (
     <View style={styles.container}>
-      <Text>📣 {nickName}</Text>
+      <View style={styles.reviewContainer}>
+        <Text style={styles.reviewNickname}>📣 {nickName}</Text>
+        {storedUserSeq === userSeq && !updateContent && (
+          <View style={styles.optionContianer}>
+            <TouchableOpacity onPress={() => setUpdateContent(true)}>
+              <Text>수정</Text>
+            </TouchableOpacity>
+            <Text> | </Text>
+            <TouchableOpacity onPress={handleDelete}>
+              <Text>삭제</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
       {updateContent ? (
         <View>
           <TextInput
@@ -98,16 +131,8 @@ const DetailReviewItems: React.FC<Props> = ({
         <Text style={styles.reviewContent}>{content}</Text>
       )}
 
-      {storedUserSeq === userSeq && !updateContent && (
-        <View>
-          <TouchableOpacity onPress={() => setUpdateContent(true)}>
-            <Text>수정</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleDelete}>
-            <Text>삭제</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      <View style={styles.line}></View>
+      {deleteReview && openDeleteModal}
     </View>
   );
 };
@@ -117,11 +142,28 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
   },
+  reviewContainer: {
+    flexDirection: 'row'
+  },
+  reviewNickname: {
+    color: 'black'
+  },
   reviewContent: {
     color: 'black',
     fontSize: 15,
     marginTop: 1,
+    marginLeft: 20
   },
+  line: {
+    width: '100%',
+    height: 0.45,
+    backgroundColor: '#DFDFDE',
+    marginTop: 10,
+  },
+  optionContianer: {
+    flexDirection: 'row',
+    marginLeft: 7,
+  }
 });
 
 export default DetailReviewItems;
