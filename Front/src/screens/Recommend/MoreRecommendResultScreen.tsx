@@ -6,11 +6,13 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator, // 로딩 인디케이터 추가
 } from 'react-native';
 import axios from 'axios';
 import {API_URL} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
 type Supplement = {
   functionality: string;
@@ -34,6 +36,10 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
   const {inputText} = route.params;
   const [recommendations, setRecommendations] = useState<Supplement[]>([]);
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true); // 로딩 상태 변수
+  const nickname = useSelector(
+    (state: {nickname: string | null}) => state.nickname,
+  );
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -47,6 +53,7 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
   useEffect(() => {
     const fetchRecommendations = async () => {
       try {
+        setLoading(true); // 데이터 로드 시작
         const response = await axios.get(`${API_URL}/api/v1/recommend/survey`, {
           params: {client_text: inputText},
           headers: {
@@ -56,6 +63,8 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
         setRecommendations(response.data);
       } catch (err) {
         console.log(err);
+      } finally {
+        setLoading(false); // 데이터 로드 완료
       }
     };
 
@@ -64,23 +73,43 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
     }
   }, [inputText, token]);
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#a4f87b" />
+        {/* 로딩 인디케이터 */}
+        <Text style={styles.loadingText}>추천 영양제를 불러오는 중...</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.resultText}>당신의 건강 상태: {inputText}</Text>
+      <Text
+        style={
+          styles.title
+        }>{`${nickname}님의 건강상태와 관련된 \n 영양제 추천입니다 !`}</Text>
+      {/* <Text style={styles.resultText}>당신의 건강 상태: {inputText}</Text> */}
       <Text style={styles.recommendationTitle}>추천 영양제:</Text>
-      {recommendations.map(item => (
-        <TouchableOpacity
-          key={item.supplementSeq} // key 속성을 추가합니다.
-          onPress={() =>
-            navigation.navigate('Detail', {id: item.supplementSeq})
-          }>
-          <View style={styles.recommendationContainer}>
-            <Image source={{uri: item.image_url}} style={styles.image} />
-            <Text style={styles.pillName}>{item.pill_name}</Text>
-            <Text>{item.functionality}</Text>
-          </View>
-        </TouchableOpacity>
-      ))}
+      {recommendations.length === 0 ? ( // 추천 영양제가 없는 경우 메시지 표시
+        <Text style={styles.noRecommendationsText}>
+          건강상태와 관련된 영양제가 없습니다.
+        </Text>
+      ) : (
+        recommendations.map(item => (
+          <TouchableOpacity
+            key={item.supplementSeq}
+            onPress={() =>
+              navigation.navigate('Detail', {id: item.supplementSeq})
+            }>
+            <View style={styles.recommendationContainer}>
+              <Image source={{uri: item.image_url}} style={styles.image} />
+              <Text style={styles.pillName}>{item.pill_name}</Text>
+              <Text>{item.functionality}</Text>
+            </View>
+          </TouchableOpacity>
+        ))
+      )}
     </ScrollView>
   );
 };
@@ -88,6 +117,12 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    color: 'black',
   },
   resultText: {
     fontSize: 20,
@@ -98,6 +133,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginVertical: 20,
+  },
+  noRecommendationsText: {
+    fontSize: 16,
+    color: 'gray',
+    marginVertical: 10,
   },
   recommendationContainer: {
     marginBottom: 20,
@@ -113,6 +153,16 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     marginBottom: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: 'black',
   },
 });
 
