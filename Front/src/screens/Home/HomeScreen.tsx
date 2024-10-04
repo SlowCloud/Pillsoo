@@ -1,12 +1,21 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image, TouchableNativeFeedback} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  TouchableNativeFeedback,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import MyKit from '../../components/Home/MyKit';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const nickname = useSelector((state: {nickname: string | null}) => state.nickname,);
+  const nickname = useSelector(
+    (state: {nickname: string | null}) => state.nickname,
+  );
   return (
     <View style={styles.screenContainer}>
       <View style={styles.container}>
@@ -17,42 +26,42 @@ const HomeScreen = () => {
       </View>
       <View style={styles.kit}>
         <View style={styles.myMenuContainer}>
-        <TouchableNativeFeedback
-          onPress={() =>
-            navigation.navigate('Home', {
-              screen: 'SupplementInput',
-            })
-          }
-        >
-          <View style={styles.myMenuBtn}>
-            <Image
-              source={require('../../assets/homePill.png')}
-              style={styles.myMenuImage}
-            />
-            <Text style={styles.myMenuText}>내 영양제</Text>
-            <Text style={styles.myMenuText}>관리하러 가기</Text>
-          </View>
-        </TouchableNativeFeedback>
-        <TouchableNativeFeedback
-          onPress={() =>
-            navigation.navigate('Home', {
-              screen: 'Alarm',
-            })
-          }
-        >
-          <View style={styles.myMenuBtn}>
-            <Image
-              source={require('../../assets/homeAlarm.png')}
-              style={styles.myMenuImage}
-            />
-            <Text style={styles.myMenuText}>내 알람</Text>
-            <Text style={styles.myMenuText}>관리하러 가기</Text>
-          </View>
-        </TouchableNativeFeedback>
-      </View>
-      <View style={styles.kitNicknameContainer}>
-        <Text style={styles.kitNickname}>💊{nickname}님이 현재 복용 중인 영양제입니다.</Text>
-      </View>
+          <TouchableNativeFeedback
+            onPress={() =>
+              navigation.navigate('Home', {
+                screen: 'SupplementInput',
+              })
+            }>
+            <View style={styles.myMenuBtn}>
+              <Image
+                source={require('../../assets/homePill.png')}
+                style={styles.myMenuImage}
+              />
+              <Text style={styles.myMenuText}>내 영양제</Text>
+              <Text style={styles.myMenuText}>관리하러 가기</Text>
+            </View>
+          </TouchableNativeFeedback>
+          <TouchableNativeFeedback
+            onPress={() =>
+              navigation.navigate('Home', {
+                screen: 'Alarm',
+              })
+            }>
+            <View style={styles.myMenuBtn}>
+              <Image
+                source={require('../../assets/homeAlarm.png')}
+                style={styles.myMenuImage}
+              />
+              <Text style={styles.myMenuText}>내 알람</Text>
+              <Text style={styles.myMenuText}>관리하러 가기</Text>
+            </View>
+          </TouchableNativeFeedback>
+        </View>
+        <View style={styles.kitNicknameContainer}>
+          <Text style={styles.kitNickname}>
+            💊{nickname}님이 현재 복용 중인 영양제입니다.
+          </Text>
+        </View>
         {/* <Kit /> */}
         <MyKit />
       </View>
@@ -99,10 +108,10 @@ const styles = StyleSheet.create({
   },
   kitNickname: {
     fontSize: 15,
-    color: 'black'
+    color: 'black',
   },
   myMenuContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   myMenuBtn: {
     width: '40%',

@@ -70,10 +70,11 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
       <Text style={styles.recommendationTitle}>추천 영양제:</Text>
       {recommendations.map(item => (
         <TouchableOpacity
+          key={item.supplementSeq} // key 속성을 추가합니다.
           onPress={() =>
             navigation.navigate('Detail', {id: item.supplementSeq})
           }>
-          <View key={item.supplementSeq} style={styles.recommendationContainer}>
+          <View style={styles.recommendationContainer}>
             <Image source={{uri: item.image_url}} style={styles.image} />
             <Text style={styles.pillName}>{item.pill_name}</Text>
             <Text>{item.functionality}</Text>
