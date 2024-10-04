@@ -19,7 +19,9 @@ const initialState = {
   resetAlarm: false,
   fcmToken: null as string | null,
   // 로그아웃 모달
-  openLogoutModal: false
+  openLogoutModal: false,
+  // 회원탈퇴 모달
+  openDeleteAccountModl: false
 };
 
 // 액션 타입
@@ -33,6 +35,7 @@ const SET_OPEN_MODAL = 'SET_OPEN_MODAL';
 const SET_RESET_ALARM = 'SET_RESET_ALARM';
 const SET_FCM_TOKEN = 'SET_FCM_TOKEN';
 const SET_OPEN_LOGOUT_MODAL = 'SET_OPEN_LOGOUT_MODAL';
+const SET_OPEN_DELETE_ACCOUNT_MODAL = 'SET_OPEN_DELETE_ACCOUNT_MODAL'
 
 // 액션 생성자
 export const setUserId = (userId: string | null) => ({
@@ -78,6 +81,10 @@ export const setFcmToken = (fcmToken: string | null) => ({
 export const setOpenLogoutModal = (openLogoutModal: boolean) => ({
   type: SET_OPEN_LOGOUT_MODAL,
   payload: openLogoutModal,
+});
+export const setOpenDeleteAccountMOdal = (openDeleteAccountModal: boolean) => ({
+  type: SET_OPEN_DELETE_ACCOUNT_MODAL,
+  payload: openDeleteAccountModal,
 });
 
 // 액션 타입 인터페이스 정의
@@ -125,6 +132,10 @@ interface setOpenLogoutModalAction extends Action {
   type: typeof SET_OPEN_LOGOUT_MODAL;
   payload: boolean;
 }
+interface setDeleteAccountMOdal extends Action {
+  type: typeof SET_OPEN_DELETE_ACCOUNT_MODAL;
+  payload: boolean;
+}
 
 
 // 액션 타입을 통합
@@ -138,7 +149,8 @@ type MyActionTypes =
   | setOpenMIdalAction
   | setResetAlarmAction
   | setFcmTokenAction
-  | setOpenLogoutModalAction;
+  | setOpenLogoutModalAction
+  | setDeleteAccountMOdal;
 
 
 // 리듀서
@@ -164,6 +176,8 @@ const reducer = (state = initialState, action: MyActionTypes) => {
       return {...state, fcmToken: action.payload};
     case SET_OPEN_LOGOUT_MODAL:
       return {...state, openLogoutModal: action.payload};
+    case SET_OPEN_DELETE_ACCOUNT_MODAL:
+      return {...state, openDeleteAccountModal: action.payload};
     default:
       return state;
   }
