@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   recommendBtn: {
-    marginTop: 0,
+    marginTop: 30,
     height: 50,
     borderRadius: 8,
     backgroundColor: '#a4f87b',

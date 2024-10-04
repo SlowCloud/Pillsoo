@@ -55,40 +55,33 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
   const CategorySupplements = async (newPage = 0) => {
     try {
       const token = await AsyncStorage.getItem('jwt_token');
+      if (!token) {
+        Alert.alert('로그인 정보가 없습니다.');
+        return;
+      }
+
       setLoading(true);
       const response = await axios.get(
         `${API_URL}/api/v1/supplement/effect/${category}`,
         {
-          headers: {
-            access: `${token}`,
-          },
-          params: {
-            functionality: '',
-            page: newPage,
-            size: 10,
-          },
+          headers: {access: token},
+          params: {page: newPage, size: 10},
         },
       );
       const data = response.data.content;
+
       const pills = await Promise.all(
         data.map(async (item: any) => {
           const pillId = item.supplementSeq;
           const {imageUrl, pillName} = await ImageSupplements(pillId);
-          return {
-            id: pillId,
-            imageUrl,
-            pillName,
-          };
+          return {id: pillId, imageUrl, pillName};
         }),
       );
-      if (newPage === 1) {
-        setRecommendPills(pills);
-      } else {
-        setRecommendPills(prevPills => [...prevPills, ...pills]);
-      }
+
+      setRecommendPills(newPage === 0 ? pills : [...recommendPills, ...pills]);
     } catch (error) {
-      console.log(error);
-      Alert.alert('영양제를 가져오는 중 오류가 발생했습니다.');
+      console.error(error);
+      Alert.alert('데이터를 불러오는 중 문제가 발생했습니다.');
     } finally {
       setLoading(false);
       setIsFetchingMore(false);

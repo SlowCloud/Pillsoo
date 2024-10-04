@@ -117,7 +117,7 @@ const OCRScreen = () => {
           },
         },
       );
-
+      console.log('hi');
       console.log('OCR API response:', response.data);
 
       const detectedTexts = response.data.responses[0]?.textAnnotations?.map(
@@ -329,6 +329,7 @@ const styles = StyleSheet.create({
   editPrompt: {
     marginTop: 20,
     textAlign: 'center',
+    fontWeight: 'bold',
   },
   inputContainer: {
     marginTop: 10,
