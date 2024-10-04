@@ -1,14 +1,10 @@
 package org.sos.pillsoo.supplement.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
 
 import java.sql.Timestamp;
 
-@Getter
-@Setter
-@ToString
+@Data
 public class ReviewDto {
     private long reviewSeq;
     private int userSeq;

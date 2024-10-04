@@ -1,10 +1,8 @@
 package org.sos.pillsoo.cabinet.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class CabinetDto {
     private int supplementSeq;
     private String pillName;
