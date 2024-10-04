@@ -15,6 +15,7 @@ import {OCR_API_KEY, API_URL, TOKEN} from '@env';
 import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
+import {request, PERMISSIONS} from 'react-native-permissions';
 
 const OCRScreen = () => {
   const [token, setToken] = useState<string | null>(null);
@@ -27,7 +28,7 @@ const OCRScreen = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      handleCapture();
+      requestCameraPermission();
     }, []),
   );
 
@@ -40,6 +41,21 @@ const OCRScreen = () => {
 
     fetchToken();
   }, []);
+
+  const requestCameraPermission = async () => {
+    try {
+      const result = await request(PERMISSIONS.ANDROID.CAMERA);
+      if (result === 'granted') {
+        console.log('Camera permission granted');
+        handleCapture();
+      } else {
+        console.log('Camera permission denied');
+        Alert.alert('권한 필요', '카메라 사용을 위해 권한이 필요합니다.');
+      }
+    } catch (error) {
+      console.error('Error requesting camera permission:', error);
+    }
+  };
 
   const handleCapture = async () => {
     try {
@@ -81,7 +97,6 @@ const OCRScreen = () => {
 
   const sendToOcr = async (base64Image: string) => {
     console.log('Sending image to OCR API...');
-    console.log('hihihi');
     try {
       const response = await axios.post(
         'https://vision.googleapis.com/v1/images:annotate',
@@ -218,33 +233,47 @@ const OCRScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>복용하시는 영양제에 맞는 텍스트를 선택해주세요!</Text>
+      <Text style={styles.title}>스캔한 영양제의 이름을 선택해주세요!</Text>
+
       {ocrTexts.length > 0 ? (
         <ScrollView contentContainerStyle={styles.resultContainer}>
           {ocrTexts.map((text, index) => (
-            <TouchableOpacity key={index} onPress={() => handleEditText(index)}>
-              <Text style={styles.resultText}>{text}</Text>
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleEditText(index)}
+              style={[
+                styles.resultText,
+                selectedIndex === index && styles.selectedText,
+              ]}>
+              <Text>{text}</Text>
             </TouchableOpacity>
           ))}
-          <TextInput
-            style={styles.textInput}
-            value={editableText}
-            onChangeText={setEditableText}
-            multiline
-            editable={selectedIndex !== null}
-          />
-          <TouchableOpacity onPress={handleSaveEdit} style={styles.saveButton}>
-            <Text style={styles.saveText}>저장하기</Text>
-          </TouchableOpacity>
+          <Text style={styles.editPrompt}>
+            영양제 이름에 맞게 수정해주세요 !
+          </Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.textInput}
+              value={editableText}
+              onChangeText={setEditableText}
+              multiline
+              editable={selectedIndex !== null}
+            />
+            <TouchableOpacity
+              onPress={handleSaveEdit}
+              style={styles.saveButton}>
+              <Text style={styles.saveText}>검색하기</Text>
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity onPress={handleRetake} style={styles.retakeButton}>
             <Text style={styles.retakeText}>다시 스캔하기</Text>
           </TouchableOpacity>
           {loading && <Text>Sending...</Text>}
 
-          {results.length > 0 && (
+          {results.length > 0 ? (
             <View style={styles.supplementContainer}>
               <Text style={styles.supplementHeader}>
-                찾는 영양제를 선택해주세요 !:
+                찾는 영양제를 선택해주세요 !
               </Text>
               {results.map(item => (
                 <TouchableOpacity
@@ -259,10 +288,14 @@ const OCRScreen = () => {
                 </TouchableOpacity>
               ))}
             </View>
+          ) : (
+            <Text style={styles.emptyText}>
+              검색하신 영양제가 존재하지 않습니다.
+            </Text>
           )}
         </ScrollView>
       ) : (
-        <Text style={styles.loadingText}>waiting...</Text>
+        <Text style={styles.emptyText}>스캔된 텍스트가 없습니다.</Text>
       )}
     </View>
   );
@@ -271,86 +304,95 @@ const OCRScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     padding: 20,
     backgroundColor: '#fff',
   },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
   resultContainer: {
-    marginTop: 20,
-    padding: 20,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    width: '90%',
-    alignItems: 'center',
+    paddingBottom: 20,
   },
   resultText: {
-    fontSize: 18,
-    textAlign: 'center',
-    color: '#a4f87b',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
     marginBottom: 10,
+  },
+  selectedText: {
+    backgroundColor: '#a4f87b',
+  },
+  editPrompt: {
+    marginTop: 20,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   textInput: {
-    height: 100,
-    borderColor: '#ccc',
+    flex: 1,
     borderWidth: 1,
-    borderRadius: 8,
+    borderColor: '#ccc',
+    borderRadius: 5,
     padding: 10,
-    width: '100%',
-    textAlignVertical: 'top',
-    color: '#000',
-    marginBottom: 10,
-  },
-  loadingText: {
-    fontSize: 18,
-    color: '#a4f87b',
+    marginRight: 10,
   },
   saveButton: {
-    marginTop: 10,
-    padding: 10,
     backgroundColor: '#a4f87b',
+    padding: 10,
     borderRadius: 5,
   },
   saveText: {
-    color: 'white',
-    fontSize: 16,
+    color: '#fff',
+    fontWeight: 'bold',
   },
   retakeButton: {
-    marginTop: 20,
+    marginTop: 10,
+    backgroundColor: '#ccc',
     padding: 10,
-    backgroundColor: '#a4f87b',
     borderRadius: 5,
+    alignItems: 'center',
   },
   retakeText: {
-    color: 'white',
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 20,
     fontSize: 16,
   },
   supplementContainer: {
     marginTop: 20,
-    width: '100%',
   },
   supplementHeader: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10,
+    textAlign: 'center',
   },
   supplementCard: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
-    marginVertical: 5,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 8,
   },
   supplementName: {
     flex: 1,
-    fontSize: 16,
   },
   supplementImage: {
     width: 50,
     height: 50,
     borderRadius: 5,
-    marginLeft: 10,
   },
 });
 
