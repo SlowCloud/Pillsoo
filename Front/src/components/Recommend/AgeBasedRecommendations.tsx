@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   loadingBar: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: 67,
   },
   itemsContainer: {
     flexDirection: 'row',

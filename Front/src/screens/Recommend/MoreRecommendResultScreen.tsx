@@ -84,7 +84,7 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>
         {`${nickname}님의 건강상태와 관련된 영양제 \n추천입니다 !`}
       </Text>
@@ -95,18 +95,20 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
           건강상태와 관련된 영양제가 없습니다.
         </Text>
       ) : (
-          recommendations.map(item => (
-            <TouchableOpacity
-              key={item.supplementSeq}
-              onPress={() =>
-                navigation.navigate('Detail', {id: item.supplementSeq})
-              }>
-              <View style={styles.recommendationContainer}>
-                <Image source={{uri: item.image_url}} style={styles.image} />
-                <Text style={styles.pillName}>{item.pill_name}</Text>
-              </View>
-            </TouchableOpacity>
-          ))
+            recommendations.map(item => (
+              <TouchableOpacity
+                key={item.supplementSeq}
+                onPress={() =>
+                  navigation.navigate('Detail', {id: item.supplementSeq})
+                }>
+                <View 
+                  style={styles.recommendationContainer}
+                >
+                  <Image source={{uri: item.image_url}} style={styles.image} />
+                  <Text style={styles.pillName}>{item.pill_name}</Text>
+                </View>
+              </TouchableOpacity>
+            ))
       )}
     </ScrollView>
   );
@@ -137,15 +139,14 @@ const styles = StyleSheet.create({
   noRecommendationsText: {
     fontSize: 16,
     color: 'gray',
-    // marginVertical: 10,
   },
   recommendationContainer: {
     width: '85%',
-    height: '40%',
     backgroundColor: '#fff',
     borderRadius: 10,
     elevation: 3,
-    marginLeft: 10,
+    marginHorizontal: 30,
+    marginVertical: 15,
     alignItems: 'center',
     shadowOffset: {
       width: 0,
@@ -153,13 +154,13 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    marginBottom: 20,
     overflow: 'hidden',
+    marginTop: 10,
   },
   pillName: {
     fontSize: 16,
     fontWeight: 'bold',
-    // marginVertical: 5,
+    marginBottom: 5,
     color: 'black',
   },
   image: {
