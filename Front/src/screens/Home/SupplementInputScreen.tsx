@@ -122,7 +122,7 @@ const SupplementInputScreen = () => {
         {myKitData.length === 0 ? (
           <View style={styles.emptyMessageContainer}>
             <Text style={styles.emptyMessageText}>
-              마이키트에 담은 영양제가 없습니다.
+              마이키트에 영양제가 없습니다.
             </Text>
           </View>
         ) : (
@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
+    color: 'black',
   },
   itemContainer: {
     backgroundColor: '#fff',
@@ -243,6 +244,7 @@ const styles = StyleSheet.create({
   emptyMessageText: {
     fontSize: 18,
     color: 'gray',
+    fontWeight: 'bold',
   },
 });
 

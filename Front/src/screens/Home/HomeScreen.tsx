@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
   greeting: {
     fontSize: 25,
     color: 'black',
+    fontWeight: 'bold',
   },
   kit: {
     flex: 4.5,

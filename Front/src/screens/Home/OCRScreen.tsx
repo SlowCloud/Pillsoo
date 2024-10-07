@@ -8,7 +8,7 @@ import {
   ScrollView,
   Image,
   Alert,
-  ActivityIndicator, // 로딩 스피너를 추가
+  ActivityIndicator,
 } from 'react-native';
 import {launchCamera} from 'react-native-image-picker';
 import axios from 'axios';
@@ -37,7 +37,6 @@ const OCRScreen = () => {
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem('jwt_token');
-      console.log('Stored token:', storedToken);
       setToken(storedToken);
     };
 
@@ -273,7 +272,7 @@ const OCRScreen = () => {
           {loading && (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#00ff00" />
-              <Text>Sending...</Text>
+              <Text>영양제 검색중...</Text>
             </View>
           )}
 
@@ -317,6 +316,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: 'black',
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -336,6 +336,7 @@ const styles = StyleSheet.create({
   editPrompt: {
     marginTop: 20,
     textAlign: 'center',
+    color: 'black',
     fontWeight: 'bold',
   },
   inputContainer: {

@@ -121,7 +121,13 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.categoryTitle}>{category} 관련 영양제</Text>
+      <Text style={styles.categoryTitle}>{category} 영양제</Text>
+      {loading && page === 1 && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#a4f87b" />
+          <Text style={styles.loadingText}>영양제 추천 받는 중...</Text>
+        </View>
+      )}
       <FlatList
         data={recommendPills}
         renderItem={({item}) => (
@@ -129,10 +135,10 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
             key={item.id}
             onPress={() => handlePillPress(item.id)}
             style={styles.pillItem}>
-            {item.imageUrl ? ( // 이미지 URL이 있을 경우에만 Image 컴포넌트를 렌더링
+            {item.imageUrl ? (
               <Image source={{uri: item.imageUrl}} style={styles.image} />
             ) : null}
-            <Text>{item.pillName}</Text>
+            <Text style={styles.pillName}>{item.pillName}</Text>
           </TouchableOpacity>
         )}
         keyExtractor={item => item.id.toString()}
@@ -143,10 +149,8 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
             <ActivityIndicator size="small" color="#a4f87b" />
           ) : null
         }
+        contentContainerStyle={styles.flatListContent}
       />
-      {loading && page === 1 && (
-        <ActivityIndicator size="large" color="#a4f87b" />
-      )}
     </View>
   );
 };
@@ -155,27 +159,57 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
   },
   categoryTitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: 'black',
+    color: '#333',
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 60,
+  },
+  loadingText: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: '#555',
   },
   pillItem: {
-    marginBottom: 10,
-    padding: 10,
+    marginBottom: 15,
+    padding: 15,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 8,
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
     alignItems: 'center',
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 80,
     marginBottom: 10,
+    borderRadius: 40,
+  },
+  pillName: {
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+    color: '#555',
+  },
+  flatListContent: {
+    paddingBottom: 20,
   },
 });
 

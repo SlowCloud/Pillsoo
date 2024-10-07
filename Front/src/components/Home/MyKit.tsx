@@ -170,8 +170,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   noDataText: {
-    fontSize: 18,
-    color: 'gray',
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: 'black',
   },
 });
 
