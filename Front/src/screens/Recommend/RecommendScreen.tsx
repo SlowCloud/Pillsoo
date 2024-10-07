@@ -61,6 +61,8 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
       setRecommendPills(pills);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
