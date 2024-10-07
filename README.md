@@ -93,6 +93,8 @@ Badges from [here](https://github.com/alexandresanlim/Badges4-README.md-Profile)
 
 ### 인프라 아키텍처
 
+![Infra](resource/infra.png)
+
 ### ERD
 
 ![ERD](resource/erd.png)
