@@ -62,10 +62,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 20,
     fontWeight: 'bold',
+    color: 'black',
   },
   modalSubText: {
     fontSize: 14,
     marginBottom: 20,
+    fontWeight: 'bold',
   },
   modalButtonContainer: {
     flexDirection: 'row',
