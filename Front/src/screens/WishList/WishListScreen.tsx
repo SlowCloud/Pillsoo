@@ -77,6 +77,13 @@ const WishListScreen: React.FC = () => {
     navigation.navigate('영양제 추천');
   };
 
+  // 위시리스트 항목 제거 처리
+  const handleRemoveItem = (supplementSeq: number) => {
+    setMyWishList(prevList =>
+      prevList.filter(item => item.supplementSeq !== supplementSeq),
+    );
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -88,6 +95,9 @@ const WishListScreen: React.FC = () => {
                 <WishListItem
                   pillName={myWish.pillName}
                   imageUrl={myWish.imageUrl}
+                  supplementSeq={myWish.supplementSeq}
+                  userSeq={myWish.userSeq}
+                  onRemove={handleRemoveItem} // 항목 제거 콜백 전달
                 />
               </TouchableOpacity>
             </View>
@@ -132,7 +142,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 50, 
+    marginTop: 50,
   },
   emptyText: {
     fontSize: 18,

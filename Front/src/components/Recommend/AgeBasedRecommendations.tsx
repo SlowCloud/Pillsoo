@@ -28,7 +28,7 @@ const AgeBasedRecommendations = (props: Props) => {
   useEffect(() => {
     if (isRandom === false) {
       setRecommendKeyword(
-        `${nickname}님과비슷한 나이대의\n 유저들이 관심있는 영양제 추천`,
+        `${nickname}님과 비슷한 나이대의\n 유저들이 관심있는 영양제 추천`,
       );
     } else {
       setRecommendKeyword(`${nickname}님에게 맞는 영양제 추천`);

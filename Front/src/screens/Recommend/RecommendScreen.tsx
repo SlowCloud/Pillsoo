@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, FlatList, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, FlatList} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
@@ -22,7 +22,8 @@ export type Props = {
 export type RecommendPill = {
   id: number;
   imageUrl: any;
-  _random: boolean;
+  pillName: string;
+  isRandom: boolean;
 };
 
 const RecommendScreen: React.FC<Props> = ({navigation}) => {
@@ -57,7 +58,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
       }));
       setRecommendPills(pills);
     } catch (error) {
-      // console.log(error);
+      console.error(error);
     }
   };
 
@@ -95,7 +96,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
   const lastRow = chunkedCategories.pop();
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <AgeBasedRecommendations age={age} recommendPills={recommendPills} />
       <View style={styles.pillCategoryBox}>
         <Text style={styles.categoryText}>건강 카테고리별 영양제 추천</Text>
@@ -114,6 +115,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
             </View>
           )}
           keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false} // 스크롤 바 표시 여부
         />
         {lastRow && (
           <View style={styles.lastRow}>
@@ -133,7 +135,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
         onPress={() => navigation.navigate('MoreRecommend')}>
         <Text style={styles.moreRecommendText}>더 많은 영양제 추천받기</Text>
       </TouchableOpacity>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -145,7 +147,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   pillCategoryBox: {
-    marginTop: 70,
+    marginTop: 30,
   },
   categoryRow: {
     flexDirection: 'row',
