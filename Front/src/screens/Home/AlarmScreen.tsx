@@ -167,6 +167,7 @@ const styles = StyleSheet.create({
   noAlarmText: {
     textAlign: 'center',
     fontSize: 18,
+    fontWeight: 'bold',
     color: 'gray',
   },
 });

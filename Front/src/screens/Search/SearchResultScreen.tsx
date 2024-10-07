@@ -183,6 +183,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
+    color: 'black',
+    fontWeight: 'bold',
   },
 });
 
