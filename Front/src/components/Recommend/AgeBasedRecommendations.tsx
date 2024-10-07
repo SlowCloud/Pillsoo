@@ -17,7 +17,9 @@ interface Props {
 }
 
 const AgeBasedRecommendations = (props: Props) => {
-  const nickname = useSelector((state: {nickname: string | null}) => state.nickname,);
+  const nickname = useSelector(
+    (state: {nickname: string | null}) => state.nickname,
+  );
   const [recommendKeyword, setRecommendKeyword] = useState<string | null>(null);
 
   const {age, recommendPills, isLoading} = props;
@@ -37,12 +39,12 @@ const AgeBasedRecommendations = (props: Props) => {
   return (
     <View style={styles.recommendBox}>
       <Text style={styles.recommendText}>{recommendKeyword}</Text>
-      <View style= {isLoading ? styles.loadingBar : styles.itemsContainer}>
+      <View style={isLoading ? styles.loadingBar : styles.itemsContainer}>
         {isLoading ? (
           <>
-            <ActivityIndicator size="large" color="#a4f87b" />
-              <Text>영양제 추천 받는 중...</Text>
-              </>
+            <ActivityIndicator size="large" color="#7bf898" />
+            <Text>영양제 추천 받는 중...</Text>
+          </>
         ) : (
           recommendPills.map(recommendPill => (
             <RecommendItem
@@ -52,9 +54,8 @@ const AgeBasedRecommendations = (props: Props) => {
               pillName={recommendPill.pillName}
             />
           ))
-
         )}
-        </View>
+      </View>
     </View>
   );
 };

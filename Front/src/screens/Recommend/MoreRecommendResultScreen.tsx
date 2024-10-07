@@ -76,7 +76,7 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#a4f87b" />
+        <ActivityIndicator size="large" color="#7bf898" />
         {/* 로딩 인디케이터 */}
         <Text style={styles.loadingText}>추천 영양제를 불러오는 중...</Text>
       </View>

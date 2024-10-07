@@ -69,9 +69,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   closeButtonContainer: {
-    backgroundColor: '#a4f87b',
+    backgroundColor: '#7bf898',
     marginTop: 15,
-    width: 200,
+    width: 240,
     height: 50,
     borderRadius: 10,
     justifyContent: 'center',

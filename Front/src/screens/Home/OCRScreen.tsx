@@ -126,7 +126,7 @@ const OCRScreen = () => {
 
       if (detectedTexts) {
         console.log('Detected texts:', detectedTexts);
-        setOcrTexts(detectedTexts);
+        setOcrTexts(detectedTexts.slice(1));
       } else {
         console.log('No text annotations found');
       }
@@ -179,6 +179,7 @@ const OCRScreen = () => {
       console.log('API response:', response.data);
 
       if (response.status === 200) {
+        console.log('hi');
         console.log('Search results:', response.data.content);
         setResults(response.data.content);
       } else {
@@ -331,7 +332,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   selectedText: {
-    backgroundColor: '#a4f87b',
+    backgroundColor: '#7bf898',
   },
   editPrompt: {
     marginTop: 20,
@@ -353,7 +354,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   saveButton: {
-    backgroundColor: '#a4f87b',
+    backgroundColor: '#7bf898',
     padding: 10,
     borderRadius: 5,
   },
