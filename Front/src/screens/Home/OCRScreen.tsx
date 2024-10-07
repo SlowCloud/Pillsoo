@@ -8,6 +8,7 @@ import {
   ScrollView,
   Image,
   Alert,
+  ActivityIndicator, // 로딩 스피너를 추가
 } from 'react-native';
 import {launchCamera} from 'react-native-image-picker';
 import axios from 'axios';
@@ -26,10 +27,11 @@ const OCRScreen = () => {
   const [results, setResults] = useState<any[]>([]);
   const navigation = useNavigation();
 
+  console.log(TOKEN);
   useFocusEffect(
     React.useCallback(() => {
       requestCameraPermission();
-    }, []),
+    }, [TOKEN]),
   );
 
   useEffect(() => {
@@ -117,7 +119,6 @@ const OCRScreen = () => {
           },
         },
       );
-      console.log('hhii');
       console.log('OCR API response:', response.data);
 
       const detectedTexts = response.data.responses[0]?.textAnnotations?.map(
@@ -268,7 +269,13 @@ const OCRScreen = () => {
           <TouchableOpacity onPress={handleRetake} style={styles.retakeButton}>
             <Text style={styles.retakeText}>다시 스캔하기</Text>
           </TouchableOpacity>
-          {loading && <Text>Sending...</Text>}
+
+          {loading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#00ff00" />
+              <Text>Sending...</Text>
+            </View>
+          )}
 
           {results.length > 0 ? (
             <View style={styles.supplementContainer}>
@@ -394,6 +401,12 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 5,
+  },
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 20,
   },
 });
 

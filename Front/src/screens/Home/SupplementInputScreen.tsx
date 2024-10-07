@@ -26,7 +26,10 @@ const SupplementInputScreen = () => {
   const navigation = useNavigation();
   const [myKitData, setMyKitData] = useState<Supplement[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedSupplementSeq, setSelectedSupplementSeq] = useState<number | null>(null);
+  const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false); // 삭제 성공 모달 상태
+  const [selectedSupplementSeq, setSelectedSupplementSeq] = useState<
+    number | null
+  >(null);
 
   const userSeq = useSelector(
     (state: {userSeq: string | null}) => state.userSeq,
@@ -66,13 +69,18 @@ const SupplementInputScreen = () => {
           },
         });
 
-        setMyKitData(myKitData.filter(item => item.supplementSeq !== selectedSupplementSeq));
+        setMyKitData(
+          myKitData.filter(
+            item => item.supplementSeq !== selectedSupplementSeq,
+          ),
+        );
         setIsModalVisible(false);
+        setIsSuccessModalVisible(true); // 삭제 성공 모달을 보이게 설정
       }
     } catch (err) {
-      Alert.alert('알람 설정을 먼저 해제해주세요 !')
+      Alert.alert('알람 설정을 먼저 해제해주세요 !');
       console.log(err);
-      setIsModalVisible(false); 
+      setIsModalVisible(false);
     }
   };
 
@@ -113,7 +121,9 @@ const SupplementInputScreen = () => {
 
         {myKitData.length === 0 ? (
           <View style={styles.emptyMessageContainer}>
-            <Text style={styles.emptyMessageText}>마이키트에 담은 영양제가 없습니다.</Text>
+            <Text style={styles.emptyMessageText}>
+              마이키트에 담은 영양제가 없습니다.
+            </Text>
           </View>
         ) : (
           <FlatList
@@ -142,6 +152,16 @@ const SupplementInputScreen = () => {
         title="정말로 삭제하시겠습니까?"
         subText="마이키트에서 완전히 제거 됩니다 !"
         confirmText="삭제"
+        cancelText="취소"
+      />
+
+      <Modal2
+        isVisible={isSuccessModalVisible} // 삭제 성공 모달
+        onClose={() => setIsSuccessModalVisible(false)} // 모달을 닫는 onClose 핸들러
+        onConfirm={() => setIsSuccessModalVisible(false)} // 확인 버튼 누르면 모달 닫기
+        title="성공적으로 삭제되었습니다!"
+        subText="마이키트에서 제거 되었습니다 !"
+        confirmText="확인"
         cancelText="취소"
       />
     </>

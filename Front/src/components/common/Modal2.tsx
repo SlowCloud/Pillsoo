@@ -1,20 +1,14 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Modal} from 'react-native';
 
 interface CustomModalProps {
   isVisible: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  subText: string;
-  confirmText: string;
-  cancelText: string;
+  onClose?: () => void;
+  onConfirm?: () => void;
+  title?: string;
+  subText?: string;
+  confirmText?: string;
+  cancelText?: string;
 }
 
 const Modal2: React.FC<CustomModalProps> = ({
@@ -33,10 +27,14 @@ const Modal2: React.FC<CustomModalProps> = ({
           <Text style={styles.modalText}>{title}</Text>
           <Text style={styles.modalSubText}>{subText}</Text>
           <View style={styles.modalButtonContainer}>
-            <TouchableOpacity style={styles.modalDeleteButton} onPress={onConfirm}>
+            <TouchableOpacity
+              style={styles.modalDeleteButton}
+              onPress={onConfirm}>
               <Text style={styles.modalDeleteButtonText}>{confirmText}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.modalCancelButton} onPress={onClose}>
+            <TouchableOpacity
+              style={styles.modalCancelButton}
+              onPress={onClose}>
               <Text style={styles.modalCancelButtonText}>{cancelText}</Text>
             </TouchableOpacity>
           </View>
