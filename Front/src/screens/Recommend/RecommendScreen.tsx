@@ -66,7 +66,6 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
     }
   };
 
-
   const categories: string[] = [
     '간 건강',
     '갑상선',
@@ -100,10 +99,13 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
   const chunkedCategories = chunkArray(categories, 4);
   const lastRow = chunkedCategories.pop();
 
-
   return (
     <View style={styles.container}>
-      <AgeBasedRecommendations age={age} recommendPills={recommendPills} isLoading={isLoading} />
+      <AgeBasedRecommendations
+        age={age}
+        recommendPills={recommendPills}
+        isLoading={isLoading}
+      />
       <View style={styles.pillCategoryBox}>
         <Text style={styles.categoryText}>건강 카테고리별 영양제 추천</Text>
         <FlatList

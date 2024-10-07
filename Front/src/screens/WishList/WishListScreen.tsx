@@ -104,7 +104,7 @@ const WishListScreen: React.FC = () => {
           ))
         ) : (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>위시리스트가 비어 있습니다.</Text>
+            <Text style={styles.emptyText}>위시리스트가 비어있습니다.</Text>
             <TouchableOpacity onPress={handleRecommendationPress}>
               <Text style={styles.recommendationText}>
                 영양제를 추천받으시겠습니까?

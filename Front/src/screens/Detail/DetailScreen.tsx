@@ -1,5 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import axios from 'axios';
 import {API_URL} from '@env';
@@ -34,8 +42,9 @@ const DetailScreen: React.FC = () => {
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<boolean>(false);
   const [myKit, setMyKit] = useState<boolean>(false);
-  const [pillImageUrl, setPillImageUrl] = useState<string>()
-  const userSeq = useSelector((state: {userSeq: number | null}) => state.userSeq);
+  const userSeq = useSelector(
+    (state: {userSeq: number | null}) => state.userSeq,
+  );
   const [isModalVisible, setModalVisible] = useState(false); // 모달 상태 추가
   const [modalMessage, setModalMessage] = useState(''); // 모달 메시지 상태 추가
   const [modalImage, setModalImage] = useState<any>(null); // 모달 이미지 상태 추가
@@ -187,21 +196,13 @@ const DetailScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={styles.infoBox}>
-        {/* <Image
-          source={
-            pillData.imageUrl && pillData.imageUrl.trim() !== ''
-            ? { uri: pillData.imageUrl }
-            : require('../../assets/noImage.png')
-          }
-          style={styles.image} 
-        /> */}
         <Image source={{uri: pillData.imageUrl}} style={styles.image} />
         <View style={styles.infoContainer}>
-          <Text style={styles.pillName}>
-            {pillData.name}
-          </Text>
+          <Text style={styles.pillName}>{pillData.name}</Text>
           <View style={styles.rowContainer}>
             <TouchableOpacity onPress={handleWishListBtn}>
               <Image
@@ -278,7 +279,7 @@ const DetailScreen: React.FC = () => {
         onClose={() => setModalVisible(false)}
         imageSource={modalImage}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -287,98 +288,93 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#f8f8f8',
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingLeft: 20,
-    paddingRight: 20,
+    backgroundColor: '#ffffff',
+    padding: 20,
   },
   infoBox: {
-    height: '20%',
     flexDirection: 'row',
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    paddingBottom: 15,
   },
   image: {
-    width: '40%',
-    marginTop: 10,
-    resizeMode: 'contain',
-  },
-  pillName: {
-    fontSize: 15,
-    color: 'black',
-    marginTop: 40,
-    marginRight: 10,
-    maxWidth: '80%',
+    width: 100,
+    height: 100,
+    borderRadius: 8,
   },
   infoContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 20,
+    marginLeft: 15,
+    flex: 1,
+  },
+  pillName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: 'black',
   },
   rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 10,
   },
+  wishListBtn: {
+    width: 30,
+    height: 30,
+    marginRight: 15,
+  },
   dosageText: {
-    marginLeft: 10,
+    fontSize: 16,
+    color: '#007AFF',
   },
   canSelectMenu: {
     flexDirection: 'row',
-    marginTop: 20,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 15,
   },
   selectedTextBox: {
-    width: '50%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#939185',
-    justifyContent: 'center',
-    alignItems: 'center',
-    bottom: 5,
+    flex: 1,
+    padding: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: '#007AFF',
   },
   notSelectedTextBox: {
-    width: '50%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#939185',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
+    padding: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: 'transparent',
   },
   selectedText: {
-    fontSize: 20,
-    color: 'black',
+    color: '#007AFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   notSelectedText: {
-    fontSize: 20,
-    color: '#939185',
+    color: '#333',
+    textAlign: 'center',
   },
   selectedCheck: {
-    width: 40,
-    height: 10,
-    marginTop: 11,
-    backgroundColor: '#D3EBCD',
-    borderTopLeftRadius: 7,
-    borderTopRightRadius: 7,
+    position: 'absolute',
+    bottom: -2,
+    left: 0,
+    right: 0,
+    height: 2,
+    backgroundColor: '#007AFF',
   },
   selectedContent: {
-    height: '65%',
-    // borderWidth: 1,
-    // borderColor: '#939185',
-    // borderBlockStartColor: '#F7F7F7',
-  },
-  wishListBtn: {
-    width: 30,
+    flex: 1,
   },
   leftBorder: {
-    borderBottomLeftRadius: 10,
-    borderTopLeftRadius: 10,
+    borderRightWidth: 1,
+    borderColor: '#e0e0e0',
   },
   rightBorder: {
-    borderBottomRightRadius: 10,
-    borderTopRightRadius: 10
-  }
+    borderColor: '#e0e0e0',
+  },
 });
 
 export default DetailScreen;
