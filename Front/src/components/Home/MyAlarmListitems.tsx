@@ -3,19 +3,20 @@ import {StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {API_URL} from '@env';
-import { setResetAlarm } from '../../store/store';
-import { useDispatch } from 'react-redux';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import {setResetAlarm} from '../../store/store';
+import {useDispatch} from 'react-redux';
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
 import CommonModal from '../../components/common/Modal';
-
 
 interface MyAlarmListitemsProps {
   myAlarm: {
-      alarmSeq: number;
-      time: string;
-      supplementName: string;
-      supplementSeq: number;
-      turnOn?: boolean;
+    alarmSeq: number;
+    time: string;
+    supplementName: string;
+    supplementSeq: number;
+    turnOn?: boolean;
   };
 }
 
@@ -23,7 +24,9 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
   const [visible, setVisible] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
   const [openAlarmModal, setOpenAlarmModal] = useState<boolean>(false);
-  const [imageUrl, setImageUrl] = useState<any>(require('../../assets/warning.png'));
+  const [imageUrl, setImageUrl] = useState<any>(
+    require('../../assets/warning.png'),
+  );
   const [date, setDate] = useState<Date>(new Date());
   const [timer, setTimer] = useState<number>(2);
   const [interValId, setInterValId] = useState<NodeJS.Timeout | null>(null);
@@ -39,14 +42,16 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
 
   useEffect(() => {
     if (visible) {
-      setMessage(`알람이 삭제되었습니다.\n이 창은 ${timer}초 후에 자동으로 닫힙니다.`)
+      setMessage(
+        `알람이 삭제되었습니다.\n이 창은 ${timer}초 후에 자동으로 닫힙니다.`,
+      );
     }
-  }, [timer, visible])
-  
-  const initialPillName = myAlarm.supplementName.length > 11
-  ? myAlarm.supplementName.slice(0, 11) + '...'
-  : myAlarm.supplementName;
-  
+  }, [timer, visible]);
+
+  const initialPillName =
+    myAlarm.supplementName.length > 11
+      ? myAlarm.supplementName.slice(0, 11) + '...'
+      : myAlarm.supplementName;
 
   // 알람 삭제
   const deleteAlarm = async () => {
@@ -60,42 +65,48 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
             access: `${storedToken}`,
           },
         },
-      )
+      );
       setVisible(true);
-      setMessage(`알람이 삭제되었습니다.\n이 창은 ${timer}초 후에 자동으로 닫힙니다.`)
-      setImageUrl(require('../../assets/alarmremove.png'))
+      setMessage(
+        `알람이 삭제되었습니다.\n이 창은 ${timer}초 후에 자동으로 닫힙니다.`,
+      );
+      setImageUrl(require('../../assets/alarmremove.png'));
 
       // 타이머 시작
       const id = setInterval(() => {
         setTimer(prev => {
           if (prev <= 0) {
             clearInterval(id);
-            dispatch(setResetAlarm(true))
+            dispatch(setResetAlarm(true));
             return 0;
           }
           return prev - 1;
-        })
+        });
       }, 1000);
 
       setInterValId(id);
-    } catch(error) {
-      console.error(error)
+    } catch (error) {
+      console.error(error);
     }
   };
-  
+
   // 알람 수정
-  const updateAlarm = async() => {
+  const updateAlarm = async () => {
     setOpenAlarmModal(true);
   };
 
-  const setAlarm = async (alarmDate: Date, supplementSeq: number, alamSeq: number) => {
+  const setAlarm = async (
+    alarmDate: Date,
+    supplementSeq: number,
+    alamSeq: number,
+  ) => {
     const storedToken = await AsyncStorage.getItem('jwt_token');
 
     const date = new Date(alarmDate);
     const hours = date.getUTCHours().toString().padStart(2, '0');
     const minutes = date.getUTCMinutes().toString().padStart(2, '0');
-    const seconds = date.getUTCSeconds().toString().padStart(2, '0');
-    const time = `${hours}:${minutes}:${seconds}.00`;
+    // 초를 제거하고 시간 포맷 수정
+    const time = `${hours}:${minutes}.00`;
     if (!alarmDate) {
       Alert.alert('알람 시간을 선택해 주세요.');
       return;
@@ -105,74 +116,80 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
       const response = await axios.patch(
         `${API_URL}/api/v1/alarm/${alamSeq}`,
         {
-          time: time, 
+          time: time,
         },
         {
           headers: {
-            access: `${storedToken}`
+            access: `${storedToken}`,
           },
-        }
+        },
       );
-      dispatch(setResetAlarm(true))
+      dispatch(setResetAlarm(true));
       setVisible(true);
-      setMessage(`알람이 ${alarmDate.toLocaleTimeString()}으로 변경되었습니다.`)
-      setImageUrl(require('../../assets/alarmupdate.png'))
-    } catch(error) {
-      console.log(error)
+      setMessage(
+        `알람이 ${alarmDate
+          .toLocaleTimeString()
+          .split(':')
+          .slice(0, 2)
+          .join(':')}으로 변경되었습니다.`,
+      );
+      setImageUrl(require('../../assets/alarmupdate.png'));
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const onChange = (event: DateTimePickerEvent, selected: Date | undefined) => {
     if (event.type === 'set') {
       const currentDate = selected || date;
-      setOpenAlarmModal(false)
-      const changeUTCTime = new Date(currentDate)
-      changeUTCTime.setHours(changeUTCTime.getHours()+9)
-      setAlarm(changeUTCTime, myAlarm.supplementSeq, myAlarm.alarmSeq)
+      setOpenAlarmModal(false);
+      const changeUTCTime = new Date(currentDate);
+      changeUTCTime.setHours(changeUTCTime.getHours() + 9);
+      setAlarm(changeUTCTime, myAlarm.supplementSeq, myAlarm.alarmSeq);
     } else if (event.type === 'dismissed') {
-      setOpenAlarmModal(false)
+      setOpenAlarmModal(false);
     }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.alarmTextContainer}>
+        <Text style={styles.time}>
+          {myAlarm.time.split(':').slice(0, 2).join(':')}
+        </Text>
         <Text style={styles.pillName}>{initialPillName}</Text>
-        <Text style={styles.time}>{myAlarm.time}</Text>
       </View>
       <View style={styles.alarmUpdateBtn}>
         <TouchableOpacity
           onPress={updateAlarm}
-          style={styles.alarmUpdateBtnText}
-          >
+          style={styles.alarmUpdateBtnText}>
           <Text>수정</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={deleteAlarm}
-          style={styles.alarmUpdateBtnText}
-        >
+          style={styles.alarmUpdateBtnText}>
           <Text>삭제</Text>
         </TouchableOpacity>
       </View>
       {openAlarmModal && (
-        <DateTimePicker 
+        <DateTimePicker
           value={date}
-          mode='time'
-          display='clock'
-          timeZoneName='Asia/Seoul'
+          mode="time"
+          display="clock"
+          timeZoneName="Asia/Seoul"
           onChange={onChange}
         />
       )}
       {visible && (
-        <CommonModal 
-          visible={visible} 
-          message={message} 
+        <CommonModal
+          visible={visible}
+          message={message}
           onClose={() => setVisible(false)}
           imageSource={imageUrl}
         />
       )}
     </View>
-  )
+  );
 };
 
 const styles = StyleSheet.create({
@@ -197,6 +214,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginLeft: 10,
     marginRight: 20,
+    gap: 10,
   },
   pillName: {
     fontSize: 20,
@@ -216,7 +234,7 @@ const styles = StyleSheet.create({
   },
   alarmUpdateBtnText: {
     marginHorizontal: 3,
-  }
+  },
 });
 
 export default MyAlarmListitems;

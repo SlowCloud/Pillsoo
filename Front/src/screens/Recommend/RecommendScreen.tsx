@@ -177,13 +177,14 @@ const styles = StyleSheet.create({
     marginTop: 30,
     height: 50,
     borderRadius: 8,
-    backgroundColor: '#a4f87b',
+    backgroundColor: '#7bf898',
     justifyContent: 'center',
     alignItems: 'center',
   },
   moreRecommendText: {
     color: 'white',
     fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

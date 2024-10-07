@@ -9,7 +9,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
 import {useSelector} from 'react-redux';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
@@ -69,7 +69,7 @@ const DetailReview: React.FC = () => {
             const userReview = response.data.find(
               (review: Review) => review.userSeq === currentUserSeq,
             );
-            setHasWrittenReview(!!userReview); // 리뷰가 있으면 true, 없으면 false
+            setHasWrittenReview(!!userReview);
           }
         } catch (error) {
           console.log(error);
@@ -83,22 +83,22 @@ const DetailReview: React.FC = () => {
   return (
     <View style={styles.container}>
       {/* <ScrollView> */}
-        <View style={styles.reviewContents}>
-          {reviewList.map(reviewItem => (
-            <DetailReviewItems
-              key={reviewItem.reviewSeq}
-              userName={reviewItem.userName}
-              userSeq={reviewItem.userSeq}
-              content={reviewItem.content}
-              supplementId={reviewItem.supplementSeq}
-              reviewId={reviewItem.reviewSeq}
-              nickName={reviewItem.nickName}
-            />
-          ))}
-        </View>
+      <View style={styles.reviewContents}>
+        {reviewList.map(reviewItem => (
+          <DetailReviewItems
+            key={reviewItem.reviewSeq}
+            userName={reviewItem.userName}
+            userSeq={reviewItem.userSeq}
+            content={reviewItem.content}
+            supplementId={reviewItem.supplementSeq}
+            reviewId={reviewItem.reviewSeq}
+            nickName={reviewItem.nickName}
+          />
+        ))}
+      </View>
       {/* </ScrollView> */}
-        {/* 사용자가 이미 리뷰를 작성한 경우 리뷰 입력란 숨기기 */}
-        {!hasWrittenReview && <DetailReviewInput />}
+      {/* 사용자가 이미 리뷰를 작성한 경우 리뷰 입력란 숨기기 */}
+      {!hasWrittenReview && <DetailReviewInput />}
     </View>
   );
 };

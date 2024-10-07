@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Modal} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,11 +23,12 @@ const DetailReviewItems: React.FC<Props> = ({
   reviewId,
   nickName,
 }) => {
-  const storedUserSeq = useSelector((state: {userSeq: number | null}) => state.userSeq);
+  const storedUserSeq = useSelector(
+    (state: {userSeq: number | null}) => state.userSeq,
+  );
 
   const [token, setToken] = useState<string | null>(null);
   const [updateContent, setUpdateContent] = useState<boolean>(false);
-  const [deleteReview, setDeleteReview] = useState<boolean>(false);
   const [updateReview, setUpdateReview] = useState<string>('');
 
   useEffect(() => {
@@ -58,8 +59,10 @@ const DetailReviewItems: React.FC<Props> = ({
           },
         },
       );
+      Alert.alert('리뷰 수정 성공', '리뷰가 성공적으로 수정되었습니다.');
     } catch (error) {
       console.log(error);
+      Alert.alert('리뷰 수정 실패', '리뷰 수정에 실패했습니다.');
     }
   };
 
@@ -74,29 +77,12 @@ const DetailReviewItems: React.FC<Props> = ({
           },
         },
       );
-      console.log('안녕ㅇㅇㅇㅇㅇㅇㅇ')
-      setDeleteReview(true);
+      Alert.alert('리뷰 삭제 성공', '리뷰가 성공적으로 삭제되었습니다.');
     } catch (error) {
       console.log(error);
+      Alert.alert('리뷰 삭제 실패', '리뷰 삭제에 실패했습니다.');
     }
   };
-
-  const clseDeleteModal = () => {
-    setDeleteReview(false)
-  }
-
-  const openDeleteModal =
-    <Modal>
-      <View>
-        <Text></Text>
-        <TouchableOpacity
-          onPress={clseDeleteModal}
-        >
-          <Text>닫아</Text>
-        </TouchableOpacity>
-      </View>
-    </Modal>
-
 
   return (
     <View style={styles.container}>
@@ -132,7 +118,6 @@ const DetailReviewItems: React.FC<Props> = ({
       )}
 
       <View style={styles.line}></View>
-      {deleteReview && openDeleteModal}
     </View>
   );
 };
@@ -143,16 +128,16 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   reviewContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   reviewNickname: {
-    color: 'black'
+    color: 'black',
   },
   reviewContent: {
     color: 'black',
     fontSize: 15,
     marginTop: 1,
-    marginLeft: 20
+    marginLeft: 20,
   },
   line: {
     width: '100%',
@@ -163,7 +148,7 @@ const styles = StyleSheet.create({
   optionContianer: {
     flexDirection: 'row',
     marginLeft: 7,
-  }
+  },
 });
 
 export default DetailReviewItems;

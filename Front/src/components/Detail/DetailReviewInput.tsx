@@ -7,12 +7,13 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
 import {API_URL} from '@env';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
 const DetailReviewInput: React.FC = () => {
@@ -35,13 +36,11 @@ const DetailReviewInput: React.FC = () => {
   };
 
   const clickedSubmitBtn = async () => {
-    console.log('hihi')
     if (!token) return;
 
     try {
       const response = await axios.post(
         `${API_URL}/api/v1/supplement/${id}/reviews`,
-        // `http://10.0.2.2:8080/api/v1/supplement/${id}/reviews`,
         {content: review},
         {
           headers: {
@@ -49,64 +48,64 @@ const DetailReviewInput: React.FC = () => {
           },
         },
       );
+
       if (response.status === 200) {
+        Alert.alert('리뷰가 성공적으로 제출되었습니다!');
         setReview('');
-        console.log(response)
       } else {
-        Alert.alert('리뷰 작성 실패');
+        Alert.alert('리뷰 제출에 실패했습니다. 다시 시도해주세요.');
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      Alert.alert('오류가 발생했습니다. 나중에 다시 시도해주세요.');
     }
   };
 
   return (
-      // <KeyboardAwareScrollView>
-    <View style={styles.container}>
+    <KeyboardAwareScrollView
+      style={{flex: 1}}
+      resetScrollToCoords={{x: 0, y: 0}}
+      scrollEnabled={true}>
+      <View style={styles.container}>
         <TextInput
-          autoCorrect={false}
-          multiline
-          style={styles.inputBox}
+          style={styles.input}
+          placeholder="리뷰를 입력하세요..."
           value={review}
           onChangeText={handleTextChange}
+          multiline
         />
-      <TouchableOpacity style={styles.inputBtn} onPress={clickedSubmitBtn}>
-        <Text style={styles.inputBtnText}>입력</Text>
-      </TouchableOpacity>
-    </View>
-      // </KeyboardAwareScrollView>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={clickedSubmitBtn}>
+          <Text style={styles.submitButtonText}>제출</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAwareScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 10,
-    // position: 'absolute',
-    // bottom: 30,
-    // alignItems: 'center',
-    // justifyContent: 'center'
+    padding: 20,
   },
-  inputBox: {
-    height: '90%',
-    width: '100%',
-    backgroundColor: 'white',
+  input: {
+    height: 50,
+    borderColor: '#e0e0e0',
     borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 10,
-  },
-  inputBtnText: {
-    color: 'white',
-  },
-  inputBtn: {
-    width: '20%',
-    height: '30%',
     borderRadius: 5,
-    backgroundColor: '#0B2F9F',
-    justifyContent: 'center',
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: '#ffffff',
+  },
+  submitButton: {
+    backgroundColor: '#007AFF',
+    borderRadius: 5,
+    paddingVertical: 10,
     alignItems: 'center',
-    marginLeft: '76%',
-    bottom: -10,
+  },
+  submitButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
 });
 

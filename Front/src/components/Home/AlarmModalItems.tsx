@@ -1,26 +1,34 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Text, Image, Alert} from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_URL } from '@env';
-import { setResetAlarm } from '../../store/store';
-import { useDispatch } from 'react-redux';
+import {API_URL} from '@env';
+import {setResetAlarm} from '../../store/store';
+import {useDispatch} from 'react-redux';
 import CommonModal from '../common/Modal';
 
 interface AlarmModalItemsProps {
-    pillName: string;
-    supplementSeq: number;
-    imageUrl: string;
+  pillName: string;
+  supplementSeq: number;
+  imageUrl: string;
 }
 
-const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementSeq, imageUrl}) => {
+const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({
+  pillName,
+  supplementSeq,
+  imageUrl,
+}) => {
   const dispatch = useDispatch();
   const [openAlarmModal, setOpenAlarmModal] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
-  const [messageImageUrl, setMessageImageUrl] = useState<any>(require('../../assets/warning.png'));
+  const [messageImageUrl, setMessageImageUrl] = useState<any>(
+    require('../../assets/warning.png'),
+  );
   const [date, setDate] = useState<Date>(new Date());
   const [token, setToken] = useState<string | null>(null);
 
@@ -31,7 +39,7 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
     };
 
     fetchToken();
-  }, [])
+  }, []);
 
   // 알람을 설정할 수 있는 모달을 연다
   const showAlarmModal = () => {
@@ -44,68 +52,68 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
     const hours = date.getUTCHours().toString().padStart(2, '0');
     const minutes = date.getUTCMinutes().toString().padStart(2, '0');
     const seconds = date.getUTCSeconds().toString().padStart(2, '0');
-    
+
     const time = `${hours}:${minutes}:${seconds}.00`;
     console.log(time);
     if (!alarmDate) {
       Alert.alert('알람 시간을 선택해 주세요.');
-      return ;
+      return;
     }
 
     // 백한테 보내자
     try {
-      const response = await axios.post(`${API_URL}/api/v1/alarm`, 
-      {
-        supplementSeq: supplementSeq, 
-        time: time,
-        isTurnOn: true
-      },
-      {
-        headers: {
-          access: `${token}`,
+      const response = await axios.post(
+        `${API_URL}/api/v1/alarm`,
+        {
+          supplementSeq: supplementSeq,
+          time: time,
+          isTurnOn: true,
         },
-      });
+        {
+          headers: {
+            access: `${token}`,
+          },
+        },
+      );
       dispatch(setResetAlarm(true));
       setVisible(true);
-      setMessage(`알람이 ${alarmDate.toLocaleTimeString()}으로 만들어졌습니다.`)
-      setMessageImageUrl(require('../../assets/alarmadd.png'))
-    } catch(error) {
+      setMessage(
+        `알람이 ${alarmDate.toLocaleTimeString()}으로 만들어졌습니다.`,
+      );
+      setMessageImageUrl(require('../../assets/alarmadd.png'));
+    } catch (error) {
       if (axios.isAxiosError(error)) {
-      // 서버가 응답했는데 요청 실패
-      console.error('Error Data:', error.response?.data);
-      console.error('Error status', error.response?.status);
-    } else {
-      // 요청이 이루어지지 않았거나 오류 발생
-      console.error('Error message:', (error as Error).message)
-    }}
+        // 서버가 응답했는데 요청 실패
+        console.error('Error Data:', error.response?.data);
+        console.error('Error status', error.response?.status);
+      } else {
+        // 요청이 이루어지지 않았거나 오류 발생
+        console.error('Error message:', (error as Error).message);
+      }
+    }
   };
 
   // 시간을 설정한다
   const onChange = (event: DateTimePickerEvent, selected: Date | undefined) => {
     if (event.type === 'set') {
       const currentDate = selected || date;
-      setOpenAlarmModal(false)
+      setOpenAlarmModal(false);
       const changeUTCTime = new Date(currentDate);
-      changeUTCTime.setHours(changeUTCTime.getHours()+9)
-      setAlarm(changeUTCTime, supplementSeq)
+      changeUTCTime.setHours(changeUTCTime.getHours() + 9);
+      setAlarm(changeUTCTime, supplementSeq);
     } else if (event.type === 'dismissed') {
-      setOpenAlarmModal(false)
+      setOpenAlarmModal(false);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Image 
-        source={{uri: imageUrl}} 
-        style={styles.itemImage}
-        />
+      <Image source={{uri: imageUrl}} style={styles.itemImage} />
       <View>
         <View style={styles.pillNameContainer}>
           <Text style={styles.pillName}>{pillName}</Text>
         </View>
-        <TouchableOpacity
-          onPress={showAlarmModal}
-        >
+        <TouchableOpacity onPress={showAlarmModal}>
           <View style={styles.alarmAddContainer}>
             <Text style={styles.alarmAddText}>알람 추가</Text>
           </View>
@@ -116,20 +124,20 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({ pillName, supplementS
           value={date}
           mode="time"
           display="clock"
-          timeZoneName='Asia/Seoul'
+          timeZoneName="Asia/Seoul"
           onChange={onChange}
         />
       )}
       {visible && (
-        <CommonModal 
-          visible={visible} 
-          message={message} 
+        <CommonModal
+          visible={visible}
+          message={message}
           onClose={() => setVisible(false)}
           imageSource={messageImageUrl}
         />
       )}
     </View>
-  )
+  );
 };
 
 const styles = StyleSheet.create({
@@ -158,22 +166,21 @@ const styles = StyleSheet.create({
   pillNameContainer: {
     height: 63,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   pillName: {
-    color: 'black'
+    color: 'black',
   },
   alarmAddContainer: {
     width: 160,
     height: 40,
-    backgroundColor: '#a4f87b',
+    backgroundColor: '#7bf898',
     alignItems: 'center',
   },
   alarmAddText: {
     color: 'black',
     marginTop: 8,
-  }
+  },
 });
-
 
 export default AlarmModalItems;

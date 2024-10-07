@@ -17,7 +17,7 @@ import DetailReview from '../../components/Detail/DetailReview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSelector} from 'react-redux';
 import CommonModal from '../../components/common/Modal';
-
+import FastImage from 'react-native-fast-image';
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
 export type PillData = {
@@ -45,9 +45,9 @@ const DetailScreen: React.FC = () => {
   const userSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
   );
-  const [isModalVisible, setModalVisible] = useState(false); // 모달 상태 추가
-  const [modalMessage, setModalMessage] = useState(''); // 모달 메시지 상태 추가
-  const [modalImage, setModalImage] = useState<any>(null); // 모달 이미지 상태 추가
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalImage, setModalImage] = useState<any>(null);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -58,7 +58,6 @@ const DetailScreen: React.FC = () => {
     fetchToken();
   }, []);
 
-  // 보충제 데이터 들고오기 (상세 데이터)
   useEffect(() => {
     const fetchPillData = async () => {
       if (!token) return;
@@ -103,7 +102,6 @@ const DetailScreen: React.FC = () => {
   const handleWishListBtn = async () => {
     try {
       if (myWishList) {
-        // 위시리스트에서 제거
         await axios.delete(`${API_URL}/api/v1/wishlist`, {
           headers: {
             access: `${token}`,
@@ -117,7 +115,6 @@ const DetailScreen: React.FC = () => {
         setModalMessage('위시리스트에서 제거되었습니다!');
         setModalImage(require('../../assets/wishlistremove.png'));
       } else {
-        // 위시리스트에 추가
         await axios.post(
           `${API_URL}/api/v1/wishlist`,
           {userSeq, supplementSeq: id},
@@ -133,7 +130,6 @@ const DetailScreen: React.FC = () => {
       }
       setModalVisible(true);
 
-      // 1초 후에 모달을 숨김
       setTimeout(() => {
         setModalVisible(false);
       }, 2000);
@@ -145,7 +141,6 @@ const DetailScreen: React.FC = () => {
   const handleKitBtn = async () => {
     try {
       if (myKit) {
-        // 복용 중 목록에서 제거
         const response = await axios.delete(`${API_URL}/api/v1/cabinet`, {
           headers: {
             access: `${token}`,
@@ -155,7 +150,6 @@ const DetailScreen: React.FC = () => {
           },
         });
 
-        // 응답 상태를 로그로 확인
         console.log('제거', response.status);
 
         if (response.status === 200 || response.status === 204) {
@@ -164,7 +158,6 @@ const DetailScreen: React.FC = () => {
           setModalImage(require('../../assets/wishlistremove.png'));
         }
       } else {
-        // 복용 중 목록에 추가
         const response = await axios.post(
           `${API_URL}/api/v1/cabinet`,
           {supplementSeq: id},
@@ -175,7 +168,6 @@ const DetailScreen: React.FC = () => {
           },
         );
 
-        // 응답 상태를 로그로 확인
         console.log('추가', response.status);
 
         if (response.status === 200) {
@@ -186,7 +178,6 @@ const DetailScreen: React.FC = () => {
       }
       setModalVisible(true);
 
-      // 2초 후에 모달을 숨김
       setTimeout(() => {
         setModalVisible(false);
       }, 2000);
@@ -205,19 +196,19 @@ const DetailScreen: React.FC = () => {
           <Text style={styles.pillName}>{pillData.name}</Text>
           <View style={styles.rowContainer}>
             <TouchableOpacity onPress={handleWishListBtn}>
-              <Image
+              <FastImage
                 source={
                   myWishList
                     ? require('../../assets/heart1.png') // 위시리스트에 있을 때
                     : require('../../assets/heart2.png') // 위시리스트에 없을 때
                 }
                 style={styles.wishListBtn}
-                resizeMode="contain"
+                resizeMode={FastImage.resizeMode.contain} // FastImage 사용 시 resizeMode 지정
               />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleKitBtn}>
               <Text style={styles.dosageText}>
-                {myKit ? '복용 중' : '복용 안 함'}
+                {myKit ? '마이키트에서 제거' : '마이키트에 추가'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -272,7 +263,6 @@ const DetailScreen: React.FC = () => {
         )}
       </View>
 
-      {/* 공통 모달 컴포넌트 사용 */}
       <CommonModal
         visible={isModalVisible}
         message={modalMessage}
