@@ -31,20 +31,22 @@ const MoreRecommendScreen: React.FC<Props> = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.moreRecommendText}>
+      <View style={styles.moreRecommentContainer}>
+        <Text style={styles.moreRecommendText}>
         현재 당신의 건강 상태를 입력해주세요.
-      </Text>
-      <TextInput
-        autoFocus
-        autoCorrect={false}
-        multiline
-        returnKeyType="done"
-        style={styles.inputBox}
-        onChangeText={handleTextChange}
-        onSubmitEditing={clickedSubmitBtn}></TextInput>
-      <TouchableOpacity style={styles.submitBtn} onPress={clickedSubmitBtn}>
-        <Text style={styles.submitBtnText}>제출</Text>
-      </TouchableOpacity>
+        </Text>
+        <TextInput
+          autoFocus
+          autoCorrect={false}
+          multiline
+          returnKeyType="done"
+          style={styles.inputBox}
+          onChangeText={handleTextChange}
+          onSubmitEditing={clickedSubmitBtn}></TextInput>
+        <TouchableOpacity style={styles.submitBtn} onPress={clickedSubmitBtn}>
+          <Text style={styles.submitBtnText}>제출</Text>
+        </TouchableOpacity>
+        </View>
     </View>
   );
 };
@@ -52,29 +54,31 @@ const MoreRecommendScreen: React.FC<Props> = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
+  },
+  moreRecommentContainer: {
     marginTop: 50,
-    marginLeft: 20,
-    marginRight: 20,
+    marginHorizontal: 7,
   },
   moreRecommendText: {
     fontSize: 17,
-    marginLeft: 5,
+    marginLeft: 6,
     color: 'black',
   },
   inputBox: {
     height: '60%',
     marginTop: 15,
-    borderRadius: 5,
-    backgroundColor: '#fff',
+    marginHorizontal: 5,
+    backgroundColor: '#F8F8F8',
     padding: 10,
     textAlignVertical: 'top',
   },
   submitBtn: {
-    backgroundColor: '#D3EBCD',
+    backgroundColor: '#a4f87b',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
-    height: 35,
+    marginTop: 55,
+    height: 45,
     borderRadius: 5,
   },
   submitBtnText: {

@@ -29,6 +29,7 @@ export type RecommendPill = {
 const RecommendScreen: React.FC<Props> = ({navigation}) => {
   const age = useSelector((state: {age: number | null}) => state.age);
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -38,6 +39,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
 
   // 나이별 영양제 추천
   const AgeRecommendPills = async () => {
+    setIsLoading(true);
     try {
       const token = await AsyncStorage.getItem('jwt_token');
       const response = await axios.get(
@@ -58,9 +60,10 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
       }));
       setRecommendPills(pills);
     } catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
+
 
   const categories: string[] = [
     '간 건강',
@@ -95,9 +98,10 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
   const chunkedCategories = chunkArray(categories, 4);
   const lastRow = chunkedCategories.pop();
 
+
   return (
     <View style={styles.container}>
-      <AgeBasedRecommendations age={age} recommendPills={recommendPills} />
+      <AgeBasedRecommendations age={age} recommendPills={recommendPills} isLoading={isLoading} />
       <View style={styles.pillCategoryBox}>
         <Text style={styles.categoryText}>건강 카테고리별 영양제 추천</Text>
         <FlatList
