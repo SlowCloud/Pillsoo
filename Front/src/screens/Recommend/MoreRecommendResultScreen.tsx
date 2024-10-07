@@ -84,11 +84,10 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text
-        style={
-          styles.title
-        }>{`${nickname}님의 건강상태와 관련된 \n 영양제 추천입니다 !`}</Text>
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>
+        {`${nickname}님의 건강상태와 관련된 영양제 \n추천입니다 !`}
+      </Text>
       {/* <Text style={styles.resultText}>당신의 건강 상태: {inputText}</Text> */}
       <Text style={styles.recommendationTitle}>추천 영양제:</Text>
       {recommendations.length === 0 ? ( // 추천 영양제가 없는 경우 메시지 표시
@@ -96,19 +95,20 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
           건강상태와 관련된 영양제가 없습니다.
         </Text>
       ) : (
-        recommendations.map(item => (
-          <TouchableOpacity
-            key={item.supplementSeq}
-            onPress={() =>
-              navigation.navigate('Detail', {id: item.supplementSeq})
-            }>
-            <View style={styles.recommendationContainer}>
-              <Image source={{uri: item.image_url}} style={styles.image} />
-              <Text style={styles.pillName}>{item.pill_name}</Text>
-              <Text>{item.functionality}</Text>
-            </View>
-          </TouchableOpacity>
-        ))
+            recommendations.map(item => (
+              <TouchableOpacity
+                key={item.supplementSeq}
+                onPress={() =>
+                  navigation.navigate('Detail', {id: item.supplementSeq})
+                }>
+                <View 
+                  style={styles.recommendationContainer}
+                >
+                  <Image source={{uri: item.image_url}} style={styles.image} />
+                  <Text style={styles.pillName}>{item.pill_name}</Text>
+                </View>
+              </TouchableOpacity>
+            ))
       )}
     </ScrollView>
   );
@@ -116,43 +116,57 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    flex: 1,
+    backgroundColor: '#fff'
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginVertical: 10,
+    marginTop: 50,
+    marginLeft: 20,
     color: 'black',
   },
   resultText: {
     fontSize: 20,
-    marginVertical: 10,
     color: 'black',
   },
   recommendationTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginVertical: 20,
+    marginTop: 20,
+    marginLeft: 20,
   },
   noRecommendationsText: {
     fontSize: 16,
     color: 'gray',
-    marginVertical: 10,
   },
   recommendationContainer: {
-    marginBottom: 20,
+    width: '85%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    elevation: 3,
+    marginHorizontal: 30,
+    marginVertical: 15,
     alignItems: 'center',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    overflow: 'hidden',
+    marginTop: 10,
   },
   pillName: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginVertical: 5,
+    marginBottom: 5,
     color: 'black',
   },
   image: {
     width: 100,
     height: 100,
-    marginBottom: 10,
+    // marginBottom: 10,
   },
   loadingContainer: {
     flex: 1,
@@ -160,7 +174,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    marginTop: 10,
+    // marginTop: 10,
     fontSize: 16,
     color: 'black',
   },

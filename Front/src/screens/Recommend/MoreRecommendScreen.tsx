@@ -36,6 +36,7 @@ const MoreRecommendScreen: React.FC<Props> = ({navigation}) => {
         현재 당신의 건강 상태를 입력해주세요.
         </Text>
         <TextInput
+        value={text}
           autoFocus
           autoCorrect={false}
           multiline
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   submitBtnText: {
-    color: 'black',
+    color: '#fff',
   },
 });
 
