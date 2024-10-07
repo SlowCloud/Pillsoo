@@ -171,6 +171,8 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
           imageSource={imageUrl}
         />
       )}
+      <View style={styles.alarmOnBtn}>
+      </View>
     </View>
   )
 };
@@ -216,6 +218,14 @@ const styles = StyleSheet.create({
   },
   alarmUpdateBtnText: {
     marginHorizontal: 3,
+  },
+  alarmOnBtn: {
+    width: 65,
+    height: 25,
+    backgroundColor: '#F5F5F5',
+    marginBottom: 10,
+    marginLeft: 10,
+    borderRadius: 20
   }
 });
 
