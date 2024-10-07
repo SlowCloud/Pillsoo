@@ -22,7 +22,8 @@ export type Props = {
 export type RecommendPill = {
   id: number;
   imageUrl: any;
-  _random: boolean;
+  pillName: string;
+  isRandom: boolean;
 };
 
 const RecommendScreen: React.FC<Props> = ({navigation}) => {
@@ -60,8 +61,6 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
       setRecommendPills(pills);
     } catch (error) {
       console.log(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -101,8 +100,8 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
 
 
   return (
-    <View style={styles.container}>
-      <AgeBasedRecommendations age={age} recommendPills={recommendPills} isLoading={isLoading} />
+    <ScrollView style={styles.container}>
+      <AgeBasedRecommendations age={age} recommendPills={recommendPills} />
       <View style={styles.pillCategoryBox}>
         <Text style={styles.categoryText}>건강 카테고리별 영양제 추천</Text>
         <FlatList
@@ -120,6 +119,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
             </View>
           )}
           keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false} // 스크롤 바 표시 여부
         />
         {lastRow && (
           <View style={styles.lastRow}>
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   pillCategoryBox: {
-    marginTop: 70,
+    marginTop: 30,
   },
   categoryRow: {
     flexDirection: 'row',

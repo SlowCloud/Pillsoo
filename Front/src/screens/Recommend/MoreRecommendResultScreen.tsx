@@ -62,7 +62,7 @@ const MoreRecommendResultScreen: React.FC<MoreRecommendResultProps> = ({
         });
         setRecommendations(response.data);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       } finally {
         setLoading(false); // 데이터 로드 완료
       }
