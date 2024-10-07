@@ -19,7 +19,7 @@ const WelcomeScreen = () => {
         <Image source={require('../../assets/Logo.png')} style={styles.logo} />
         <ActivityIndicator
           size="large"
-          color="#7bf898"
+          color="#00FF00"
           style={styles.spinner}
         />
       </View>

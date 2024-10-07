@@ -113,7 +113,7 @@ const DetailScreen: React.FC = () => {
         });
         setMyWishList(false);
         setModalMessage('위시리스트에서 제거되었습니다!');
-        setModalImage(require('../../assets/wishlistremove.png'));
+        setModalImage(require('../../assets/remove.gif'));
       } else {
         await axios.post(
           `${API_URL}/api/v1/wishlist`,
@@ -126,13 +126,13 @@ const DetailScreen: React.FC = () => {
         );
         setMyWishList(true);
         setModalMessage('위시리스트에 추가되었습니다!');
-        setModalImage(require('../../assets/wishlistadd.png'));
+        setModalImage(require('../../assets/wishlistadd.gif'));
       }
       setModalVisible(true);
 
-      setTimeout(() => {
-        setModalVisible(false);
-      }, 2000);
+      // setTimeout(() => {
+      //   setModalVisible(false);
+      // }, 2000);
     } catch (error) {
       console.log(error);
     }
@@ -155,7 +155,7 @@ const DetailScreen: React.FC = () => {
         if (response.status === 200 || response.status === 204) {
           setMyKit(false);
           setModalMessage('마이키트에서 제거되었습니다!');
-          setModalImage(require('../../assets/wishlistremove.png'));
+          setModalImage(require('../../assets/remove.gif'));
         }
       } else {
         const response = await axios.post(
@@ -173,14 +173,14 @@ const DetailScreen: React.FC = () => {
         if (response.status === 200) {
           setMyKit(true);
           setModalMessage('마이키트에 추가되었습니다!');
-          setModalImage(require('../../assets/wishlistadd.png'));
+          setModalImage(require('../../assets/mykitadd.gif'));
         }
       }
       setModalVisible(true);
 
-      setTimeout(() => {
-        setModalVisible(false);
-      }, 2000);
+      // setTimeout(() => {
+      //   setModalVisible(false);
+      // }, 2000);
     } catch (error) {
       console.log(error);
     }

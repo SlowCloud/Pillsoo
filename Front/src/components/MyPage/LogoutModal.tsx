@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   },
   message1Container: {
     borderRadius: 5,
-    backgroundColor: '#7bf898',
+    backgroundColor: '#00FF00',
     width: 65,
     height: 35,
   },

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
+import FastImage from 'react-native-fast-image';
 
 interface CommonModalProps {
   visible: boolean;
@@ -25,7 +26,7 @@ const CommonModal: React.FC<CommonModalProps> = ({
     <Modal transparent visible={visible}>
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
-          <Image source={imageSource} style={styles.image} />
+          <FastImage source={imageSource} style={styles.image} />
           <Text style={styles.message}>{message}</Text>
           <TouchableOpacity
             onPress={onClose}
@@ -53,23 +54,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
     marginBottom: 10,
   },
   message: {
-    fontSize: 18,
+    fontSize: 14,
+    color: 'black',
     textAlign: 'center',
     fontWeight: 'bold',
   },
-  subTitle: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-    marginTop: 10,
-  },
   closeButtonContainer: {
-    backgroundColor: '#7bf898',
+    backgroundColor: '#00FF00',
     marginTop: 15,
     width: 240,
     height: 50,

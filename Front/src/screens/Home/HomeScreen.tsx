@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-start',
     padding: 30,
-    backgroundColor: '#a4f87b',
+    backgroundColor: '#00FF00',
     paddingTop: 50,
   },
   nicknameContainer: {
