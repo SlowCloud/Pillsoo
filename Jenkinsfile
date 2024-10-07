@@ -53,7 +53,7 @@ spec:
               container("kaniko-spring") {
                 script {
                   def dockerfile = "Dockerfile"
-                  def context = "./PillSoo"
+                  def context = "./Back_Java"
                   def image = "${DOCKERHUB_USERNAME}/pillsoo-spring:${env.BUILD_NUMBER}"
                   sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
                 }
@@ -65,7 +65,7 @@ spec:
               container("kaniko-python") {
                 script {
                   def dockerfile = "Dockerfile"
-                  def context = "./GT/Pillsoo"
+                  def context = "./Back_Python/Pillsoo"
                   def image = "${DOCKERHUB_USERNAME}/pillsoo-python:${env.BUILD_NUMBER}"
                   sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
                 }
