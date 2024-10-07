@@ -100,8 +100,8 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
 
 
   return (
-    <ScrollView style={styles.container}>
-      <AgeBasedRecommendations age={age} recommendPills={recommendPills} />
+    <View style={styles.container}>
+      <AgeBasedRecommendations age={age} recommendPills={recommendPills} isLoading={isLoading} />
       <View style={styles.pillCategoryBox}>
         <Text style={styles.categoryText}>건강 카테고리별 영양제 추천</Text>
         <FlatList
