@@ -227,8 +227,8 @@ const DetailScreen: React.FC = () => {
         <TouchableOpacity
           style={
             selectedTab === 'info'
-              ? styles.selectedTextBox
-              : styles.notSelectedTextBox
+              ? [styles.selectedTextBox, styles.leftBorder]
+              : [styles.notSelectedTextBox, styles.leftBorder]
           }
           onPress={() => setSelectedTab('info')}>
           <Text
@@ -245,8 +245,8 @@ const DetailScreen: React.FC = () => {
         <TouchableOpacity
           style={
             selectedTab === 'review'
-              ? styles.selectedTextBox
-              : styles.notSelectedTextBox
+              ? [styles.selectedTextBox, styles.rightBorder]
+              : [styles.notSelectedTextBox, styles.rightBorder]
           }
           onPress={() => setSelectedTab('review')}>
           <Text
@@ -336,6 +336,7 @@ const styles = StyleSheet.create({
     borderColor: '#939185',
     justifyContent: 'center',
     alignItems: 'center',
+    bottom: 5,
   },
   notSelectedTextBox: {
     width: '50%',
@@ -370,6 +371,14 @@ const styles = StyleSheet.create({
   wishListBtn: {
     width: 30,
   },
+  leftBorder: {
+    borderBottomLeftRadius: 10,
+    borderTopLeftRadius: 10,
+  },
+  rightBorder: {
+    borderBottomRightRadius: 10,
+    borderTopRightRadius: 10
+  }
 });
 
 export default DetailScreen;

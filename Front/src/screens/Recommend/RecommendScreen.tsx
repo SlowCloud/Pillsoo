@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, FlatList, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, FlatList} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
@@ -28,6 +28,7 @@ export type RecommendPill = {
 const RecommendScreen: React.FC<Props> = ({navigation}) => {
   const age = useSelector((state: {age: number | null}) => state.age);
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -37,6 +38,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
 
   // 나이별 영양제 추천
   const AgeRecommendPills = async () => {
+    setIsLoading(true);
     try {
       const token = await AsyncStorage.getItem('jwt_token');
       const response = await axios.get(
@@ -58,8 +60,11 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
       setRecommendPills(pills);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
 
   const categories: string[] = [
     '간 건강',
@@ -94,9 +99,10 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
   const chunkedCategories = chunkArray(categories, 4);
   const lastRow = chunkedCategories.pop();
 
+
   return (
-    <ScrollView style={styles.container}>
-      <AgeBasedRecommendations age={age} recommendPills={recommendPills} />
+    <View style={styles.container}>
+      <AgeBasedRecommendations age={age} recommendPills={recommendPills} isLoading={isLoading} />
       <View style={styles.pillCategoryBox}>
         <Text style={styles.categoryText}>건강 카테고리별 영양제 추천</Text>
         <FlatList
@@ -133,7 +139,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
         onPress={() => navigation.navigate('MoreRecommend')}>
         <Text style={styles.moreRecommendText}>더 많은 영양제 추천받기</Text>
       </TouchableOpacity>
-    </ScrollView>
+    </View>
   );
 };
 
