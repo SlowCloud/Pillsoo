@@ -37,8 +37,7 @@ const HomeScreen = () => {
                 source={require('../../assets/homePill.png')}
                 style={styles.myMenuImage}
               />
-              <Text style={styles.myMenuText}>내 영양제</Text>
-              <Text style={styles.myMenuText}>관리하러 가기</Text>
+              <Text style={styles.myMenuText}>영양제 관리</Text>
             </View>
           </TouchableNativeFeedback>
           <TouchableNativeFeedback
@@ -52,8 +51,7 @@ const HomeScreen = () => {
                 source={require('../../assets/homeAlarm.png')}
                 style={styles.myMenuImage}
               />
-              <Text style={styles.myMenuText}>내 알람</Text>
-              <Text style={styles.myMenuText}>관리하러 가기</Text>
+              <Text style={styles.myMenuText}>알람 관리</Text>
             </View>
           </TouchableNativeFeedback>
         </View>
@@ -91,11 +89,12 @@ const styles = StyleSheet.create({
   nickname: {
     fontSize: 30,
     color: 'white',
+    fontWeight: 'bold',
   },
   greeting: {
     fontSize: 25,
     color: 'black',
-    fontWeight: 'bold',
+    fontWeight: '300',
   },
   kit: {
     flex: 4.5,
@@ -123,12 +122,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginTop: 25,
     backgroundColor: '#fff',
-    elevation: 2.5,
+    elevation: 5,
     shadowOffset: {
       width: 0,
       height: 1,
     },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     marginBottom: 20,
     overflow: 'hidden',

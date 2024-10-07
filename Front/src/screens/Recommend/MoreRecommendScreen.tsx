@@ -33,7 +33,7 @@ const MoreRecommendScreen: React.FC<Props> = ({navigation}) => {
     <View style={styles.container}>
       <View style={styles.moreRecommentContainer}>
         <Text style={styles.moreRecommendText}>
-        현재 당신의 건강 상태를 입력해주세요.
+          현재 당신의 건강 상태를 입력해주세요.
         </Text>
         <TextInput
         value={text}
@@ -47,7 +47,7 @@ const MoreRecommendScreen: React.FC<Props> = ({navigation}) => {
         <TouchableOpacity style={styles.submitBtn} onPress={clickedSubmitBtn}>
           <Text style={styles.submitBtnText}>제출</Text>
         </TouchableOpacity>
-        </View>
+      </View>
     </View>
   );
 };
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   submitBtn: {
-    backgroundColor: '#a4f87b',
+    backgroundColor: '#7bf898',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 55,

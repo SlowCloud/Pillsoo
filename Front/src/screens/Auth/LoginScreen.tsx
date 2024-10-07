@@ -32,7 +32,9 @@ type LoginScreenProps = StackScreenProps<
 
 const LoginScreen = ({navigation}: LoginScreenProps) => {
   const dispatch = useDispatch();
-  const fcmToken = useSelector((state: {fcmToken: string | null}) => state.fcmToken);
+  const fcmToken = useSelector(
+    (state: {fcmToken: string | null}) => state.fcmToken,
+  );
 
   const [userId, setUserId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -45,7 +47,7 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
         {
           username: userId,
           password,
-          fcmToken
+          fcmToken,
         },
         {
           headers: {
@@ -136,7 +138,7 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     padding: 15,
-    backgroundColor: '#a4f87b',
+    backgroundColor: '#7bf898',
     borderRadius: 5,
     alignItems: 'center',
     marginTop: 20,

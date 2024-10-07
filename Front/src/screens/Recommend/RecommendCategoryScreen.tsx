@@ -124,7 +124,7 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
       <Text style={styles.categoryTitle}>{category} 영양제</Text>
       {loading && page === 1 && (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#a4f87b" />
+          <ActivityIndicator size="large" color="#7bf898" />
           <Text style={styles.loadingText}>영양제 추천 받는 중...</Text>
         </View>
       )}
@@ -146,7 +146,7 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
         onEndReachedThreshold={0.5}
         ListFooterComponent={
           isFetchingMore ? (
-            <ActivityIndicator size="small" color="#a4f87b" />
+            <ActivityIndicator size="small" color="#7bf898" />
           ) : null
         }
         contentContainerStyle={styles.flatListContent}
