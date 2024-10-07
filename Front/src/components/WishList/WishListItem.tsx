@@ -103,7 +103,7 @@ const WishListItem: React.FC<WishListItemProps> = ({
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    paddingBottom: 40,
+    paddingBottom: 20,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
@@ -115,8 +115,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pillName: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
+    top: 10,
     flex: 1,
   },
   image: {
