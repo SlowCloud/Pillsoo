@@ -117,7 +117,7 @@ const SearchResultScreen = () => {
 
       <View style={styles.resultsContainer}>
         {loading && page === 1 ? (
-          <ActivityIndicator size="large" color="#7bf898" />
+          <ActivityIndicator size="large" color="#00FF00" />
         ) : results.length > 0 ? (
           <FlatList
             data={results}
@@ -127,7 +127,7 @@ const SearchResultScreen = () => {
             onEndReachedThreshold={0.5}
             ListFooterComponent={
               isFetchingMore ? (
-                <ActivityIndicator size="small" color="#7bf898" />
+                <ActivityIndicator size="small" color="#00FF00" />
               ) : null
             }
           />

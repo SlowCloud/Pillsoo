@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   modalDeleteButton: {
-    backgroundColor: '#7bf898',
+    backgroundColor: '#00FF00',
     paddingVertical: 12,
     borderRadius: 10,
     flex: 1,

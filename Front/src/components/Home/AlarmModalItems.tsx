@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   alarmAddContainer: {
     width: 160,
     height: 40,
-    backgroundColor: '#7bf898',
+    backgroundColor: '#00FF00',
     alignItems: 'center',
   },
   alarmAddText: {
