@@ -30,6 +30,7 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
   const [date, setDate] = useState<Date>(new Date());
   const [timer, setTimer] = useState<number>(2);
   const [interValId, setInterValId] = useState<NodeJS.Timeout | null>(null);
+  const [checkAlarmOn, setCheckAlarmOn] = useState<boolean>(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -139,6 +140,51 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
     }
   };
 
+  const changeAlarmOnOff = async (
+    alarmDate: Date,
+    alarmSeq: number,
+  ) => {
+    setCheckAlarmOn(prev => {
+      const newCheckAlarmOn = !prev;
+
+      getChangeAlarmOnOff(alarmDate, alarmSeq, newCheckAlarmOn);
+      return newCheckAlarmOn;
+    });
+  }
+
+  const getChangeAlarmOnOff = async (
+    alarmDate: Date,
+    alamSeq: number,
+    isTurnOn: boolean
+  ) => {
+    const storedToken = await AsyncStorage.getItem('jwt_token');
+    console.log('되긴 하니???')
+    try {
+      const response = await axios.patch(
+        `${API_URL}/api/v1/alarm/${alamSeq}`,
+        {
+          time: alarmDate,
+          isTurnOn: isTurnOn
+        },
+        {
+          headers: {
+            access: `${storedToken}`,
+          },
+        },
+      )
+      console.log('나 알람 onoff 했다')
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
+  const convertTimeStringToDate = (timeString: string): Date => {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const date = new Date(); // 현재 날짜를 가져옵니다.
+    date.setHours(hours, minutes, 0, 0); // 시간을 설정합니다.
+    return date;
+  }
+
   const onChange = (event: DateTimePickerEvent, selected: Date | undefined) => {
     if (event.type === 'set') {
       const currentDate = selected || date;
@@ -188,8 +234,22 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
           imageSource={imageUrl}
         />
       )}
-      <View style={styles.alarmOnBtn}>
-      </View>
+      <TouchableOpacity
+        onPress={() => changeAlarmOnOff(convertTimeStringToDate(myAlarm.time), myAlarm.alarmSeq)}
+      >
+        <View style={styles.alarmOnOffBtn}>
+          <View 
+            style={[
+              styles.alarmOnOffSmallBtn,  
+              checkAlarmOn ? styles.alarmOnOffSmallBtnRed : styles.alarmOnOffSmallBtnGreen]}>
+            <View 
+              style={[
+                styles.alarmOnOffClickBtn,
+                !checkAlarmOn && styles.alarmOnOffClickBtnRight
+                ]}></View>
+          </View>
+        </View>
+        </TouchableOpacity>
     </View>
   );
 };
@@ -237,13 +297,37 @@ const styles = StyleSheet.create({
   alarmUpdateBtnText: {
     marginHorizontal: 3,
   },
-  alarmOnBtn: {
-    width: 65,
+  alarmOnOffBtn: {
+    width: 55,
     height: 25,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F6F5F2',
     marginBottom: 10,
     marginLeft: 10,
-    borderRadius: 20
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  alarmOnOffSmallBtn: {
+    width: 45,
+    height: 15,
+    borderRadius: 20,
+  },
+  alarmOnOffSmallBtnRed: {
+    backgroundColor: '#C40C0C',
+  },
+  alarmOnOffSmallBtnGreen: {
+    backgroundColor: '#00712D'
+  },
+  alarmOnOffClickBtn: {
+    width: 20,
+    height: 20,
+    backgroundColor: '#E5E1DA',
+    borderRadius: 10,
+    bottom: 3
+  },
+
+  alarmOnOffClickBtnRight: {
+    left: 25
   }
 });
 
