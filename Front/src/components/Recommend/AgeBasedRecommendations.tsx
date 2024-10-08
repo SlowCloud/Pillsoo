@@ -42,7 +42,7 @@ const AgeBasedRecommendations = (props: Props) => {
       <View style={isLoading ? styles.loadingBar : styles.itemsContainer}>
         {isLoading ? (
           <>
-            <ActivityIndicator size="large" color="#7bf898" />
+            <ActivityIndicator size="large" color="#00FF00" />
             <Text>영양제 추천 받는 중...</Text>
           </>
         ) : (

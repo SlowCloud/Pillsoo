@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
   },
   recommendationText: {
     fontSize: 16,
-    color: '#7bf898',
+    color: '#00FF00',
     textDecorationLine: 'underline',
     fontWeight: 'bold',
   },

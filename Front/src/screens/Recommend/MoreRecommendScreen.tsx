@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   submitBtn: {
-    backgroundColor: '#7bf898',
+    backgroundColor: '#00FF00',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 55,

@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   selectedText: {
-    backgroundColor: '#7bf898',
+    backgroundColor: '#00FF00',
   },
   editPrompt: {
     marginTop: 20,
@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   saveButton: {
-    backgroundColor: '#7bf898',
+    backgroundColor: '#00FF00',
     padding: 10,
     borderRadius: 5,
   },
