@@ -79,7 +79,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-start',
     padding: 30,
-    backgroundColor: '#00FF00',
+    // backgroundColor: '#4dc235',
+    backgroundColor: '#87ef70',
     paddingTop: 50,
   },
   nicknameContainer: {
