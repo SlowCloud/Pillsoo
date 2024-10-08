@@ -55,7 +55,7 @@ spec:
                   def dockerfile = "Dockerfile"
                   def context = "./PillSoo"
                   def image = "${DOCKERHUB_USERNAME}/pillsoo-spring:${env.BUILD_NUMBER}"
-                  sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
+                  sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image} --cache true"
                 }
               }
             }
@@ -67,7 +67,7 @@ spec:
                   def dockerfile = "Dockerfile"
                   def context = "./GT/Pillsoo"
                   def image = "${DOCKERHUB_USERNAME}/pillsoo-python:${env.BUILD_NUMBER}"
-                  sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image}"
+                  sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image} --cache true"
                 }
               }
             }
