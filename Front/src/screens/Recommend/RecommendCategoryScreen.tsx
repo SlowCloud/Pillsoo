@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {RouteProp} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {RecommendParamList} from './RecommendScreen';
-import {API_URL} from '@env';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RecommendParamList } from './RecommendScreen';
+import { API_URL } from '@env';
 
 type RecommendCategoryScreenNavigationProp = StackNavigationProp<
   RecommendParamList,
@@ -40,16 +40,16 @@ type RecommendPill = {
 
 const screenWidth = Dimensions.get('window').width;
 
-const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
-  const {category} = route.params;
+const RecommendCategoryScreen: React.FC<Props> = ({ route, navigation }) => {
+  const { category } = route.params;
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(0); 
+  const [page, setPage] = useState(0);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
   useEffect(() => {
     const fetchSupplements = async () => {
-      await CategorySupplements(0); 
+      await CategorySupplements(0);
     };
 
     fetchSupplements();
@@ -68,22 +68,24 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
       const response = await axios.get(
         `${API_URL}/api/v1/supplement/effect/${category}`,
         {
-          headers: {access: token},
-          params: {page: newPage, size: 10},
-        },
+          headers: { access: token },
+          params: { page: newPage, size: 10 },
+        }
       );
       const data = response.data.content;
 
       const pills = await Promise.all(
         data.map(async (item: any) => {
           const pillId = item.supplementSeq;
-          const {imageUrl, pillName} = await ImageSupplements(pillId);
-          return {id: pillId, imageUrl, pillName};
-        }),
+          const { imageUrl, pillName } = await ImageSupplements(pillId);
+          return { id: pillId, imageUrl, pillName };
+        })
       );
 
-      setRecommendPills(prevPills => (newPage === 0 ? pills : [...prevPills, ...pills]));
-      setPage(newPage); 
+      setRecommendPills(prevPills =>
+        newPage === 0 ? pills : [...prevPills, ...pills]
+      );
+      setPage(newPage);
     } catch (error) {
       console.error(error);
       Alert.alert('데이터를 불러오는 중 문제가 발생했습니다.');
@@ -107,12 +109,12 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
       };
     } catch (error) {
       console.error(error);
-      return {imageUrl: '', pillName: ''};
+      return { imageUrl: '', pillName: '' };
     }
   };
 
   const handlePillPress = (id: number) => {
-    navigation.navigate('Detail', {id});
+    navigation.navigate('Detail', { id });
   };
 
   const handleLoadMore = () => {
@@ -137,11 +139,12 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
           </Text>
           <FlatList
             data={recommendPills}
-            renderItem={({item}) => (
+            renderItem={({ item, index }) => (
               <View key={item.id} style={styles.pillItem}>
                 <View style={styles.imageContainer}>
+                  <Text style={styles.rankText}>{`${index + 1}위`}</Text>
                   {item.imageUrl ? (
-                    <Image source={{uri: item.imageUrl}} style={styles.image} />
+                    <Image source={{ uri: item.imageUrl }} style={styles.image} />
                   ) : null}
                   {isFetchingMore && (
                     <ActivityIndicator style={styles.inlineLoader} size="small" color="#00FF00" />
@@ -150,7 +153,8 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
                 <Text style={styles.pillName}>{item.pillName}</Text>
                 <TouchableOpacity
                   onPress={() => handlePillPress(item.id)}
-                  style={styles.detailButton}>
+                  style={styles.detailButton}
+                >
                   <Text style={styles.detailButtonText}>상세보기</Text>
                 </TouchableOpacity>
               </View>
@@ -176,9 +180,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    // marginBottom: 10,
-    // borderBottomLeftRadius: 50,
-    // borderBottomRightRadius: 50,
   },
   subTitle: {
     fontSize: 14,
@@ -224,6 +225,20 @@ const styles = StyleSheet.create({
   imageContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    position: 'relative', 
+  },
+  rankText: {
+    position: 'absolute',
+    top: -20,
+    // left: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    padding: 5,
+    borderRadius: 5,
+    overflow: 'hidden',
+    zIndex: 1,
   },
   image: {
     width: 300,
@@ -249,12 +264,11 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderColor: '#00FF00',
     borderWidth: 2,
-    width: '60%', 
-    alignItems: 'center', 
+    width: '60%',
+    alignItems: 'center',
   },
   detailButtonText: {
     color: '#00FF00',
-    // color: 'white',
     fontSize: 18,
     fontWeight: '600',
   },

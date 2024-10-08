@@ -123,7 +123,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 60,
   },
   cardContainer: {
     backgroundColor: '#fff',

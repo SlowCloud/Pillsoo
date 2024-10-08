@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 1.1 }],
   },
   dosageText: {
-    fontSize: 16,
+    fontSize: 14,
     // color: '#00FF00',
     color: 'green',
     backgroundColor: '#e6f9ec',
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 15,
     paddingVertical: 8,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     textAlign: 'center',
     fontWeight: 'bold',
     overflow: 'hidden',
@@ -361,6 +361,7 @@ const styles = StyleSheet.create({
     elevation: 4,
     justifyContent: 'center',
     alignItems: 'center',
+    margin: 10
   },
   notSelectedTextBox: {
     flex: 1,
@@ -369,6 +370,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#e8ecf3',
     borderRadius: 20,
+    margin: 10
   },
   selectedText: {
     color: '#ffffff',
@@ -392,7 +394,6 @@ const styles = StyleSheet.create({
   },
   selectedContent: {
     flex: 1,
-    marginTop: 10,
     borderRadius: 20,
     padding: 15,
     backgroundColor: '#ffffff',

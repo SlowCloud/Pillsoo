@@ -1,5 +1,5 @@
 import React, {useState, useCallback} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import DetailReviewInput from './DetailReviewInput';
 import DetailReviewItems from './DetailReviewItems';
 import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
@@ -28,7 +28,6 @@ const DetailReview: React.FC = () => {
   const [token, setToken] = useState<string | null>(null);
   const [reviewList, setReviewList] = useState<Review[]>([]);
   const [hasWrittenReview, setHasWrittenReview] = useState<boolean>(false);
-  // 리뷰 작성 여부 상태
 
   // Redux에서 userSeq 가져오기
   const currentUserSeq = useSelector(
@@ -82,21 +81,23 @@ const DetailReview: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {/* <ScrollView> */}
       <View style={styles.reviewContents}>
-        {reviewList.map(reviewItem => (
-          <DetailReviewItems
-            key={reviewItem.reviewSeq}
-            userName={reviewItem.userName}
-            userSeq={reviewItem.userSeq}
-            content={reviewItem.content}
-            supplementId={reviewItem.supplementSeq}
-            reviewId={reviewItem.reviewSeq}
-            nickName={reviewItem.nickName}
-          />
-        ))}
+        {reviewList.length > 0 ? (
+          reviewList.map(reviewItem => (
+            <DetailReviewItems
+              key={reviewItem.reviewSeq}
+              userName={reviewItem.userName}
+              userSeq={reviewItem.userSeq}
+              content={reviewItem.content}
+              supplementId={reviewItem.supplementSeq}
+              reviewId={reviewItem.reviewSeq}
+              nickName={reviewItem.nickName}
+            />
+          ))
+        ) : (
+          <Text style={styles.noReviewText}>작성된 리뷰가 없습니다.</Text>
+        )}
       </View>
-      {/* </ScrollView> */}
       {/* 사용자가 이미 리뷰를 작성한 경우 리뷰 입력란 숨기기 */}
       {!hasWrittenReview && <DetailReviewInput />}
     </View>
@@ -111,8 +112,13 @@ const styles = StyleSheet.create({
     height: '70%',
     width: '95%',
     marginTop: 25,
-    // borderWidth: 1,
     marginLeft: 10,
+  },
+  noReviewText: {
+    textAlign: 'center',
+    color: '#888',
+    marginTop: 20,
+    fontSize: 16,
   },
 });
 

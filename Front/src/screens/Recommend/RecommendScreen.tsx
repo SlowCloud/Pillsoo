@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList, ScrollView} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 15,
-    paddingVertical: 10,
+//     paddingVertical: 10,
     backgroundColor: '#fff',
   },
   pillCategoryBox: {
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     marginBottom: 30
   },
   categoryText: {
-    fontSize: 14,
+    fontSize: 12,
     color: 'black',
     fontWeight: 'bold',
     paddingBottom: 5,
@@ -192,7 +192,8 @@ const styles = StyleSheet.create({
   categoryItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
+    padding: 5,
+    paddingHorizontal: 8,
     backgroundColor: '#f2f2f2', 
     borderRadius: 8,
     marginRight: 10,
@@ -201,7 +202,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   recommendBtn: {
-    marginTop: 30,
+    marginTop: 10,
+    marginBottom: 30,
     height: 50,
     borderRadius: 8,
     backgroundColor: '#00FF00',
