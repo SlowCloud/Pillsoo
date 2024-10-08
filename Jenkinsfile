@@ -51,24 +51,14 @@ spec:
           stage("build spring and push") {
             steps {
               container("kaniko-spring") {
-                script {
-                  def dockerfile = "Dockerfile"
-                  def context = "./PillSoo"
-                  def image = "${DOCKERHUB_USERNAME}/pillsoo-spring:${env.BUILD_NUMBER}"
-                  sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image} --cache=true --cache-repo=${DOCKERHUB_USERNAME}/pillsoo-spring-cache"
-                }
+                buildAndPush 'pillsoo-spring', './Pillsoo'
               }
             }
           }
           stage("build python and push") {
             steps {
               container("kaniko-python") {
-                script {
-                  def dockerfile = "Dockerfile"
-                  def context = "./GT/Pillsoo"
-                  def image = "${DOCKERHUB_USERNAME}/pillsoo-python:${env.BUILD_NUMBER}"
-                  sh "/kaniko/executor --context ${context} --dockerfile ${dockerfile} --destination ${image} --cache=true --cache-repo=${DOCKERHUB_USERNAME}/pillsoo-python-cache"
-                }
+                buildAndPush 'pillsoo-python', './GT/Pillsoo'
               }
             }
           }
@@ -108,4 +98,11 @@ spec:
             echo "the process is completed."
         }
     }
+
+  def buildAndPush(app_name, context) {
+    script {
+      def image = "${DOCKERHUB_USERNAME}/${app_name}:${env.BUILD_NUMBER}"
+      sh "/kaniko/executor --context ${context} --destination ${image} --cache=true --cache-repo=${DOCKERHUB_USERNAME}/${image}-cache"
+    }
+  }
 }
