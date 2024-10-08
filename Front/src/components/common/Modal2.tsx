@@ -96,10 +96,12 @@ const styles = StyleSheet.create({
   },
   modalButtonText: {
     fontWeight: 'bold',
+    fontSize: 18,
     color: 'white',
   },
   modalButtonText2: {
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    fontSize: 18,
     color: 'black',
   },
 });
