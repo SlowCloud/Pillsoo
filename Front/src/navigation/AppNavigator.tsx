@@ -11,6 +11,7 @@ import DetailScreen from '../screens/Detail/DetailScreen';
 import MyPageReviewListScreen from '../screens/MyPage/MyPageReviewListScreen';
 import UserUpdateScreen from '../screens/MyPage/UserUpdateScreen';
 
+
 export type AppStackParamList = {
   Auth: undefined;
   Main: undefined;

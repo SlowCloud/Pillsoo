@@ -50,7 +50,7 @@ const DetailReviewItems: React.FC<Props> = ({
     if (!token) return;
 
     try {
-      const response = await axios.patch(
+      await axios.patch(
         `${API_URL}/api/v1/supplement/${supplementId}/reviews`,
         {reviewSeq: reviewId, content: updateReview},
         {
@@ -66,10 +66,30 @@ const DetailReviewItems: React.FC<Props> = ({
     }
   };
 
+  const confirmDelete = () => {
+    Alert.alert(
+      '리뷰 삭제 확인',
+      '정말로 삭제하시겠습니까?',
+      [
+        {
+          text: '취소',
+          style: 'cancel',
+        },
+        {
+          text: '삭제',
+          onPress: handleDelete,
+          style: 'destructive',
+        },
+      ],
+      {cancelable: true},
+    );
+  };
+
   const handleDelete = async () => {
     if (!token) return;
+
     try {
-      const response = await axios.delete(
+      await axios.delete(
         `${API_URL}/api/v1/supplement/${supplementId}/reviews`,
         {
           headers: {
@@ -89,12 +109,12 @@ const DetailReviewItems: React.FC<Props> = ({
       <View style={styles.reviewContainer}>
         <Text style={styles.reviewNickname}>📣 {nickName}</Text>
         {storedUserSeq === userSeq && !updateContent && (
-          <View style={styles.optionContianer}>
+          <View style={styles.optionContainer}>
             <TouchableOpacity onPress={() => setUpdateContent(true)}>
               <Text>수정</Text>
             </TouchableOpacity>
             <Text> | </Text>
-            <TouchableOpacity onPress={handleDelete}>
+            <TouchableOpacity onPress={confirmDelete}>
               <Text>삭제</Text>
             </TouchableOpacity>
           </View>
@@ -116,7 +136,6 @@ const DetailReviewItems: React.FC<Props> = ({
       ) : (
         <Text style={styles.reviewContent}>{content}</Text>
       )}
-
       <View style={styles.line}></View>
     </View>
   );
@@ -145,7 +164,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#DFDFDE',
     marginTop: 10,
   },
-  optionContianer: {
+  optionContainer: {
     flexDirection: 'row',
     marginLeft: 7,
   },
