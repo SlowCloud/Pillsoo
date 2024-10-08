@@ -26,7 +26,7 @@ const SupplementInputScreen = () => {
   const navigation = useNavigation();
   const [myKitData, setMyKitData] = useState<Supplement[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false); // 삭제 성공 모달 상태
+  const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false); 
   const [selectedSupplementSeq, setSelectedSupplementSeq] = useState<
     number | null
   >(null);
@@ -75,7 +75,7 @@ const SupplementInputScreen = () => {
           ),
         );
         setIsModalVisible(false);
-        setIsSuccessModalVisible(true); // 삭제 성공 모달을 보이게 설정
+        setIsSuccessModalVisible(true); 
       }
     } catch (err) {
       Alert.alert('알람 설정을 먼저 해제해주세요 !');
@@ -99,7 +99,7 @@ const SupplementInputScreen = () => {
     <View style={styles.itemContainer}>
       <TouchableOpacity
         style={styles.itemDetailContainer}
-        onPress={() => navigation.navigate('Detail', {id: item.supplementSeq})} // Detail 페이지로 이동
+        onPress={() => navigation.navigate('Detail', {id: item.supplementSeq})} 
       >
         <Image source={{uri: item.imageUrl}} style={styles.itemImage} />
         <Text style={styles.itemName} numberOfLines={1} ellipsizeMode="tail">
@@ -117,8 +117,6 @@ const SupplementInputScreen = () => {
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.title}>마이 키트</Text>
-
         {myKitData.length === 0 ? (
           <View style={styles.emptyMessageContainer}>
             <Text style={styles.emptyMessageText}>
@@ -156,9 +154,9 @@ const SupplementInputScreen = () => {
       />
 
       <Modal2
-        isVisible={isSuccessModalVisible} // 삭제 성공 모달
-        onClose={() => setIsSuccessModalVisible(false)} // 모달을 닫는 onClose 핸들러
-        onConfirm={() => setIsSuccessModalVisible(false)} // 확인 버튼 누르면 모달 닫기
+        isVisible={isSuccessModalVisible}
+        onClose={() => setIsSuccessModalVisible(false)} 
+        onConfirm={() => setIsSuccessModalVisible(false)} 
         title="성공적으로 삭제되었습니다!"
         subText="마이키트에서 제거 되었습니다 !"
         confirmText="확인"
@@ -175,13 +173,6 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 40,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: 'black',
   },
   itemContainer: {
     backgroundColor: '#fff',
@@ -206,13 +197,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemImage: {
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 100,
     marginRight: 15,
     borderRadius: 10,
   },
   itemName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     maxWidth: '60%',
     color: 'black'
