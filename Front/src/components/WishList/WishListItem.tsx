@@ -115,8 +115,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   pillName: {
-    fontSize: 14,
+    fontSize: 18,
     fontWeight: 'bold',
+    color: 'black',
     top: 10,
     flex: 1,
   },
@@ -127,8 +128,8 @@ const styles = StyleSheet.create({
   },
   purchaseButton: {
     backgroundColor: '#00FF00',
-    padding: 10,
-    borderRadius: 5,
+    padding: 7,
+    borderRadius: 20,
     marginTop: 5,
     alignItems: 'center',
   },

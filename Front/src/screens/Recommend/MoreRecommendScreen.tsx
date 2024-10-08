@@ -62,7 +62,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 7,
   },
   moreRecommendText: {
-    fontSize: 17,
+    fontSize: 18,
+    fontWeight: 'bold',
     marginLeft: 6,
     color: 'black',
   },
@@ -73,6 +74,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F8F8F8',
     padding: 10,
     textAlignVertical: 'top',
+    fontSize: 18,
+    fontWeight: 'bold'
   },
   submitBtn: {
     backgroundColor: '#00FF00',
@@ -80,10 +83,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 55,
     height: 45,
-    borderRadius: 5,
+    borderRadius: 20,
   },
   submitBtnText: {
     color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 

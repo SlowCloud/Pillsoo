@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
   pillName: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: 'gray',
     maxWidth: '80%',
   },
   noResultsText: {

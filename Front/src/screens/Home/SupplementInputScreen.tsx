@@ -215,6 +215,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     maxWidth: '60%',
+    color: 'black'
   },
   deleteButton: {
     padding: 10,

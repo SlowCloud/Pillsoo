@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    backgroundColor: '#f2f2f2', // 배경색 적용
+    backgroundColor: '#f2f2f2', 
     borderRadius: 8,
     marginRight: 10,
   },
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   },
   moreRecommendText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });
