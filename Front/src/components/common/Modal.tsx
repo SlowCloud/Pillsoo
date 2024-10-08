@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     fontSize: 18,
+    fontWeight : 'bold',
     color: 'white',
     textAlign: 'center',
   },
