@@ -41,6 +41,7 @@ const LogoutModal: React.FC<Props> = ({navigation}) => {
           access: `${storedToken}`,
         },
       });
+      dispatch(setOpenLogoutModal(false));
       AsyncStorage.clear();
 
       navigation.navigate('AuthHome');
