@@ -5,12 +5,9 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useSelector, useDispatch} from 'react-redux';
-import axios from 'axios';
-import {API_URL} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { setOpenLogoutModal, setOpenDeleteAccountMOdal } from '../../store/store';
 import LogoutModal from '../../components/MyPage/LogoutModal';
