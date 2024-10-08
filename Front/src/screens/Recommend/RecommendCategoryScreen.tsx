@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  Dimensions,
 } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -37,22 +38,24 @@ type RecommendPill = {
   pillName: string;
 };
 
+const screenWidth = Dimensions.get('window').width;
+
 const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
   const {category} = route.params;
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0); 
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
   useEffect(() => {
     const fetchSupplements = async () => {
-      await CategorySupplements();
+      await CategorySupplements(0); 
     };
 
     fetchSupplements();
   }, []);
 
-  const CategorySupplements = async (newPage = 0) => {
+  const CategorySupplements = async (newPage: number) => {
     try {
       const token = await AsyncStorage.getItem('jwt_token');
       if (!token) {
@@ -60,7 +63,8 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
         return;
       }
 
-      setLoading(true);
+      newPage === 0 ? setLoading(true) : setIsFetchingMore(true);
+
       const response = await axios.get(
         `${API_URL}/api/v1/supplement/effect/${category}`,
         {
@@ -78,10 +82,11 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
         }),
       );
 
-      setRecommendPills(newPage === 0 ? pills : [...recommendPills, ...pills]);
+      setRecommendPills(prevPills => (newPage === 0 ? pills : [...prevPills, ...pills]));
+      setPage(newPage); 
     } catch (error) {
-      // console.error(error);
-      // Alert.alert('데이터를 불러오는 중 문제가 발생했습니다.');
+      console.error(error);
+      Alert.alert('데이터를 불러오는 중 문제가 발생했습니다.');
     } finally {
       setLoading(false);
       setIsFetchingMore(false);
@@ -97,12 +102,12 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
         },
       });
       return {
-        imageUrl: response.data.imageUrl || '', // 이미지가 없는 경우 빈 문자열
+        imageUrl: response.data.imageUrl || '',
         pillName: response.data.pillName,
       };
     } catch (error) {
-      // console.log(error);
-      return {imageUrl: '', pillName: ''}; // 오류 발생 시 빈 이미지와 이름 반환
+      console.error(error);
+      return {imageUrl: '', pillName: ''};
     }
   };
 
@@ -111,46 +116,54 @@ const RecommendCategoryScreen: React.FC<Props> = ({route, navigation}) => {
   };
 
   const handleLoadMore = () => {
-    if (!isFetchingMore && !loading) {
-      setIsFetchingMore(true);
-      const nextPage = page + 1;
-      setPage(nextPage);
-      CategorySupplements(nextPage);
+    if (!isFetchingMore) {
+      CategorySupplements(page + 1);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.categoryTitle}>{category} 영양제</Text>
-      {loading && page === 1 && (
+      {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#00FF00" />
           <Text style={styles.loadingText}>영양제 추천 받는 중...</Text>
         </View>
+      ) : (
+        <>
+          <Text style={styles.subTitle}>부족한 영양소에 대한</Text>
+          <Text style={styles.headerTitle}>필수 추천 영양제</Text>
+          <Text style={styles.categoryTitle}>
+            <Text style={styles.highlightedCategory}>{category}</Text>이 좋지 않다면?
+          </Text>
+          <FlatList
+            data={recommendPills}
+            renderItem={({item}) => (
+              <View key={item.id} style={styles.pillItem}>
+                <View style={styles.imageContainer}>
+                  {item.imageUrl ? (
+                    <Image source={{uri: item.imageUrl}} style={styles.image} />
+                  ) : null}
+                  {isFetchingMore && (
+                    <ActivityIndicator style={styles.inlineLoader} size="small" color="#00FF00" />
+                  )}
+                </View>
+                <Text style={styles.pillName}>{item.pillName}</Text>
+                <TouchableOpacity
+                  onPress={() => handlePillPress(item.id)}
+                  style={styles.detailButton}>
+                  <Text style={styles.detailButtonText}>상세보기</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            keyExtractor={item => item.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            contentContainerStyle={styles.flatListContent}
+          />
+        </>
       )}
-      <FlatList
-        data={recommendPills}
-        renderItem={({item}) => (
-          <TouchableOpacity
-            key={item.id}
-            onPress={() => handlePillPress(item.id)}
-            style={styles.pillItem}>
-            {item.imageUrl ? (
-              <Image source={{uri: item.imageUrl}} style={styles.image} />
-            ) : null}
-            <Text style={styles.pillName}>{item.pillName}</Text>
-          </TouchableOpacity>
-        )}
-        keyExtractor={item => item.id.toString()}
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          isFetchingMore ? (
-            <ActivityIndicator size="small" color="#00FF00" />
-          ) : null
-        }
-        contentContainerStyle={styles.flatListContent}
-      />
     </View>
   );
 };
@@ -160,56 +173,93 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: 'white',
+    marginTop: 10,
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    // marginBottom: 10,
+    // borderBottomLeftRadius: 50,
+    // borderBottomRightRadius: 50,
+  },
+  subTitle: {
+    fontSize: 14,
+    color: 'gray',
+    marginTop: 30,
+    marginLeft: 10,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'black',
+    marginBottom: 10,
+    marginLeft: 10,
   },
   categoryTitle: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#333',
+    color: 'black',
+    marginTop: 40,
+    marginLeft: 10,
+  },
+  highlightedCategory: {
+    color: '#00FF00',
   },
   loadingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flex: 1,
     justifyContent: 'center',
-    marginBottom: 60,
+    alignItems: 'center',
   },
   loadingText: {
-    marginLeft: 10,
+    marginTop: 10,
     fontSize: 16,
-    color: '#555',
+    color: '#00FF00',
   },
   pillItem: {
-    marginBottom: 15,
-    padding: 15,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
+    width: screenWidth * 0.8,
+    marginRight: 10,
+    marginTop: 100,
+    padding: 25,
     backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    alignItems: 'center',
+  },
+  imageContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
   image: {
-    width: 80,
-    height: 80,
-    marginBottom: 10,
-    borderRadius: 40,
+    width: 300,
+    height: 160,
+    marginBottom: 30,
+    borderRadius: 10,
+  },
+  inlineLoader: {
+    marginLeft: 10,
   },
   pillName: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: 'bold',
     textAlign: 'center',
-    color: '#555',
+    color: 'black',
+    marginTop: 30,
+  },
+  detailButton: {
+    backgroundColor: 'white',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    marginTop: 30,
+    borderColor: '#00FF00',
+    borderWidth: 2,
+    width: '60%', 
+    alignItems: 'center', 
+  },
+  detailButtonText: {
+    color: '#00FF00',
+    // color: 'white',
+    fontSize: 18,
+    fontWeight: '600',
   },
   flatListContent: {
-    paddingBottom: 20,
+    paddingVertical: 10,
   },
 });
 

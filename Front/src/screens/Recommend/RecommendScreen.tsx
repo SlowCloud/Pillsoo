@@ -88,6 +88,11 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
     '혈압',
   ];
 
+  const categoryIcons: string[] = [
+    '🧬', '🩺', '💪', '🧓', '👁️', '🛡️', '🦴', '🍽️', '🌙', 
+    '💆‍♂️', '🍞', '⚖️', '🦷', '🩸', '🌞', '🍇', '🩸', '🍬', '💓'
+  ];
+
   const chunkArray = (array: string[], size: number) => {
     const result: string[][] = [];
     for (let i = 0; i < array.length; i += size) {
@@ -107,32 +112,37 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
         isLoading={isLoading}
       />
       <View style={styles.pillCategoryBox}>
-        <Text style={styles.categoryText}>건강 카테고리별 영양제 추천</Text>
+        <Text style={styles.categoryTitle}>건강 카테고리별 영양제 추천</Text>
         <FlatList
           data={chunkedCategories}
           renderItem={({item, index}) => (
             <View style={styles.categoryRow} key={index}>
-              {item.map(category => (
-                <SelectPillItems
+              {item.map((category, i) => (
+                <TouchableOpacity
                   key={category}
-                  category={category}
-                  navigation={navigation}
-                  style={{marginRight: 10}}
-                />
+                  style={styles.categoryItem} 
+                  onPress={() => navigation.navigate('RecommendCategory', { category })}
+                >
+                  <Text style={styles.iconText}>{categoryIcons[categories.indexOf(category)]}</Text>
+                  <Text style={styles.categoryText}>{category}</Text>
+                </TouchableOpacity>
               ))}
             </View>
           )}
           keyExtractor={(item, index) => index.toString()}
-          showsVerticalScrollIndicator={false} // 스크롤 바 표시 여부
+          showsVerticalScrollIndicator={false}
         />
         {lastRow && (
           <View style={styles.lastRow}>
             {lastRow.map((category, index) => (
-              <SelectPillItems
+              <TouchableOpacity
                 key={`${category}-${index}`}
-                category={category}
-                navigation={navigation}
-              />
+                style={styles.categoryItem}
+                onPress={() => navigation.navigate('RecommendCategory', { category })}
+              >
+                <Text style={styles.iconText}>{categoryIcons[categories.indexOf(category)]}</Text>
+                <Text style={styles.categoryText}>{category}</Text>
+              </TouchableOpacity>
             ))}
           </View>
         )}
@@ -162,16 +172,33 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
   },
-  categoryText: {
+  categoryTitle: {
     fontSize: 18,
     color: 'black',
-    paddingBottom: 20,
     fontWeight: 'bold',
+    marginBottom: 30
+  },
+  categoryText: {
+    fontSize: 14,
+    color: 'black',
+    fontWeight: 'bold',
+    paddingBottom: 5,
   },
   lastRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginBottom: 10,
+  },
+  categoryItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#f2f2f2', // 배경색 적용
+    borderRadius: 8,
+    marginRight: 10,
+  },
+  iconText: {
+    marginRight: 5,
   },
   recommendBtn: {
     marginTop: 30,
