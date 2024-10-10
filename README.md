@@ -60,10 +60,10 @@
         <th>회원정보 수정</th>
     </tr>
     <tr>
-        <td><img src="resource/로그인페이지.jpg"></td>
-        <td><img src="resource/홈페이지.jpg"></td>
-        <td><img src="resource/마이페이지.jpg"></td>
-        <td><img src="resource/회원정보수정.jpg"></td>
+        <td><img src="resource/screen/1-1.jpg"></td>
+        <td><img src="resource/screen/1-2.jpg"></td>
+        <td><img src="resource/screen/1-3.jpg"></td>
+        <td><img src="resource/screen/1-4.jpg"></td>
     </tr>
     <tr>
         <th>영양제 검색 페이지</th>
@@ -72,10 +72,10 @@
         <th>위시리스트</th>
     </tr>
     <tr>
-        <td><img src="resource/영양제검색페이지.jpg"></td>
-        <td><img src="resource/영양제상세정보페이지.jpg"></td>
-        <td><img src="resource/리뷰페이지.jpg"></td>
-        <td><img src="resource/위시리스트.jpg"></td>
+        <td><img src="resource/screen/2-1.jpg"></td>
+        <td><img src="resource/screen/2-2.jpg"></td>
+        <td><img src="resource/screen/2-3.jpg"></td>
+        <td><img src="resource/screen/2-4.jpg"></td>
     </tr>
     <tr>
         <th>영양제 추천 페이지</th>
@@ -84,10 +84,10 @@
         <th>영양제 알람 설정</th>
     </tr>
     <tr>
-        <td><img src="resource/영양제추천페이지.jpg"></td>
-        <td><img src="resource/문장형검색.jpg"></td>
-        <td><img src="resource/영양제관리.jpg"></td>
-        <td><img src="resource/알람설정.jpg"></td>
+        <td><img src="resource/screen/3-1.jpg"></td>
+        <td><img src="resource/screen/3-2.jpg"></td>
+        <td><img src="resource/screen/3-3.jpg"></td>
+        <td><img src="resource/screen/3-4.jpg"></td>
     </tr>
 </table>
 
@@ -138,7 +138,7 @@ Badges from [here](https://github.com/alexandresanlim/Badges4-README.md-Profile)
 
 ### 인프라 아키텍처
 
-![Infra](resource/infra.png)
+![Infra](resource/infrastructure.png)
 
 ### ERD
 
