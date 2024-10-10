@@ -103,9 +103,9 @@ const AlarmScreen = () => {
   return (
     <View style={styles.container}>
       {openModal && <AlarmModal myKitData={myKitData} />}
-      <View style={styles.alarmTitleContainer}>
+      {/* <View style={styles.alarmTitleContainer}>
         <Text style={styles.alarmTitle}>알람</Text>
-      </View>
+      </View> */}
       <View style={styles.alarmContainer}>
         {myAlarms.length > 0 ? (
           <ScrollView>

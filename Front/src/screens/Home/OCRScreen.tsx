@@ -14,24 +14,25 @@ import {launchCamera} from 'react-native-image-picker';
 import axios from 'axios';
 import {OCR_API_KEY, API_URL, TOKEN} from '@env';
 import {useFocusEffect} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {request, PERMISSIONS} from 'react-native-permissions';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const OCRScreen = () => {
-  const [token, setToken] = useState<string | null>(null);
   const [ocrTexts, setOcrTexts] = useState<string[]>([]);
   const [editableText, setEditableText] = useState<string>('');
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [results, setResults] = useState<any[]>([]);
+  const [token, setToken] = useState<string | null>(null);
+
   const navigation = useNavigation();
 
-  console.log(TOKEN);
+  const isTokenLoaded = !!TOKEN;
+
   useFocusEffect(
     React.useCallback(() => {
       requestCameraPermission();
-    }, [TOKEN]),
+    }, [])
   );
 
   useEffect(() => {
@@ -60,30 +61,19 @@ const OCRScreen = () => {
 
   const handleCapture = async () => {
     try {
-      console.log('Launching camera...');
       const result = await launchCamera({
         mediaType: 'photo',
         includeBase64: true,
       });
 
-      console.log('Camera result:', result);
-
-      if (result.didCancel) {
-        console.log('User cancelled the camera');
-        return;
-      }
-
-      if (result.errorCode) {
-        console.log('Camera error:', result.errorMessage);
+      if (result.didCancel || result.errorCode) {
+        console.log('Camera error or cancelled');
         return;
       }
 
       if (result.assets && result.assets.length > 0) {
         const base64Image = result.assets[0].base64;
-        console.log('Captured image base64 length:', base64Image.length);
-
         if (base64Image) {
-          console.log('Proceeding with OCR...');
           await sendToOcr(base64Image);
         } else {
           console.log('No base64 image data found');
@@ -97,6 +87,11 @@ const OCRScreen = () => {
   };
 
   const sendToOcr = async (base64Image: string) => {
+    if (!isTokenLoaded) {
+      console.log('TOKEN이 로드되지 않았습니다.');
+      return;
+    }
+    setLoading(true); 
     console.log('Sending image to OCR API...');
     try {
       const response = await axios.post(
@@ -118,20 +113,20 @@ const OCRScreen = () => {
           },
         },
       );
-      console.log('OCR API response:', response.data);
 
       const detectedTexts = response.data.responses[0]?.textAnnotations?.map(
         item => item.description,
       );
 
       if (detectedTexts) {
-        console.log('Detected texts:', detectedTexts);
         setOcrTexts(detectedTexts.slice(1));
       } else {
         console.log('No text annotations found');
       }
     } catch (error) {
       console.error('OCR API request error:', error);
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -160,7 +155,10 @@ const OCRScreen = () => {
   };
 
   const sendSavedTextToApi = async (text: string) => {
-    console.log('Sending saved text to API:', text);
+    if (!isTokenLoaded) {
+      console.log('TOKEN이 로드되지 않았습니다.');
+      return;
+    }
 
     setLoading(true);
     try {
@@ -176,11 +174,7 @@ const OCRScreen = () => {
         },
       });
 
-      console.log('API response:', response.data);
-
       if (response.status === 200) {
-        console.log('hi');
-        console.log('Search results:', response.data.content);
         setResults(response.data.content);
       } else {
         console.log('Unexpected status code:', response.status);
@@ -217,7 +211,7 @@ const OCRScreen = () => {
         },
         {
           headers: {
-            access: `${token}`,
+            access: `${TOKEN}`,
           },
         },
       );
@@ -236,7 +230,12 @@ const OCRScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>스캔한 영양제의 이름을 선택해주세요!</Text>
 
-      {ocrTexts.length > 0 ? (
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#00ff00" />
+          <Text>텍스트 인식 중...</Text>
+        </View>
+      ) : ocrTexts.length > 0 ? (
         <ScrollView contentContainerStyle={styles.resultContainer}>
           {ocrTexts.map((text, index) => (
             <TouchableOpacity
@@ -269,13 +268,6 @@ const OCRScreen = () => {
           <TouchableOpacity onPress={handleRetake} style={styles.retakeButton}>
             <Text style={styles.retakeText}>다시 스캔하기</Text>
           </TouchableOpacity>
-
-          {loading && (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#00ff00" />
-              <Text>영양제 검색중...</Text>
-            </View>
-          )}
 
           {results.length > 0 ? (
             <View style={styles.supplementContainer}>
@@ -413,3 +405,4 @@ const styles = StyleSheet.create({
 });
 
 export default OCRScreen;
+
