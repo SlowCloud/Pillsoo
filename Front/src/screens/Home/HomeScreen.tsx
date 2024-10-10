@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   },
   myMenuIcon: {
     width: 25,
-    heigth: 25,
+    // height: 25,
     resizeMode: 'contain',
     marginHorizontal: 10
   },
