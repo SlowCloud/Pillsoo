@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { launchCamera } from 'react-native-image-picker';
 import axios from 'axios';
-import { OCR_API_KEY, API_URL, TOKEN } from '@env';
+import { API_KEY, API_URL } from '@env';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { request, PERMISSIONS } from 'react-native-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -26,27 +26,23 @@ const OCRScreen = () => {
   const [supplementLoading, setSupplementLoading] = useState<boolean>(false);
   const [results, setResults] = useState<any[]>([]);
   const [showResults, setShowResults] = useState<boolean>(false);
-  const [token, setToken] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [selectedSupplementSeq, setSelectedSupplementSeq] = useState<number | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const navigation = useNavigation();
-  const isTokenLoaded = !!TOKEN;
-
-  const fetchToken = async () => {
-    const storedToken = await AsyncStorage.getItem('jwt_token');
-    setToken(storedToken);
-  };
 
   useEffect(() => {
-    const setup = async () => {
-      await fetchToken();
-      if (TOKEN) {
-        requestCameraPermission();
-      }
-    };
-    setup();
+    requestCameraPermission();
   }, []);
   
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await AsyncStorage.getItem('jwt_token');
+      setToken(storedToken);
+    };
+
+    fetchToken();
+  }, []);
 
   const requestCameraPermission = async () => {
     try {
@@ -80,34 +76,23 @@ const OCRScreen = () => {
   };
 
   const sendToOcr = async (base64Image: string) => {
-    if (!isTokenLoaded) return;
-
     setLoading(true);
     try {
       const response = await axios.post(
-        'https://vision.googleapis.com/v1/images:annotate',
+        `https://vision.googleapis.com/v1/images:annotate?key=${API_KEY}`,
         {
           requests: [
             {
-              features: [{ type: 'TEXT_DETECTION' }],
-              image: { content: base64Image },
+              image: { content: base64Image },  
+              features: [{ type: 'DOCUMENT_TEXT_DETECTION' }],
             },
           ],
         },
-        {
-          headers: {
-            'x-goog-user-project': 'ocr-p-436200',
-            'Content-Type': 'application/json',
-            key: OCR_API_KEY,
-            Authorization: `Bearer ${TOKEN}`,
-          },
-        },
       );
-
       const detectedTexts = response.data.responses[0]?.textAnnotations?.map(
-        item => item.description,
+        (item) => item.description
       );
-
+  
       if (detectedTexts) {
         setOcrTexts(detectedTexts.slice(1));
       }
@@ -118,6 +103,7 @@ const OCRScreen = () => {
       setLoading(false);
     }
   };
+  
 
   const handleRetake = () => {
     setOcrTexts([]);
@@ -146,8 +132,6 @@ const OCRScreen = () => {
   };
 
   const sendSavedTextToApi = async (text: string) => {
-    if (!isTokenLoaded) return;
-
     setSupplementLoading(true);
     try {
       const response = await axios.get(`${API_URL}/api/v1/supplement/search`, {
@@ -189,16 +173,14 @@ const OCRScreen = () => {
     try {
       const response = await axios.post(
         `${API_URL}/api/v1/cabinet`,
-        {
-          supplementSeq,
-        },
+        { supplementSeq }, 
         {
           headers: {
-            access: `${token}`,
+            access: `${token}`, 
           },
-        },
+        }
       );
-
+  
       if (response.status === 200) {
         console.log('Supplement added successfully');
       }
@@ -206,6 +188,7 @@ const OCRScreen = () => {
       console.error('Error adding supplement:', error);
     }
   };
+  
 
   return (
     <View style={styles.container}>
