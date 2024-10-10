@@ -18,9 +18,10 @@ interface MyAlarmListitemsProps {
     supplementSeq: number;
     turnOn?: boolean;
   };
+  onAlarmListDeleted: () => Promise<void>;
 }
 
-const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
+const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm, onAlarmListDeleted}) => {
   const [visible, setVisible] = useState<boolean>(false);
   const [message, setMessage] = useState<string>('');
   const [openAlarmModal, setOpenAlarmModal] = useState<boolean>(false);
@@ -28,26 +29,8 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
     require('../../assets/warning.png'),
   );
   const [date, setDate] = useState<Date>(new Date());
-  const [timer, setTimer] = useState<number>(2);
-  const [interValId, setInterValId] = useState<NodeJS.Timeout | null>(null);
   const [checkAlarmOn, setCheckAlarmOn] = useState<boolean>(true);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    return () => {
-      if (interValId) {
-        clearInterval(interValId);
-      }
-    };
-  }, [interValId]);
-
-  useEffect(() => {
-    if (visible) {
-      setMessage(
-        `알람이 삭제되었습니다.\n이 창은 ${timer}초 후에 자동으로 닫힙니다.`,
-      );
-    }
-  }, [timer, visible]);
 
   const initialPillName =
     myAlarm.supplementName.length > 11
@@ -68,28 +51,17 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
         },
       );
       setVisible(true);
-      setMessage(
-        `알람이 삭제되었습니다.\n이 창은 ${timer}초 후에 자동으로 닫힙니다.`,
-      );
+      setMessage(`알람이 삭제되었습니다.`);
       setImageUrl(require('../../assets/alarmremove.png'));
-
-      // 타이머 시작
-      const id = setInterval(() => {
-        setTimer(prev => {
-          if (prev <= 0) {
-            clearInterval(id);
-            dispatch(setResetAlarm(true));
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      setInterValId(id);
     } catch (error) {
       console.error(error);
     }
   };
+  
+  const handleCloseModal = () => {
+    setVisible(false);
+    onAlarmListDeleted();
+  }
 
   // 알람 수정
   const updateAlarm = async () => {
@@ -158,12 +130,15 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
     isTurnOn: boolean
   ) => {
     const storedToken = await AsyncStorage.getItem('jwt_token');
-    console.log('알람 onoff 도전')
+    const date = new Date(alarmDate);
+    const timeString = date.toISOString().substr(11, 8);
+    const alarmTime = timeString + '.00'
+    console.log('알람 onoff 도전', alarmTime, alamSeq, isTurnOn)
     try {
       const response = await axios.patch(
         `${API_URL}/api/v1/alarm/${alamSeq}`,
         {
-          time: alarmDate,
+          time: alarmTime,
           isTurnOn: isTurnOn
         },
         {
@@ -172,6 +147,7 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
           },
         },
       )
+      console.log('했따')
     } catch(error) {
       console.log(error)
     }
@@ -250,7 +226,7 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
         <CommonModal
           visible={visible}
           message={message}
-          onClose={() => setVisible(false)}
+          onClose={handleCloseModal}
           imageSource={imageUrl}
         />
       )}

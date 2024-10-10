@@ -78,23 +78,23 @@ const AlarmScreen = () => {
   }, [token]);
 
   useEffect(() => {
-    const fetchAlarmData = async () => {
-      if (!token) return;
-      try {
-        const response = await axios.get(`${API_URL}/api/v1/alarm`, {
-          headers: {
-            access: `${token}`,
-          },
-        });
-        setMyAlarms(response.data);
-        dispatch(setResetAlarm(false));
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     fetchAlarmData();
   }, [token, resetAlarm]);
+
+  const fetchAlarmData = async () => {
+    if (!token) return;
+    try {
+      const response = await axios.get(`${API_URL}/api/v1/alarm`, {
+        headers: {
+          access: `${token}`,
+        },
+      });
+      setMyAlarms(response.data);
+      dispatch(setResetAlarm(false));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const showAlarmModal = () => {
     dispatch(setOpenModal(true));
@@ -107,7 +107,11 @@ const AlarmScreen = () => {
       {myAlarms.length > 0 ? (
         <ScrollView>
           {myAlarms.map(alarm => (
-            <MyAlarmListitems key={alarm.alarmSeq} myAlarm={alarm} />
+            <MyAlarmListitems 
+              key={alarm.alarmSeq} 
+              myAlarm={alarm} 
+              onAlarmListDeleted={fetchAlarmData}
+              />
           ))}
         </ScrollView>
       ) : (
@@ -141,21 +145,12 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     marginRight: 30,
   },
-  alarmTitleContainer: {
-    alignItems: 'center',
-    marginTop: 30,
-    marginBottom: 20,
-  },
-  alarmTitle: {
-    fontWeight: 'bold',
-    fontSize: 27,
-    color: 'black',
-  },
   alarmAddText: {
     fontSize: 30,
+    color: '#fff'
   },
   alarmAddBtn: {
-    backgroundColor: '#4379F2',
+    backgroundColor: '#00FF00',
     width: 50,
     height: 50,
     borderRadius: 50,
