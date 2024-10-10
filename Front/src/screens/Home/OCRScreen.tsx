@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,13 +9,13 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import {launchCamera} from 'react-native-image-picker';
+import { launchCamera } from 'react-native-image-picker';
 import axios from 'axios';
-import {OCR_API_KEY, API_URL, TOKEN} from '@env';
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {request, PERMISSIONS} from 'react-native-permissions';
+import { OCR_API_KEY, API_URL, TOKEN } from '@env';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { request, PERMISSIONS } from 'react-native-permissions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Modal2 from '../../components/common/Modal2'; 
+import Modal2 from '../../components/common/Modal2';
 import { Alert } from 'react-native';
 
 const OCRScreen = () => {
@@ -26,27 +26,28 @@ const OCRScreen = () => {
   const [supplementLoading, setSupplementLoading] = useState<boolean>(false);
   const [results, setResults] = useState<any[]>([]);
   const [token, setToken] = useState<string | null>(null);
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false); 
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [selectedSupplementSeq, setSelectedSupplementSeq] = useState<number | null>(null);
 
   const navigation = useNavigation();
-
   const isTokenLoaded = !!TOKEN;
+
+  const fetchToken = async () => {
+    const storedToken = await AsyncStorage.getItem('jwt_token');
+    setToken(storedToken);
+  };
 
   useFocusEffect(
     React.useCallback(() => {
-      requestCameraPermission();
-    }, [])
+      const initiateCapture = async () => {
+        await fetchToken(); // 토큰을 먼저 불러옴
+        if (TOKEN) { // 토큰이 로드되었는지 확인
+          requestCameraPermission();
+        }
+      };
+      initiateCapture();
+    }, [TOKEN])
   );
-
-  useEffect(() => {
-    const fetchToken = async () => {
-      const storedToken = await AsyncStorage.getItem('jwt_token');
-      setToken(storedToken);
-    };
-
-    fetchToken();
-  }, []);
 
   const requestCameraPermission = async () => {
     try {
@@ -89,8 +90,8 @@ const OCRScreen = () => {
         {
           requests: [
             {
-              features: [{type: 'TEXT_DETECTION'}],
-              image: {content: base64Image},
+              features: [{ type: 'TEXT_DETECTION' }],
+              image: { content: base64Image },
             },
           ],
         },
@@ -111,6 +112,7 @@ const OCRScreen = () => {
       if (detectedTexts) {
         setOcrTexts(detectedTexts.slice(1));
       }
+      console.log(detectedTexts);
     } catch (error) {
       console.error('OCR API request error:', error);
     } finally {
@@ -171,7 +173,7 @@ const OCRScreen = () => {
 
   const handleAddSupplement = (supplementSeq: number) => {
     setSelectedSupplementSeq(supplementSeq);
-    setIsModalVisible(true); 
+    setIsModalVisible(true);
   };
 
   const confirmAddSupplement = async () => {
@@ -264,7 +266,7 @@ const OCRScreen = () => {
                   onPress={() => handleAddSupplement(item.supplementSeq)}>
                   <Text style={styles.supplementName}>{item.pillName}</Text>
                   <Image
-                    source={{uri: item.imageUrl}}
+                    source={{ uri: item.imageUrl }}
                     style={styles.supplementImage}
                   />
                 </TouchableOpacity>
@@ -297,14 +299,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#f8f9fa', // 밝은 회색 배경으로 변경
   },
   title: {
-    fontSize: 20,
+    fontSize: 20, // 글자 크기 확대
     fontWeight: 'bold',
-    color: 'black',
+    color: '#343a40', // 어두운 색상으로 텍스트 색 변경
     marginBottom: 20,
     textAlign: 'center',
+    textShadowColor: '#00000020', // 그림자 효과 추가
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   resultContainer: {
     paddingBottom: 20,
@@ -312,9 +317,14 @@ const styles = StyleSheet.create({
   resultText: {
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+    borderColor: '#ced4da',
+    borderRadius: 8,
     marginBottom: 10,
+    backgroundColor: '#ffffff', // 흰색 배경으로 설정
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
   selectedText: {
     backgroundColor: '#00FF00',
@@ -322,8 +332,12 @@ const styles = StyleSheet.create({
   editPrompt: {
     marginTop: 20,
     textAlign: 'center',
-    color: 'black',
+    color: '#495057',
     fontWeight: 'bold',
+    fontSize: 18, // 글자 크기 확대
+    textShadowColor: '#00000010', // 텍스트 그림자 추가
+    textShadowOffset: { width: 0.5, height: 0.5 },
+    textShadowRadius: 1,
   },
   inputContainer: {
     marginTop: 10,
@@ -333,61 +347,89 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 10,
+    borderColor: '#adb5bd',
+    borderRadius: 8,
+    padding: 12, // padding 크기 확대
     marginRight: 10,
+    backgroundColor: '#ffffff', // 흰색 배경 추가
+    fontSize: 16, // 글자 크기 확대
+    color: '#495057', // 텍스트 색상 설정
   },
   saveButton: {
     backgroundColor: '#00FF00',
-    padding: 10,
-    borderRadius: 5,
+    padding: 12,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
   },
   saveText: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 16,
   },
   retakeButton: {
     marginTop: 10,
-    backgroundColor: '#ccc',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: '#6c757d',
+    padding: 12,
+    borderRadius: 8,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
   },
   retakeText: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 16,
   },
   emptyText: {
     textAlign: 'center',
     marginTop: 20,
-    fontSize: 16,
+    fontSize: 18,
+    color: '#868e96',
+    fontWeight: 'bold',
   },
   supplementContainer: {
     marginTop: 20,
   },
   supplementHeader: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
+    color: '#343a40', // 짙은 회색으로 색상 설정
+    textShadowColor: '#00000020', // 텍스트 그림자 추가
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   supplementCard: {
-    padding: 10,
+    padding: 12,
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
+    borderColor: '#dee2e6',
+    borderRadius: 8,
     marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   supplementName: {
     flex: 1,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#495057', // 회색 계열 색상 설정
   },
   supplementImage: {
     width: 50,
     height: 50,
-    borderRadius: 5,
+    borderRadius: 8,
+    marginLeft: 10,
   },
   loadingContainer: {
     flexDirection: 'row',
@@ -396,5 +438,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
 
 export default OCRScreen;
