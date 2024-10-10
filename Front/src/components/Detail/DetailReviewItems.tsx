@@ -155,7 +155,8 @@ const styles = StyleSheet.create({
   container: {
     // flex: 1,
     width: '100%',
-    borderWidth: 1,
+    height: '20%',
+    // borderWidth: 1,
   },
   reviewContainer: {
     flexDirection: 'row',
