@@ -102,17 +102,17 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
     alamSeq: number,
   ) => {
     const storedToken = await AsyncStorage.getItem('jwt_token');
-
+    
     const date = new Date(alarmDate);
     const hours = date.getUTCHours().toString().padStart(2, '0');
     const minutes = date.getUTCMinutes().toString().padStart(2, '0');
     // 초를 제거하고 시간 포맷 수정
-    const time = `${hours}:${minutes}.00`;
+    const time = `${hours}:${minutes}:00.00`;
     if (!alarmDate) {
       Alert.alert('알람 시간을 선택해 주세요.');
       return;
     }
-
+    
     try {
       const response = await axios.patch(
         `${API_URL}/api/v1/alarm/${alamSeq}`,
@@ -158,7 +158,7 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
     isTurnOn: boolean
   ) => {
     const storedToken = await AsyncStorage.getItem('jwt_token');
-    console.log('되긴 하니???')
+    console.log('알람 onoff 도전')
     try {
       const response = await axios.patch(
         `${API_URL}/api/v1/alarm/${alamSeq}`,
@@ -172,7 +172,6 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
           },
         },
       )
-      console.log('나 알람 onoff 했다')
     } catch(error) {
       console.log(error)
     }
@@ -208,7 +207,6 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
       <View style={styles.BtnContainer}>
         <TouchableOpacity
           onPress={() => changeAlarmOnOff(convertTimeStringToDate(myAlarm.time), myAlarm.alarmSeq)}
-
         >
           <View style={styles.alarmOnOffBtn}>
             <View 
