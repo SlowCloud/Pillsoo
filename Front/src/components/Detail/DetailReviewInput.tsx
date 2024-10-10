@@ -10,13 +10,17 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {RouteProp, useRoute} from '@react-navigation/native';
-import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
 import {API_URL} from '@env';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
 
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
-const DetailReviewInput: React.FC = () => {
+interface DetailReviewInputProps {
+  onReviewSubmit: () => void;
+}
+
+const DetailReviewInput: React.FC<DetailReviewInputProps> = ({ onReviewSubmit }) => {
   const [review, setReview] = useState<string>('');
   const [token, setToken] = useState<string | null>(null);
   const route = useRoute<DetailScreenRouteProp>();
@@ -27,16 +31,18 @@ const DetailReviewInput: React.FC = () => {
       const storedToken = await AsyncStorage.getItem('jwt_token');
       setToken(storedToken);
     };
-
     fetchToken();
-  }, []);
+  }, [token]);
 
   const handleTextChange = (inputText: string) => {
     setReview(inputText);
   };
 
   const clickedSubmitBtn = async () => {
-    if (!token) return;
+    if (!token) {
+      Alert.alert('토큰이 없습니다. 다시 시도해주세요.');
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -46,17 +52,18 @@ const DetailReviewInput: React.FC = () => {
           headers: {
             access: `${token}`,
           },
-        },
+        }
       );
 
       if (response.status === 200) {
         Alert.alert('리뷰가 성공적으로 제출되었습니다!');
         setReview('');
+        onReviewSubmit();
       } else {
         Alert.alert('리뷰 제출에 실패했습니다. 다시 시도해주세요.');
       }
     } catch (error) {
-      console.error(error);
+      console.error("Failed to submit review:", error);
       Alert.alert('오류가 발생했습니다. 나중에 다시 시도해주세요.');
     }
   };

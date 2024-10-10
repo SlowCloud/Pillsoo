@@ -18,6 +18,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSelector} from 'react-redux';
 import CommonModal from '../../components/common/Modal';
 import FastImage from 'react-native-fast-image';
+
+
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
 export type PillData = {

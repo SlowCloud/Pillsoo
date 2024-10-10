@@ -13,6 +13,7 @@ type Props = {
   userSeq: number;
   reviewId: number;
   nickName: string;
+  onUpdateReviews: () => void;
 };
 
 const DetailReviewItems: React.FC<Props> = ({
@@ -22,6 +23,7 @@ const DetailReviewItems: React.FC<Props> = ({
   userSeq,
   reviewId,
   nickName,
+  onUpdateReviews,
 }) => {
   const storedUserSeq = useSelector(
     (state: {userSeq: number | null}) => state.userSeq,
@@ -36,7 +38,6 @@ const DetailReviewItems: React.FC<Props> = ({
       const storedToken = await AsyncStorage.getItem('jwt_token');
       setToken(storedToken);
     };
-
     fetchToken();
   }, []);
 
@@ -60,6 +61,7 @@ const DetailReviewItems: React.FC<Props> = ({
         },
       );
       Alert.alert('리뷰 수정 성공', '리뷰가 성공적으로 수정되었습니다.');
+      onUpdateReviews(); // 수정 성공 후 리뷰 목록 새로고침
     } catch (error) {
       console.log(error);
       Alert.alert('리뷰 수정 실패', '리뷰 수정에 실패했습니다.');
@@ -98,6 +100,7 @@ const DetailReviewItems: React.FC<Props> = ({
         },
       );
       Alert.alert('리뷰 삭제 성공', '리뷰가 성공적으로 삭제되었습니다.');
+      onUpdateReviews(); // 삭제 성공 후 리뷰 목록 새로고침
     } catch (error) {
       console.log(error);
       Alert.alert('리뷰 삭제 실패', '리뷰 삭제에 실패했습니다.');
