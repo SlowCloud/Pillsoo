@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity, Alert, ScrollView} from 'react-native';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {TextInput} from 'react-native-gesture-handler';
 import {API_URL} from '@env';
+import CommonModal from '../common/Modal';
+import Modal2 from '../common/Modal2';
 
 type Props = {
   userName: string;
@@ -32,6 +34,8 @@ const DetailReviewItems: React.FC<Props> = ({
   const [token, setToken] = useState<string | null>(null);
   const [updateContent, setUpdateContent] = useState<boolean>(false);
   const [updateReview, setUpdateReview] = useState<string>('');
+  const [openModal, setOPenModal] = useState<boolean>(false);
+  const [openUpdateModal, setOpenUpdateModal] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -46,6 +50,7 @@ const DetailReviewItems: React.FC<Props> = ({
   };
 
   const clickedUpdateBtn = async () => {
+    setOpenUpdateModal(true)
     setUpdateContent(false);
     setUpdateReview('');
     if (!token) return;
@@ -60,7 +65,6 @@ const DetailReviewItems: React.FC<Props> = ({
           },
         },
       );
-      Alert.alert('리뷰 수정 성공', '리뷰가 성공적으로 수정되었습니다.');
       onUpdateReviews(); // 수정 성공 후 리뷰 목록 새로고침
     } catch (error) {
       console.log(error);
@@ -69,22 +73,7 @@ const DetailReviewItems: React.FC<Props> = ({
   };
 
   const confirmDelete = () => {
-    Alert.alert(
-      '리뷰 삭제 확인',
-      '정말로 삭제하시겠습니까?',
-      [
-        {
-          text: '취소',
-          style: 'cancel',
-        },
-        {
-          text: '삭제',
-          onPress: handleDelete,
-          style: 'destructive',
-        },
-      ],
-      {cancelable: true},
-    );
+    setOPenModal(true);
   };
 
   const handleDelete = async () => {
@@ -99,13 +88,16 @@ const DetailReviewItems: React.FC<Props> = ({
           },
         },
       );
-      Alert.alert('리뷰 삭제 성공', '리뷰가 성공적으로 삭제되었습니다.');
       onUpdateReviews(); // 삭제 성공 후 리뷰 목록 새로고침
     } catch (error) {
       console.log(error);
       Alert.alert('리뷰 삭제 실패', '리뷰 삭제에 실패했습니다.');
     }
   };
+
+  const handleCloseModal = () => {
+    setOpenUpdateModal(false);
+  }
 
   return (
     <View style={styles.container}>
@@ -140,14 +132,31 @@ const DetailReviewItems: React.FC<Props> = ({
         <Text style={styles.reviewContent}>{content}</Text>
       )}
       <View style={styles.line}></View>
+      <CommonModal
+        visible={openUpdateModal}
+        message='리뷰가 수정되었습니다!'
+        onClose={handleCloseModal}
+        imageSource={require('../../assets/review.png')}
+      />
+      <Modal2 
+        isVisible={openModal}
+        onClose={() => setOPenModal(false)}
+        onConfirm={handleDelete}
+        title='정말로 삭제하시겠습니까?'
+        subText='리뷰가 완전히 삭제됩니다.'
+        confirmText='삭제'
+        cancelText='취소'
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     width: '100%',
+    height: '20%',
+    // borderWidth: 1,
   },
   reviewContainer: {
     flexDirection: 'row',
