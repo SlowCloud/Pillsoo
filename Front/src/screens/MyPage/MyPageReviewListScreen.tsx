@@ -95,13 +95,14 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 24,
     marginHorizontal: 100,
-    marginTop: 60,
+    // marginTop: 60,
   },
   myReviewBox: {
-    marginVertical: 20,
+    marginVertical: 10,
   },
   myReviewContainer: {
-    marginTop: 45
+    marginTop: 30,
+    height: '70%'
   }
 });
 
