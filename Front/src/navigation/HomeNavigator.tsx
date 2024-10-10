@@ -20,7 +20,7 @@ const HomeNavigator = () => {
       screenOptions={{
         headerTitleAlign: 'center',
         headerStyle: {
-          backgroundColor: '#FAFAFA',
+          backgroundColor: 'white',
         },
         headerTitleStyle: {
           color: 'black',

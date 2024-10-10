@@ -7,31 +7,36 @@ import {
   TextInput,
   ScrollView,
   Image,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
 import {launchCamera} from 'react-native-image-picker';
 import axios from 'axios';
 import {OCR_API_KEY, API_URL, TOKEN} from '@env';
-import {useFocusEffect} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {request, PERMISSIONS} from 'react-native-permissions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Modal2 from '../../components/common/Modal2'; 
+import { Alert } from 'react-native';
 
 const OCRScreen = () => {
-  const [token, setToken] = useState<string | null>(null);
   const [ocrTexts, setOcrTexts] = useState<string[]>([]);
   const [editableText, setEditableText] = useState<string>('');
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [supplementLoading, setSupplementLoading] = useState<boolean>(false);
   const [results, setResults] = useState<any[]>([]);
+  const [token, setToken] = useState<string | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false); 
+  const [selectedSupplementSeq, setSelectedSupplementSeq] = useState<number | null>(null);
+
   const navigation = useNavigation();
 
-  console.log(TOKEN);
+  const isTokenLoaded = !!TOKEN;
+
   useFocusEffect(
     React.useCallback(() => {
       requestCameraPermission();
-    }, [TOKEN]),
+    }, [])
   );
 
   useEffect(() => {
@@ -47,10 +52,8 @@ const OCRScreen = () => {
     try {
       const result = await request(PERMISSIONS.ANDROID.CAMERA);
       if (result === 'granted') {
-        console.log('Camera permission granted');
         handleCapture();
       } else {
-        console.log('Camera permission denied');
         Alert.alert('권한 필요', '카메라 사용을 위해 권한이 필요합니다.');
       }
     } catch (error) {
@@ -60,36 +63,16 @@ const OCRScreen = () => {
 
   const handleCapture = async () => {
     try {
-      console.log('Launching camera...');
       const result = await launchCamera({
         mediaType: 'photo',
         includeBase64: true,
       });
 
-      console.log('Camera result:', result);
-
-      if (result.didCancel) {
-        console.log('User cancelled the camera');
-        return;
-      }
-
-      if (result.errorCode) {
-        console.log('Camera error:', result.errorMessage);
-        return;
-      }
-
       if (result.assets && result.assets.length > 0) {
         const base64Image = result.assets[0].base64;
-        console.log('Captured image base64 length:', base64Image.length);
-
         if (base64Image) {
-          console.log('Proceeding with OCR...');
           await sendToOcr(base64Image);
-        } else {
-          console.log('No base64 image data found');
         }
-      } else {
-        console.log('No assets found in camera result');
       }
     } catch (error) {
       console.error('Error in handleCapture:', error);
@@ -97,7 +80,9 @@ const OCRScreen = () => {
   };
 
   const sendToOcr = async (base64Image: string) => {
-    console.log('Sending image to OCR API...');
+    if (!isTokenLoaded) return;
+
+    setLoading(true);
     try {
       const response = await axios.post(
         'https://vision.googleapis.com/v1/images:annotate',
@@ -118,20 +103,18 @@ const OCRScreen = () => {
           },
         },
       );
-      console.log('OCR API response:', response.data);
 
       const detectedTexts = response.data.responses[0]?.textAnnotations?.map(
         item => item.description,
       );
 
       if (detectedTexts) {
-        console.log('Detected texts:', detectedTexts);
         setOcrTexts(detectedTexts.slice(1));
-      } else {
-        console.log('No text annotations found');
       }
     } catch (error) {
       console.error('OCR API request error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -160,9 +143,9 @@ const OCRScreen = () => {
   };
 
   const sendSavedTextToApi = async (text: string) => {
-    console.log('Sending saved text to API:', text);
+    if (!isTokenLoaded) return;
 
-    setLoading(true);
+    setSupplementLoading(true);
     try {
       const response = await axios.get(`${API_URL}/api/v1/supplement/search`, {
         headers: {
@@ -176,36 +159,27 @@ const OCRScreen = () => {
         },
       });
 
-      console.log('API response:', response.data);
-
       if (response.status === 200) {
-        console.log('hi');
-        console.log('Search results:', response.data.content);
         setResults(response.data.content);
-      } else {
-        console.log('Unexpected status code:', response.status);
       }
     } catch (error) {
       console.error('API request error:', error);
     } finally {
-      setLoading(false);
+      setSupplementLoading(false);
     }
   };
 
   const handleAddSupplement = (supplementSeq: number) => {
-    Alert.alert('확인', '이 영양제를 마이 키트에 추가하시겠습니까?', [
-      {
-        text: '취소',
-        style: 'cancel',
-      },
-      {
-        text: '확인',
-        onPress: async () => {
-          await addSupplement(supplementSeq);
-          navigation.navigate('SupplementInput');
-        },
-      },
-    ]);
+    setSelectedSupplementSeq(supplementSeq);
+    setIsModalVisible(true); 
+  };
+
+  const confirmAddSupplement = async () => {
+    if (selectedSupplementSeq !== null) {
+      await addSupplement(selectedSupplementSeq);
+      setIsModalVisible(false);
+      navigation.navigate('SupplementInput');
+    }
   };
 
   const addSupplement = async (supplementSeq: number) => {
@@ -224,8 +198,6 @@ const OCRScreen = () => {
 
       if (response.status === 200) {
         console.log('Supplement added successfully');
-      } else {
-        console.log('Unexpected status code:', response.status);
       }
     } catch (error) {
       console.error('Error adding supplement:', error);
@@ -236,7 +208,12 @@ const OCRScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>스캔한 영양제의 이름을 선택해주세요!</Text>
 
-      {ocrTexts.length > 0 ? (
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#00ff00" />
+          <Text>텍스트 인식 중...</Text>
+        </View>
+      ) : ocrTexts.length > 0 ? (
         <ScrollView contentContainerStyle={styles.resultContainer}>
           {ocrTexts.map((text, index) => (
             <TouchableOpacity
@@ -270,14 +247,12 @@ const OCRScreen = () => {
             <Text style={styles.retakeText}>다시 스캔하기</Text>
           </TouchableOpacity>
 
-          {loading && (
+          {supplementLoading ? (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#00ff00" />
               <Text>영양제 검색중...</Text>
             </View>
-          )}
-
-          {results.length > 0 ? (
+          ) : results.length > 0 ? (
             <View style={styles.supplementContainer}>
               <Text style={styles.supplementHeader}>
                 찾는 영양제를 선택해주세요 !
@@ -304,6 +279,16 @@ const OCRScreen = () => {
       ) : (
         <Text style={styles.emptyText}>스캔된 텍스트가 없습니다.</Text>
       )}
+
+      <Modal2
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        onConfirm={confirmAddSupplement}
+        title="이 영양제를 마이 키트에"
+        subText="추가하시겠습니까?"
+        confirmText="확인"
+        cancelText="취소"
+      />
     </View>
   );
 };

@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   Alert,
+  Linking,
 } from 'react-native';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
@@ -27,9 +28,7 @@ const SupplementInputScreen = () => {
   const [myKitData, setMyKitData] = useState<Supplement[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false); 
-  const [selectedSupplementSeq, setSelectedSupplementSeq] = useState<
-    number | null
-  >(null);
+  const [selectedSupplementSeq, setSelectedSupplementSeq] = useState<number | null>(null);
 
   const userSeq = useSelector(
     (state: {userSeq: string | null}) => state.userSeq,
@@ -95,16 +94,29 @@ const SupplementInputScreen = () => {
     setIsModalVisible(true);
   };
 
+  const handlePurchasePress = (pillName: string) => {
+    const query = encodeURIComponent(pillName.trim());
+    const url = `https://msearch.shopping.naver.com/search/all?query=${query}`;
+    Linking.openURL(url);
+  };
+
   const renderItem = ({item}: {item: Supplement}) => (
     <View style={styles.itemContainer}>
       <TouchableOpacity
         style={styles.itemDetailContainer}
-        onPress={() => navigation.navigate('Detail', {id: item.supplementSeq})} 
+        onPress={() => navigation.navigate('Detail', {id: item.supplementSeq})}
       >
         <Image source={{uri: item.imageUrl}} style={styles.itemImage} />
-        <Text style={styles.itemName} numberOfLines={1} ellipsizeMode="tail">
-          {item.pillName}
-        </Text>
+        <View style={styles.itemTextContainer}>
+          <Text style={styles.itemName} numberOfLines={1} ellipsizeMode="tail">
+            {item.pillName}
+          </Text>
+          <TouchableOpacity
+            style={styles.purchaseButton}
+            onPress={() => handlePurchasePress(item.pillName)}>
+            <Text style={styles.purchaseButtonText}>구매하러가기</Text>
+          </TouchableOpacity>
+        </View>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.deleteButton}
@@ -196,6 +208,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
+  itemTextContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    gap: 15,
+  },
   itemImage: {
     width: 100,
     height: 100,
@@ -206,7 +223,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     maxWidth: '60%',
-    color: 'black'
+    color: 'black',
+  },
+  purchaseButton: {
+    backgroundColor: '#00FF00',
+    padding: 7,
+    borderRadius: 20,
+    marginTop: 5,
+    alignItems: 'center',
+  },
+  purchaseButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   deleteButton: {
     padding: 10,
@@ -216,6 +245,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold',
     fontSize: 16,
+    top: -25
   },
   inputContainer: {
     flex: 0.2,

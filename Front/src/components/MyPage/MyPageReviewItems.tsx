@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Image, ScrollView} from 'react-native';
+import {StyleSheet, View, Text, Image} from 'react-native';
 import axios from 'axios';
 import {API_URL} from '@env';
 
@@ -26,9 +26,7 @@ const MyPageReviewItems: React.FC<Props> = ({
   useEffect(() => {
     const fetchMyReview = async () => {
       if (!token) {
-        console.log(
-          '마이페이지에서 영양제 상세 정보 가져오고 싶은데 토큰이 없다.',
-        );
+        console.log('마이페이지에서 영양제 상세 정보 가져오고 싶은데 토큰이 없다.');
         return;
       }
 
@@ -51,14 +49,21 @@ const MyPageReviewItems: React.FC<Props> = ({
     };
 
     fetchMyReview();
-  }, [supplementSeq, token]); // dependency array에 token과 supplementSeq 추가
+  }, [supplementSeq, token]);
 
   return (
     <View style={styles.container}>
-      <Image source={{uri: pillData?.imageUrl}} style={styles.myReviewImage} />
+      <Image
+        source={
+          pillData?.imageUrl
+            ? { uri: pillData.imageUrl }
+            : require('../../assets/noImage.png') 
+        }
+        style={styles.myReviewImage}
+      />
       <View style={styles.myReviewBox}>
         <Text numberOfLines={1} ellipsizeMode="tail">
-          💊{pillData?.pillName}
+          💊{pillData?.pillName || '영양제 이름 없음'}
         </Text>
         <Text
           style={styles.myReviewContent}
