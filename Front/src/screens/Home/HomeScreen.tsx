@@ -72,7 +72,7 @@ const HomeScreen = () => {
             }>
             <View style={styles.myMenuBtn}>
               <Image
-                source={require('../../assets/homePill.png')}
+                source={require('../../assets/homePillImg.png')}
                 style={styles.myMenuImage}
               />
               <Text style={styles.myMenuText}>영양제 관리</Text>
