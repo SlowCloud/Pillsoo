@@ -205,18 +205,40 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
         </Text>
         <Text style={styles.pillName}>{initialPillName}</Text>
       </View>
-      <View style={styles.alarmUpdateBtn}>
+      <View style={styles.BtnContainer}>
         <TouchableOpacity
-          onPress={updateAlarm}
-          style={styles.alarmUpdateBtnText}>
-          <Text>수정</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={deleteAlarm}
-          style={styles.alarmUpdateBtnText}>
-          <Text>삭제</Text>
-        </TouchableOpacity>
-      </View>
+          onPress={() => changeAlarmOnOff(convertTimeStringToDate(myAlarm.time), myAlarm.alarmSeq)}
+
+        >
+          <View style={styles.alarmOnOffBtn}>
+            <View 
+              style={[
+                styles.alarmOnOffSmallBtn,  
+                checkAlarmOn ? styles.alarmOnOffSmallBtnRed : styles.alarmOnOffSmallBtnGreen]}>
+              <View 
+                style={[
+                  styles.alarmOnOffClickBtn,
+                  !checkAlarmOn && styles.alarmOnOffClickBtnRight
+                  ]}></View>
+            </View>
+          </View>
+          </TouchableOpacity>
+          <View style={styles.alarmUpdateBtn}>
+            <TouchableOpacity
+              onPress={updateAlarm}
+              style={styles.alarmUpdateBtnText}
+              >
+              <Text>수정</Text>
+            </TouchableOpacity>
+            <Text> | </Text>
+            <TouchableOpacity
+              onPress={deleteAlarm}
+              style={styles.alarmUpdateBtnText}
+            >
+              <Text>삭제</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       {openAlarmModal && (
         <DateTimePicker
           value={date}
@@ -234,29 +256,14 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm}) => {
           imageSource={imageUrl}
         />
       )}
-      <TouchableOpacity
-        onPress={() => changeAlarmOnOff(convertTimeStringToDate(myAlarm.time), myAlarm.alarmSeq)}
-      >
-        <View style={styles.alarmOnOffBtn}>
-          <View 
-            style={[
-              styles.alarmOnOffSmallBtn,  
-              checkAlarmOn ? styles.alarmOnOffSmallBtnRed : styles.alarmOnOffSmallBtnGreen]}>
-            <View 
-              style={[
-                styles.alarmOnOffClickBtn,
-                !checkAlarmOn && styles.alarmOnOffClickBtnRight
-                ]}></View>
-          </View>
-        </View>
-        </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: 85,
+    width: 365,
+    height: 90,
     backgroundColor: '#fff',
     borderRadius: 10,
     elevation: 3,
@@ -284,15 +291,18 @@ const styles = StyleSheet.create({
   },
   time: {
     fontWeight: 'bold',
-    fontSize: 30,
+    fontSize: 32,
     marginBottom: -4,
   },
   alarmUpdateBtn: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    marginTop: 3,
+    top: 10,
     marginRight: 17,
+  },
+  BtnContainer: {
+    flexDirection: 'row'
   },
   alarmUpdateBtnText: {
     marginHorizontal: 3,
@@ -304,6 +314,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 10,
     borderRadius: 20,
+    top: 7,
     alignItems: 'center',
     justifyContent: 'center'
   },

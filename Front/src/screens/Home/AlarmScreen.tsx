@@ -103,26 +103,23 @@ const AlarmScreen = () => {
   return (
     <View style={styles.container}>
       {openModal && <AlarmModal myKitData={myKitData} />}
-      {/* <View style={styles.alarmTitleContainer}>
-        <Text style={styles.alarmTitle}>알람</Text>
-      </View> */}
-      <View style={styles.alarmContainer}>
-        {myAlarms.length > 0 ? (
-          <ScrollView>
-            {myAlarms.map(alarm => (
-              <MyAlarmListitems key={alarm.alarmSeq} myAlarm={alarm} />
-            ))}
-          </ScrollView>
-        ) : (
-          <Text style={styles.noAlarmText}>알람설정한 영양제가 없습니다.</Text>
-        )}
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={showAlarmModal} style={styles.alarmAddBtn}>
-          <Text style={styles.alarmAddText}>+</Text>
-        </TouchableOpacity>
-      </View>
+    <View style={styles.alarmContainer}>
+      {myAlarms.length > 0 ? (
+        <ScrollView>
+          {myAlarms.map(alarm => (
+            <MyAlarmListitems key={alarm.alarmSeq} myAlarm={alarm} />
+          ))}
+        </ScrollView>
+      ) : (
+        <Text style={styles.noAlarmText}>알람설정한 영양제가 없습니다.</Text>
+      )}
     </View>
+    <View style={styles.buttonContainer}>
+      <TouchableOpacity onPress={showAlarmModal} style={styles.alarmAddBtn}>
+        <Text style={styles.alarmAddText}>+</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
   );
 };
 
@@ -135,7 +132,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center', // 세로 정렬을 가운데로 설정
     alignItems: 'center', // 가로 정렬을 가운데로 설정
-    marginHorizontal: 25,
+    // marginHorizontal: 25,
+    marginTop: 65
   },
   buttonContainer: {
     alignItems: 'flex-end',

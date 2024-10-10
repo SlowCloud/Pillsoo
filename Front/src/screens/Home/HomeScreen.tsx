@@ -72,7 +72,7 @@ const HomeScreen = () => {
             }>
             <View style={styles.myMenuBtn}>
               <Image
-                source={require('../../assets/homePill.png')}
+                source={require('../../assets/homePillImg.png')}
                 style={styles.myMenuImage}
               />
               <Text style={styles.myMenuText}>영양제 관리</Text>
@@ -135,9 +135,9 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   greeting: {
-    fontSize: 25,
-    color: 'black',
-    fontWeight: '300',
+    fontSize: 30,
+    color: '#557C56',
+    fontWeight: '500',
     zIndex:2
   },
   circle1: {
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     width: 165,
     height: 165,
     bottom: 26,
-    left: 8
+    left: 3
   },
   kit: {
     flex: 4.5,
