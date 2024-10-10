@@ -25,10 +25,10 @@ const OCRScreen = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [supplementLoading, setSupplementLoading] = useState<boolean>(false);
   const [results, setResults] = useState<any[]>([]);
+  const [showResults, setShowResults] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [selectedSupplementSeq, setSelectedSupplementSeq] = useState<number | null>(null);
-
   const navigation = useNavigation();
   const isTokenLoaded = !!TOKEN;
 
@@ -37,17 +37,16 @@ const OCRScreen = () => {
     setToken(storedToken);
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const initiateCapture = async () => {
-        await fetchToken(); // 토큰을 먼저 불러옴
-        if (TOKEN) { // 토큰이 로드되었는지 확인
-          requestCameraPermission();
-        }
-      };
-      initiateCapture();
-    }, [TOKEN])
-  );
+  useEffect(() => {
+    const setup = async () => {
+      await fetchToken();
+      if (TOKEN) {
+        requestCameraPermission();
+      }
+    };
+    setup();
+  }, []);
+  
 
   const requestCameraPermission = async () => {
     try {
@@ -124,12 +123,14 @@ const OCRScreen = () => {
     setOcrTexts([]);
     setEditableText('');
     setSelectedIndex(null);
+    setShowResults(false);
     handleCapture();
   };
 
   const handleEditText = (index: number) => {
     setEditableText(ocrTexts[index]);
     setSelectedIndex(index);
+    setShowResults(true);
   };
 
   const handleSaveEdit = async () => {
@@ -228,54 +229,59 @@ const OCRScreen = () => {
               <Text>{text}</Text>
             </TouchableOpacity>
           ))}
-          <Text style={styles.editPrompt}>
-            영양제 이름에 맞게 수정해주세요 !
-          </Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.textInput}
-              value={editableText}
-              onChangeText={setEditableText}
-              multiline
-              editable={selectedIndex !== null}
-            />
-            <TouchableOpacity
-              onPress={handleSaveEdit}
-              style={styles.saveButton}>
-              <Text style={styles.saveText}>검색하기</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity onPress={handleRetake} style={styles.retakeButton}>
-            <Text style={styles.retakeText}>다시 스캔하기</Text>
-          </TouchableOpacity>
 
-          {supplementLoading ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color="#00ff00" />
-              <Text>영양제 검색중...</Text>
-            </View>
-          ) : results.length > 0 ? (
-            <View style={styles.supplementContainer}>
-              <Text style={styles.supplementHeader}>
-                찾는 영양제를 선택해주세요 !
+          {showResults && (
+            <>
+              <Text style={styles.editPrompt}>
+                영양제 이름에 맞게 수정해주세요 !
               </Text>
-              {results.map(item => (
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.textInput}
+                  value={editableText}
+                  onChangeText={setEditableText}
+                  multiline
+                  editable={selectedIndex !== null}
+                />
                 <TouchableOpacity
-                  key={item.supplementSeq}
-                  style={styles.supplementCard}
-                  onPress={() => handleAddSupplement(item.supplementSeq)}>
-                  <Text style={styles.supplementName}>{item.pillName}</Text>
-                  <Image
-                    source={{ uri: item.imageUrl }}
-                    style={styles.supplementImage}
-                  />
+                  onPress={handleSaveEdit}
+                  style={styles.saveButton}>
+                  <Text style={styles.saveText}>검색하기</Text>
                 </TouchableOpacity>
-              ))}
-            </View>
-          ) : (
-            <Text style={styles.emptyText}>
-              검색하신 영양제가 존재하지 않습니다.
-            </Text>
+              </View>
+
+              {supplementLoading ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="large" color="#00ff00" />
+                  <Text>영양제 검색중...</Text>
+                </View>
+              ) : results.length > 0 ? (
+                <View style={styles.supplementContainer}>
+                  <Text style={styles.supplementHeader}>
+                    찾는 영양제를 선택해주세요 !
+                  </Text>
+                  {results.map(item => (
+                    <TouchableOpacity
+                      key={item.supplementSeq}
+                      style={styles.supplementCard}
+                      onPress={() => handleAddSupplement(item.supplementSeq)}>
+                      <Text style={styles.supplementName}>{item.pillName}</Text>
+                      <Image
+                        source={{ uri: item.imageUrl }}
+                        style={styles.supplementImage}
+                      />
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              ) : (
+                <Text style={styles.emptyText}>
+                  검색하신 영양제가 존재하지 않습니다.
+                </Text>
+              )}
+              <TouchableOpacity onPress={handleRetake} style={styles.retakeButton}>
+                <Text style={styles.retakeText}>다시 찍기</Text>
+              </TouchableOpacity>
+            </>
           )}
         </ScrollView>
       ) : (
@@ -299,15 +305,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f8f9fa', // 밝은 회색 배경으로 변경
+    backgroundColor: '#f8f9fa',
   },
   title: {
-    fontSize: 20, // 글자 크기 확대
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#343a40', // 어두운 색상으로 텍스트 색 변경
+    color: '#343a40',
     marginBottom: 20,
     textAlign: 'center',
-    textShadowColor: '#00000020', // 그림자 효과 추가
+    textShadowColor: '#00000020',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
   },
@@ -320,7 +326,7 @@ const styles = StyleSheet.create({
     borderColor: '#ced4da',
     borderRadius: 8,
     marginBottom: 10,
-    backgroundColor: '#ffffff', // 흰색 배경으로 설정
+    backgroundColor: '#ffffff',
     shadowColor: '#000',
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.3,
@@ -334,8 +340,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#495057',
     fontWeight: 'bold',
-    fontSize: 18, // 글자 크기 확대
-    textShadowColor: '#00000010', // 텍스트 그림자 추가
+    fontSize: 18,
+    textShadowColor: '#00000010',
     textShadowOffset: { width: 0.5, height: 0.5 },
     textShadowRadius: 1,
   },
@@ -349,11 +355,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#adb5bd',
     borderRadius: 8,
-    padding: 12, // padding 크기 확대
+    padding: 12,
     marginRight: 10,
-    backgroundColor: '#ffffff', // 흰색 배경 추가
-    fontSize: 16, // 글자 크기 확대
-    color: '#495057', // 텍스트 색상 설정
+    backgroundColor: '#ffffff',
+    fontSize: 16,
+    color: '#495057',
   },
   saveButton: {
     backgroundColor: '#00FF00',
@@ -400,8 +406,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
-    color: '#343a40', // 짙은 회색으로 색상 설정
-    textShadowColor: '#00000020', // 텍스트 그림자 추가
+    color: '#343a40',
+    textShadowColor: '#00000020',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
   },
@@ -423,7 +429,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#495057', // 회색 계열 색상 설정
+    color: '#495057',
   },
   supplementImage: {
     width: 50,
@@ -438,6 +444,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-
 
 export default OCRScreen;

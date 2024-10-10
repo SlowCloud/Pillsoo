@@ -34,7 +34,7 @@ const HomeNavigator = () => {
       <Stack.Screen
         name="OCR"
         component={OCRScreen}
-        options={{headerShown: false}}
+        options={{headerShown: true, headerTitle: '영양제 추가'}}
       />
       <Stack.Screen
         name="Alarm"

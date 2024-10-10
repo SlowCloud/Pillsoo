@@ -147,7 +147,6 @@ const MyAlarmListitems: React.FC<MyAlarmListitemsProps> = ({myAlarm, onAlarmList
           },
         },
       )
-      console.log('했따')
     } catch(error) {
       console.log(error)
     }
@@ -262,6 +261,7 @@ const styles = StyleSheet.create({
   pillName: {
     fontSize: 20,
     marginBottom: 3,
+    fontWeight: 'bold'
   },
   time: {
     fontWeight: 'bold',
