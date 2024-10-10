@@ -77,9 +77,7 @@ const AlarmModalItems: React.FC<AlarmModalItemsProps> = ({
       );
       dispatch(setResetAlarm(true));
       setVisible(true);
-      setMessage(
-        `알람이 ${alarmDate.toLocaleTimeString()}으로 만들어졌습니다.`,
-      );
+      setMessage(`알람이 만들어졌습니다!`);
       setMessageImageUrl(require('../../assets/alarmadd.png'));
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -178,8 +176,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   alarmAddText: {
-    color: 'black',
+    color: '#fff',
     marginTop: 8,
+    fontWeight: 'bold',
   },
 });
 
