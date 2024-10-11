@@ -149,4 +149,4 @@ Badges from [here](https://github.com/alexandresanlim/Badges4-README.md-Profile)
 
 ## 포팅 메뉴얼
 
-[해당 문서 참고](PORTING_MENUAL.md)
+[해당 문서 참고](exec/PORTING_MENUAL.md)
