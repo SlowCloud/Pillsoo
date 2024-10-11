@@ -72,12 +72,14 @@ const MyPageReviewListScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.myReviewTitle}>내가 작성한 리뷰</Text>
-      <FlatList
-        data={myAllReviews}
-        renderItem={renderMyReview}
-        keyExtractor={item => item.content}
-        contentContainerStyle={styles.myReviewBox}
-      />
+      <View style={styles.myReviewContainer}>
+        <FlatList
+          data={myAllReviews}
+          renderItem={renderMyReview}
+          keyExtractor={item => item.content}
+          contentContainerStyle={styles.myReviewBox}
+        />
+      </View>
     </View>
   );
 };
@@ -85,16 +87,23 @@ const MyPageReviewListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   myReviewTitle: {
     color: 'black',
     fontSize: 24,
     marginHorizontal: 100,
-    marginTop: 60,
+    // marginTop: 60,
   },
   myReviewBox: {
-    marginVertical: 20,
+    marginVertical: 10,
   },
+  myReviewContainer: {
+    marginTop: 30,
+    height: '70%'
+  }
 });
 
 export default MyPageReviewListScreen;

@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   selectedGender: {
-    borderColor: '#a4f87b',
+    borderColor: '#00FF00',
   },
   genderImage: {
     width: 130,
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
   button: {
     width: '90%',
     padding: 15,
-    backgroundColor: '#a4f87b',
+    backgroundColor: '#00FF00',
     borderRadius: 10,
     alignItems: 'center',
   },

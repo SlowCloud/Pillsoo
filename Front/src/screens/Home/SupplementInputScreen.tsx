@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   Alert,
+  Linking,
 } from 'react-native';
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import axios from 'axios';
@@ -26,6 +27,7 @@ const SupplementInputScreen = () => {
   const navigation = useNavigation();
   const [myKitData, setMyKitData] = useState<Supplement[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false); 
   const [selectedSupplementSeq, setSelectedSupplementSeq] = useState<number | null>(null);
 
   const userSeq = useSelector(
@@ -66,13 +68,18 @@ const SupplementInputScreen = () => {
           },
         });
 
-        setMyKitData(myKitData.filter(item => item.supplementSeq !== selectedSupplementSeq));
+        setMyKitData(
+          myKitData.filter(
+            item => item.supplementSeq !== selectedSupplementSeq,
+          ),
+        );
         setIsModalVisible(false);
+        setIsSuccessModalVisible(true); 
       }
     } catch (err) {
-      Alert.alert('알람 설정을 먼저 해제해주세요 !')
+      Alert.alert('알람 설정을 먼저 해제해주세요 !');
       console.log(err);
-      setIsModalVisible(false); 
+      setIsModalVisible(false);
     }
   };
 
@@ -87,16 +94,29 @@ const SupplementInputScreen = () => {
     setIsModalVisible(true);
   };
 
+  const handlePurchasePress = (pillName: string) => {
+    const query = encodeURIComponent(pillName.trim());
+    const url = `https://msearch.shopping.naver.com/search/all?query=${query}`;
+    Linking.openURL(url);
+  };
+
   const renderItem = ({item}: {item: Supplement}) => (
     <View style={styles.itemContainer}>
       <TouchableOpacity
         style={styles.itemDetailContainer}
-        onPress={() => navigation.navigate('Detail', {id: item.supplementSeq})} // Detail 페이지로 이동
+        onPress={() => navigation.navigate('Detail', {id: item.supplementSeq})}
       >
         <Image source={{uri: item.imageUrl}} style={styles.itemImage} />
-        <Text style={styles.itemName} numberOfLines={1} ellipsizeMode="tail">
-          {item.pillName}
-        </Text>
+        <View style={styles.itemTextContainer}>
+          <Text style={styles.itemName} numberOfLines={1} ellipsizeMode="tail">
+            {item.pillName}
+          </Text>
+          <TouchableOpacity
+            style={styles.purchaseButton}
+            onPress={() => handlePurchasePress(item.pillName)}>
+            <Text style={styles.purchaseButtonText}>구매하러가기</Text>
+          </TouchableOpacity>
+        </View>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.deleteButton}
@@ -109,11 +129,11 @@ const SupplementInputScreen = () => {
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.title}>마이 키트</Text>
-
         {myKitData.length === 0 ? (
           <View style={styles.emptyMessageContainer}>
-            <Text style={styles.emptyMessageText}>마이키트에 담은 영양제가 없습니다.</Text>
+            <Text style={styles.emptyMessageText}>
+              마이키트에 영양제가 없습니다.
+            </Text>
           </View>
         ) : (
           <FlatList
@@ -144,6 +164,16 @@ const SupplementInputScreen = () => {
         confirmText="삭제"
         cancelText="취소"
       />
+
+      <Modal2
+        isVisible={isSuccessModalVisible}
+        onClose={() => setIsSuccessModalVisible(false)} 
+        onConfirm={() => setIsSuccessModalVisible(false)} 
+        title="성공적으로 삭제되었습니다!"
+        subText="마이키트에서 제거 되었습니다 !"
+        confirmText="확인"
+        cancelText="취소"
+      />
     </>
   );
 };
@@ -155,12 +185,6 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 40,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
   },
   itemContainer: {
     backgroundColor: '#fff',
@@ -184,16 +208,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
+  itemTextContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    gap: 15,
+  },
   itemImage: {
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 100,
     marginRight: 15,
     borderRadius: 10,
   },
   itemName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     maxWidth: '60%',
+    color: 'black',
+  },
+  purchaseButton: {
+    backgroundColor: '#00FF00',
+    padding: 7,
+    borderRadius: 20,
+    marginTop: 5,
+    alignItems: 'center',
+  },
+  purchaseButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   deleteButton: {
     padding: 10,
@@ -203,6 +245,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontWeight: 'bold',
     fontSize: 16,
+    top: -25
   },
   inputContainer: {
     flex: 0.2,
@@ -223,6 +266,7 @@ const styles = StyleSheet.create({
   emptyMessageText: {
     fontSize: 18,
     color: 'gray',
+    fontWeight: 'bold',
   },
 });
 

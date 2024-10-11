@@ -21,7 +21,6 @@ const SearchResultScreen = () => {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  console.log(searchQuery)
   const [page, setPage] = useState(1);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
 
@@ -59,7 +58,7 @@ const SearchResultScreen = () => {
         Alert.alert('검색 실패');
       }
     } catch (error) {
-      Alert.alert('검색하신 영양제가 존재하지 않습니다.');
+      // Alert.alert('검색하신 영양제가 존재하지 않습니다.');
     } finally {
       setLoading(false);
       setIsFetchingMore(false);
@@ -118,21 +117,20 @@ const SearchResultScreen = () => {
 
       <View style={styles.resultsContainer}>
         {loading && page === 1 ? (
-          <ActivityIndicator size="large" color="#a4f87b" />
+          <ActivityIndicator size="large" color="#00FF00" />
         ) : results.length > 0 ? (
           <FlatList
-          data={results}
-          keyExtractor={(item, index) => `${item.supplementSeq}-${index}`}
-          renderItem={renderItem}
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={
-            isFetchingMore ? (
-              <ActivityIndicator size="small" color="#a4f87b" />
-            ) : null
-          }
-        />
-        
+            data={results}
+            keyExtractor={(item, index) => `${item.supplementSeq}-${index}`}
+            renderItem={renderItem}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={
+              isFetchingMore ? (
+                <ActivityIndicator size="small" color="#00FF00" />
+              ) : null
+            }
+          />
         ) : searchQuery.trim() === '' ? (
           <Text style={styles.noResultsText}>검색어를 입력하세요.</Text>
         ) : (
@@ -179,12 +177,15 @@ const styles = StyleSheet.create({
   pillName: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: 'gray',
     maxWidth: '80%',
   },
   noResultsText: {
     textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
+    color: 'black',
+    fontWeight: 'bold',
   },
 });
 

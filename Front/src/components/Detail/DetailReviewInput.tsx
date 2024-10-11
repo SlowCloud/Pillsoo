@@ -7,16 +7,24 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {RouteProp, useRoute} from '@react-navigation/native';
-import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
 import {API_URL} from '@env';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {RecommendItemParamList} from '../../components/Recommend/RecommendItem';
+import CommonModal from '../common/Modal';
+
+
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
-const DetailReviewInput: React.FC = () => {
+interface DetailReviewInputProps {
+  onReviewSubmit: () => void;
+}
+
+const DetailReviewInput: React.FC<DetailReviewInputProps> = ({ onReviewSubmit }) => {
   const [review, setReview] = useState<string>('');
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
   const route = useRoute<DetailScreenRouteProp>();
   const {id} = route.params;
@@ -26,80 +34,99 @@ const DetailReviewInput: React.FC = () => {
       const storedToken = await AsyncStorage.getItem('jwt_token');
       setToken(storedToken);
     };
-
     fetchToken();
-  }, []);
+  }, [token]);
 
   const handleTextChange = (inputText: string) => {
     setReview(inputText);
   };
 
   const clickedSubmitBtn = async () => {
-    console.log('hihi')
-    if (!token) return;
+    if (!token) {
+      Alert.alert('토큰이 없습니다. 다시 시도해주세요.');
+      return;
+    }
 
     try {
       const response = await axios.post(
         `${API_URL}/api/v1/supplement/${id}/reviews`,
-        // `http://10.0.2.2:8080/api/v1/supplement/${id}/reviews`,
         {content: review},
         {
           headers: {
             access: `${token}`,
           },
-        },
+        }
       );
+
       if (response.status === 200) {
         setReview('');
-        console.log(response)
+        setOpenModal(true);
       } else {
-        Alert.alert('리뷰 작성 실패');
+        Alert.alert('리뷰 제출에 실패했습니다. 다시 시도해주세요.');
       }
     } catch (error) {
-      console.log(error);
+      console.error("Failed to submit review:", error);
+      Alert.alert('오류가 발생했습니다. 나중에 다시 시도해주세요.');
     }
   };
 
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    onReviewSubmit();
+  }
+
   return (
-    <View>
-      <TouchableOpacity style={styles.inputBtn} onPress={clickedSubmitBtn}>
-        <Text style={styles.inputBtnText}>입력</Text>
-      </TouchableOpacity>
-      <KeyboardAwareScrollView>
+    <KeyboardAwareScrollView
+      style={{flex: 1}}
+      resetScrollToCoords={{x: 0, y: 0}}
+      scrollEnabled={true}>
+      <View style={styles.container}>
         <TextInput
-          autoCorrect={false}
-          multiline
-          style={styles.inputBox}
+          style={styles.input}
+          placeholder="리뷰를 입력하세요..."
           value={review}
           onChangeText={handleTextChange}
+          multiline
         />
-      </KeyboardAwareScrollView>
-    </View>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={clickedSubmitBtn}>
+          <Text style={styles.submitButtonText}>제출</Text>
+        </TouchableOpacity>
+      </View>
+      <CommonModal
+        visible={openModal}
+        message='리뷰가 생성되었습니다!'
+        onClose={handleCloseModal}
+        imageSource={require('../../assets/review.png')}
+      />
+    </KeyboardAwareScrollView>
+
   );
 };
 
 const styles = StyleSheet.create({
-  inputBox: {
-    height: 100,
-    width: '95%',
-    backgroundColor: 'white',
+  container: {
+    padding: 20,
+  },
+  input: {
+    height: 50,
+    borderColor: '#e0e0e0',
     borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 10,
-    marginLeft: '2%',
-  },
-  inputBtnText: {
-    color: 'white',
-  },
-  inputBtn: {
-    width: '20%',
-    // height: 40,
     borderRadius: 5,
-    backgroundColor: '#0B2F9F',
-    justifyContent: 'center',
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: '#ffffff',
+  },
+  submitButton: {
+    backgroundColor: '#00FF00',
+    borderRadius: 20,
+    paddingVertical: 10,
     alignItems: 'center',
-    marginLeft: '76%',
-    marginBottom: 20,
+  },
+  submitButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
 });
 
