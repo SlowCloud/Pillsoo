@@ -1,76 +1,65 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
   Text,
   Modal,
-  TouchableOpacity,
   Image,
+  TouchableOpacity,
 } from 'react-native';
-import {setOpenLogoutModal} from '../../store/store';
 import {useDispatch} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {API_URL} from '@env';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StackNavigationProp} from '@react-navigation/stack';
+import {setOpenDeleteAccountMOdal} from '../../store/store';
 
-export type MyPageParamList = {
-  MyPage: undefined;
-  MyPageReviewList: undefined;
-  UserUpdate: undefined;
-};
+// interface DeleteAccountModalProps {
 
-export type MyPageReviewScreenNavigationProp = StackNavigationProp<
-  MyPageParamList,
-  'MyPage'
->;
+// }
 
-export type Props = {
-  navigation: MyPageReviewScreenNavigationProp;
-};
-
-const LogoutModal: React.FC<Props> = ({navigation}) => {
+function DeleteAccountModal() {
+  const [lastModal, setLastModal] = useState<boolean>(false);
   const dispatch = useDispatch();
 
-  const goLogout = async () => {
+  const goDeleteAccount = async () => {
     const storedToken = await AsyncStorage.getItem('jwt_token');
 
     try {
-      const response = await axios.post(`${API_URL}/api/v1/signout`, {
+      const response = await axios.delete(`${API_URL}/api/v1/quit`, {
         headers: {
           access: `${storedToken}`,
         },
       });
-      dispatch(setOpenLogoutModal(false));
-      AsyncStorage.clear();
-
-      navigation.navigate('AuthHome');
     } catch (error) {
       console.log(error);
     }
   };
 
-  return (
+  const golastModal = () => {
+    setLastModal(true);
+  };
+
+  const goCloselastModal = () => {
+    setLastModal(false);
+    dispatch(setOpenDeleteAccountMOdal(false));
+  };
+
+  const loastModalContainer = (
     <Modal style={styles.modalContainer} transparent={true}>
       <View style={styles.container}>
         <View style={styles.modalContentContainer}>
           <Image
-            source={require('../../assets/logout.png')}
-            style={styles.logoutImage}></Image>
-          <TouchableOpacity onPress={() => dispatch(setOpenLogoutModal(false))}>
+            source={require('../../assets/danbi.jpg')}
+            style={styles.danbiImage}></Image>
+          <TouchableOpacity
+            onPress={() => dispatch(setOpenDeleteAccountMOdal(false))}>
             <View>
-              <Text style={styles.message2}>로그아웃 하시겠습니까?</Text>
+              <Text style={styles.message2}>넌 못 가 바보야</Text>
             </View>
             <View style={styles.messageContainer}>
-              <TouchableOpacity onPress={goLogout}>
+              <TouchableOpacity onPress={goCloselastModal}>
                 <View style={styles.message1Container}>
-                  <Text style={styles.message1}>예</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => dispatch(setOpenLogoutModal(false))}>
-                <View style={styles.message3Container}>
-                  <Text style={styles.message2}>아니요</Text>
+                  <Text style={styles.message1}>닫기</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -79,7 +68,40 @@ const LogoutModal: React.FC<Props> = ({navigation}) => {
       </View>
     </Modal>
   );
-};
+
+  return (
+    <Modal style={styles.modalContainer} transparent={true}>
+      <View style={styles.container}>
+        <View style={styles.modalContentContainer}>
+          <Image
+            source={require('../../assets/deleteaccount.png')}
+            style={styles.logoutImage}></Image>
+          <TouchableOpacity
+            onPress={() => dispatch(setOpenDeleteAccountMOdal(false))}>
+            <View>
+              <Text style={styles.message2}>모든 정보가 사라집니다.</Text>
+              <Text style={styles.message2}>그래도</Text>
+              <Text style={styles.message2}>탈퇴하시겠습니까?</Text>
+            </View>
+            <View style={styles.messageContainer}>
+              <TouchableOpacity onPress={golastModal}>
+                <View style={styles.message1Container}>
+                  <Text style={styles.message1}>예</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={goCloselastModal}>
+                <View style={styles.message3Container}>
+                  <Text style={styles.message2}>아니요</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+      {lastModal && loastModalContainer}
+    </Modal>
+  );
+}
 
 const styles = StyleSheet.create({
   modalContainer: {
@@ -103,6 +125,12 @@ const styles = StyleSheet.create({
   logoutImage: {
     width: 75,
     height: 75,
+    bottom: 15,
+    resizeMode: 'contain',
+  },
+  danbiImage: {
+    width: 80,
+    height: 70,
     bottom: 15,
     resizeMode: 'contain',
   },
@@ -140,4 +168,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LogoutModal;
+export default DeleteAccountModal;

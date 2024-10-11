@@ -77,6 +77,13 @@ const WishListScreen: React.FC = () => {
     navigation.navigate('영양제 추천');
   };
 
+  // 위시리스트 항목 제거 처리
+  const handleRemoveItem = (supplementSeq: number) => {
+    setMyWishList(prevList =>
+      prevList.filter(item => item.supplementSeq !== supplementSeq),
+    );
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -88,13 +95,16 @@ const WishListScreen: React.FC = () => {
                 <WishListItem
                   pillName={myWish.pillName}
                   imageUrl={myWish.imageUrl}
+                  supplementSeq={myWish.supplementSeq}
+                  userSeq={myWish.userSeq}
+                  onRemove={handleRemoveItem} // 항목 제거 콜백 전달
                 />
               </TouchableOpacity>
             </View>
           ))
         ) : (
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>위시리스트가 비어 있습니다.</Text>
+            <Text style={styles.emptyText}>위시리스트가 비어있습니다.</Text>
             <TouchableOpacity onPress={handleRecommendationPress}>
               <Text style={styles.recommendationText}>
                 영양제를 추천받으시겠습니까?
@@ -113,7 +123,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 60,
   },
   cardContainer: {
     backgroundColor: '#fff',
@@ -132,7 +141,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 50, 
+    marginTop: 50,
   },
   emptyText: {
     fontSize: 18,
@@ -142,8 +151,9 @@ const styles = StyleSheet.create({
   },
   recommendationText: {
     fontSize: 16,
-    color: '#a4f87b',
+    color: '#00FF00',
     textDecorationLine: 'underline',
+    fontWeight: 'bold',
   },
 });
 

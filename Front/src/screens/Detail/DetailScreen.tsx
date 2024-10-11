@@ -1,5 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import axios from 'axios';
 import {API_URL} from '@env';
@@ -9,6 +17,8 @@ import DetailReview from '../../components/Detail/DetailReview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSelector} from 'react-redux';
 import CommonModal from '../../components/common/Modal';
+import FastImage from 'react-native-fast-image';
+
 
 type DetailScreenRouteProp = RouteProp<RecommendItemParamList, 'Detail'>;
 
@@ -34,11 +44,12 @@ const DetailScreen: React.FC = () => {
   const [token, setToken] = useState<string | null>(null);
   const [myWishList, setMyWishList] = useState<boolean>(false);
   const [myKit, setMyKit] = useState<boolean>(false);
-  const [pillImageUrl, setPillImageUrl] = useState<string>()
-  const userSeq = useSelector((state: {userSeq: number | null}) => state.userSeq);
-  const [isModalVisible, setModalVisible] = useState(false); // 모달 상태 추가
-  const [modalMessage, setModalMessage] = useState(''); // 모달 메시지 상태 추가
-  const [modalImage, setModalImage] = useState<any>(null); // 모달 이미지 상태 추가
+  const userSeq = useSelector(
+    (state: {userSeq: number | null}) => state.userSeq,
+  );
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [modalImage, setModalImage] = useState<any>(null);
 
   useEffect(() => {
     const fetchToken = async () => {
@@ -49,7 +60,6 @@ const DetailScreen: React.FC = () => {
     fetchToken();
   }, []);
 
-  // 보충제 데이터 들고오기 (상세 데이터)
   useEffect(() => {
     const fetchPillData = async () => {
       if (!token) return;
@@ -94,7 +104,6 @@ const DetailScreen: React.FC = () => {
   const handleWishListBtn = async () => {
     try {
       if (myWishList) {
-        // 위시리스트에서 제거
         await axios.delete(`${API_URL}/api/v1/wishlist`, {
           headers: {
             access: `${token}`,
@@ -106,9 +115,8 @@ const DetailScreen: React.FC = () => {
         });
         setMyWishList(false);
         setModalMessage('위시리스트에서 제거되었습니다!');
-        setModalImage(require('../../assets/wishlistremove.png'));
+        setModalImage(require('../../assets/remove.gif'));
       } else {
-        // 위시리스트에 추가
         await axios.post(
           `${API_URL}/api/v1/wishlist`,
           {userSeq, supplementSeq: id},
@@ -120,14 +128,13 @@ const DetailScreen: React.FC = () => {
         );
         setMyWishList(true);
         setModalMessage('위시리스트에 추가되었습니다!');
-        setModalImage(require('../../assets/wishlistadd.png'));
+        setModalImage(require('../../assets/wishlistadd.gif'));
       }
       setModalVisible(true);
 
-      // 1초 후에 모달을 숨김
-      setTimeout(() => {
-        setModalVisible(false);
-      }, 2000);
+      // setTimeout(() => {
+      //   setModalVisible(false);
+      // }, 2000);
     } catch (error) {
       console.log(error);
     }
@@ -136,7 +143,6 @@ const DetailScreen: React.FC = () => {
   const handleKitBtn = async () => {
     try {
       if (myKit) {
-        // 복용 중 목록에서 제거
         const response = await axios.delete(`${API_URL}/api/v1/cabinet`, {
           headers: {
             access: `${token}`,
@@ -146,16 +152,14 @@ const DetailScreen: React.FC = () => {
           },
         });
 
-        // 응답 상태를 로그로 확인
         console.log('제거', response.status);
 
         if (response.status === 200 || response.status === 204) {
           setMyKit(false);
           setModalMessage('마이키트에서 제거되었습니다!');
-          setModalImage(require('../../assets/wishlistremove.png'));
+          setModalImage(require('../../assets/remove.gif'));
         }
       } else {
-        // 복용 중 목록에 추가
         const response = await axios.post(
           `${API_URL}/api/v1/cabinet`,
           {supplementSeq: id},
@@ -166,57 +170,47 @@ const DetailScreen: React.FC = () => {
           },
         );
 
-        // 응답 상태를 로그로 확인
         console.log('추가', response.status);
 
         if (response.status === 200) {
           setMyKit(true);
           setModalMessage('마이키트에 추가되었습니다!');
-          setModalImage(require('../../assets/wishlistadd.png'));
+          setModalImage(require('../../assets/mykitadd.gif'));
         }
       }
       setModalVisible(true);
 
-      // 2초 후에 모달을 숨김
-      setTimeout(() => {
-        setModalVisible(false);
-      }, 2000);
+      // setTimeout(() => {
+      //   setModalVisible(false);
+      // }, 2000);
     } catch (error) {
       console.log(error);
     }
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={styles.infoBox}>
-        {/* <Image
-          source={
-            pillData.imageUrl && pillData.imageUrl.trim() !== ''
-            ? { uri: pillData.imageUrl }
-            : require('../../assets/noImage.png')
-          }
-          style={styles.image} 
-        /> */}
         <Image source={{uri: pillData.imageUrl}} style={styles.image} />
         <View style={styles.infoContainer}>
-          <Text style={styles.pillName}>
-            {pillData.name}
-          </Text>
+          <Text style={styles.pillName}>{pillData.name}</Text>
           <View style={styles.rowContainer}>
             <TouchableOpacity onPress={handleWishListBtn}>
-              <Image
+              <FastImage
                 source={
                   myWishList
                     ? require('../../assets/heart1.png') // 위시리스트에 있을 때
                     : require('../../assets/heart2.png') // 위시리스트에 없을 때
                 }
                 style={styles.wishListBtn}
-                resizeMode="contain"
+                resizeMode={FastImage.resizeMode.contain} // FastImage 사용 시 resizeMode 지정
               />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleKitBtn}>
               <Text style={styles.dosageText}>
-                {myKit ? '복용 중' : '복용 안 함'}
+                {myKit ? '마이키트에서 제거' : '마이키트에 추가'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -227,8 +221,8 @@ const DetailScreen: React.FC = () => {
         <TouchableOpacity
           style={
             selectedTab === 'info'
-              ? styles.selectedTextBox
-              : styles.notSelectedTextBox
+              ? [styles.selectedTextBox, styles.leftBorder]
+              : [styles.notSelectedTextBox, styles.leftBorder]
           }
           onPress={() => setSelectedTab('info')}>
           <Text
@@ -245,8 +239,8 @@ const DetailScreen: React.FC = () => {
         <TouchableOpacity
           style={
             selectedTab === 'review'
-              ? styles.selectedTextBox
-              : styles.notSelectedTextBox
+              ? [styles.selectedTextBox, styles.rightBorder]
+              : [styles.notSelectedTextBox, styles.rightBorder]
           }
           onPress={() => setSelectedTab('review')}>
           <Text
@@ -271,14 +265,13 @@ const DetailScreen: React.FC = () => {
         )}
       </View>
 
-      {/* 공통 모달 컴포넌트 사용 */}
       <CommonModal
         visible={isModalVisible}
         message={modalMessage}
         onClose={() => setModalVisible(false)}
         imageSource={modalImage}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -287,89 +280,140 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#f2f2f2',
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    paddingLeft: 20,
-    paddingRight: 20,
+    backgroundColor: '#f9fafc',
+    padding: 20,
+    paddingTop: 40,
   },
   infoBox: {
-    height: '20%',
     flexDirection: 'row',
+    marginBottom: 20,
+    paddingBottom: 15,
+    borderRadius: 15,
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 10,
+    padding: 15,
   },
   image: {
-    width: '40%',
-    marginTop: 10,
-    resizeMode: 'contain',
-  },
-  pillName: {
-    fontSize: 15,
-    color: 'black',
-    marginTop: 40,
-    marginRight: 10,
-    maxWidth: '80%',
+    width: 100,
+    height: 100,
+    borderRadius: 15,
+    marginRight: 15,
+    borderWidth: 1,
+    borderColor: '#ddd',
   },
   infoContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 20,
+    flex: 1,
+    justifyContent: 'center',
+  },
+  pillName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#333',
   },
   rowContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
-  },
-  dosageText: {
-    marginLeft: 10,
-  },
-  canSelectMenu: {
-    flexDirection: 'row',
-    marginTop: 20,
-    justifyContent: 'center',
-  },
-  selectedTextBox: {
-    width: '50%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#939185',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notSelectedTextBox: {
-    width: '50%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#939185',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  selectedText: {
-    fontSize: 20,
-    color: 'black',
-  },
-  notSelectedText: {
-    fontSize: 20,
-    color: '#939185',
-  },
-  selectedCheck: {
-    width: 40,
-    height: 10,
-    marginTop: 11,
-    backgroundColor: '#D3EBCD',
-    borderTopLeftRadius: 7,
-    borderTopRightRadius: 7,
-  },
-  selectedContent: {
-    height: '65%',
-    borderWidth: 1,
-    borderColor: '#939185',
-    borderBlockStartColor: '#F7F7F7',
+    marginTop: 15,
   },
   wishListBtn: {
     width: 30,
+    height: 30,
+    marginRight: 15,
+    transform: [{ scale: 1.1 }],
+  },
+  dosageText: {
+    fontSize: 14,
+    // color: '#00FF00',
+    color: 'green',
+    backgroundColor: '#e6f9ec',
+    borderColor: '#00FF00',
+    borderWidth: 1,
+    borderRadius: 15,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    overflow: 'hidden',
+  },
+  canSelectMenu: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 15,
+    borderRadius: 20,
+    backgroundColor: '#f4f7fc',
+  },
+  selectedTextBox: {
+    flex: 1,
+    paddingVertical: 15,
+    backgroundColor: '#00FF00',
+    borderRadius: 20,
+    shadowColor: '#00FF00',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10
+  },
+  notSelectedTextBox: {
+    flex: 1,
+    paddingVertical: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#e8ecf3',
+    borderRadius: 20,
+    margin: 10
+  },
+  selectedText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  notSelectedText: {
+    color: '#333',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  selectedCheck: {
+    position: 'absolute',
+    bottom: 0,
+    left: '50%',
+    height: 4,
+    width: '40%',
+    backgroundColor: '#00FF00',
+    borderRadius: 2,
+    transform: [{ translateX: -20 }],
+  },
+  selectedContent: {
+    flex: 1,
+    borderRadius: 20,
+    padding: 15,
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  leftBorder: {
+    borderRightWidth: 0,
+  },
+  rightBorder: {
+    borderLeftWidth: 0,
   },
 });
 
 export default DetailScreen;
+
+
+

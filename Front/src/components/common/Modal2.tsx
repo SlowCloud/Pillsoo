@@ -1,20 +1,14 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Modal} from 'react-native';
 
 interface CustomModalProps {
   isVisible: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  subText: string;
-  confirmText: string;
-  cancelText: string;
+  onClose?: () => void;
+  onConfirm?: () => void;
+  title?: string;
+  subText?: string;
+  confirmText?: string;
+  cancelText?: string;
 }
 
 const Modal2: React.FC<CustomModalProps> = ({
@@ -30,14 +24,18 @@ const Modal2: React.FC<CustomModalProps> = ({
     <Modal visible={isVisible} transparent={true} animationType="slide">
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalText}>{title}</Text>
+          <Text style={styles.modalTitle}>{title}</Text>
           <Text style={styles.modalSubText}>{subText}</Text>
           <View style={styles.modalButtonContainer}>
-            <TouchableOpacity style={styles.modalDeleteButton} onPress={onConfirm}>
-              <Text style={styles.modalDeleteButtonText}>{confirmText}</Text>
+            <TouchableOpacity
+              style={styles.modalDeleteButton}
+              onPress={onConfirm}>
+              <Text style={styles.modalButtonText}>{confirmText}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.modalCancelButton} onPress={onClose}>
-              <Text style={styles.modalCancelButtonText}>{cancelText}</Text>
+            <TouchableOpacity
+              style={styles.modalCancelButton}
+              onPress={onClose}>
+              <Text style={styles.modalButtonText2}>{cancelText}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -51,23 +49,27 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
+    backgroundColor: '#ffffff',
+    padding: 30,
+    borderRadius: 20,
     width: '80%',
     alignItems: 'center',
+    elevation: 10,
   },
-  modalText: {
+  modalTitle: {
     fontSize: 18,
-    marginBottom: 20,
+    marginBottom: 10,
     fontWeight: 'bold',
+    color: '#333',
   },
   modalSubText: {
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 20,
+    color: '#666',
+    textAlign: 'center',
   },
   modalButtonContainer: {
     flexDirection: 'row',
@@ -75,28 +77,32 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   modalDeleteButton: {
-    backgroundColor: '#a4f87b',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: '#00FF00',
+    paddingVertical: 12,
+    borderRadius: 10,
     flex: 1,
-    marginHorizontal: 10,
+    marginHorizontal: 5,
     alignItems: 'center',
   },
   modalCancelButton: {
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: '#f8f8f8',
+    paddingVertical: 12,
+    borderRadius: 10,
     flex: 1,
-    marginHorizontal: 10,
+    marginHorizontal: 5,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
-  modalDeleteButtonText: {
+  modalButtonText: {
+    fontWeight: 'bold',
+    fontSize: 18,
     color: 'white',
-    fontWeight: 'bold',
   },
-  modalCancelButtonText: {
+  modalButtonText2: {
+    // fontWeight: 'bold',
+    fontSize: 18,
     color: 'black',
-    fontWeight: 'bold',
   },
 });
 

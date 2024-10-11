@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, FlatList, ScrollView} from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_URL} from '@env';
@@ -22,12 +22,14 @@ export type Props = {
 export type RecommendPill = {
   id: number;
   imageUrl: any;
-  _random: boolean;
+  pillName: string;
+  isRandom: boolean;
 };
 
 const RecommendScreen: React.FC<Props> = ({navigation}) => {
   const age = useSelector((state: {age: number | null}) => state.age);
   const [recommendPills, setRecommendPills] = useState<RecommendPill[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -37,6 +39,7 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
 
   // 나이별 영양제 추천
   const AgeRecommendPills = async () => {
+    setIsLoading(true);
     try {
       const token = await AsyncStorage.getItem('jwt_token');
       const response = await axios.get(
@@ -48,16 +51,18 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
         },
       );
       const data = response.data;
-      console.log('영양제 추천', response.data)
+      console.log('영양제 추천', response.data);
       const pills = data.map((item: any) => ({
         id: item.supplementSeq,
         imageUrl: {uri: item.image_url},
         pillName: item.pill_name,
-        isRandom: item._random
+        isRandom: item._random,
       }));
       setRecommendPills(pills);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,6 +88,11 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
     '혈압',
   ];
 
+  const categoryIcons: string[] = [
+    '🧬', '🩺', '💪', '🧓', '👁️', '🛡️', '🦴', '🍽️', '🌙', 
+    '💆‍♂️', '🍞', '⚖️', '🦷', '🩸', '🌞', '🍇', '🩸', '🍬', '💓'
+  ];
+
   const chunkArray = (array: string[], size: number) => {
     const result: string[][] = [];
     for (let i = 0; i < array.length; i += size) {
@@ -96,33 +106,43 @@ const RecommendScreen: React.FC<Props> = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <AgeBasedRecommendations age={age} recommendPills={recommendPills} />
+      <AgeBasedRecommendations
+        age={age}
+        recommendPills={recommendPills}
+        isLoading={isLoading}
+      />
       <View style={styles.pillCategoryBox}>
-        <Text style={styles.categoryText}>건강 카테고리별 영양제 추천</Text>
+        <Text style={styles.categoryTitle}>건강 카테고리별 영양제 추천</Text>
         <FlatList
           data={chunkedCategories}
           renderItem={({item, index}) => (
             <View style={styles.categoryRow} key={index}>
-              {item.map(category => (
-                <SelectPillItems
+              {item.map((category, i) => (
+                <TouchableOpacity
                   key={category}
-                  category={category}
-                  navigation={navigation}
-                  style={{ marginRight: 10}}
-                />
+                  style={styles.categoryItem} 
+                  onPress={() => navigation.navigate('RecommendCategory', { category })}
+                >
+                  <Text style={styles.iconText}>{categoryIcons[categories.indexOf(category)]}</Text>
+                  <Text style={styles.categoryText}>{category}</Text>
+                </TouchableOpacity>
               ))}
             </View>
           )}
           keyExtractor={(item, index) => index.toString()}
+          showsVerticalScrollIndicator={false}
         />
         {lastRow && (
           <View style={styles.lastRow}>
             {lastRow.map((category, index) => (
-              <SelectPillItems
+              <TouchableOpacity
                 key={`${category}-${index}`}
-                category={category}
-                navigation={navigation}
-              />
+                style={styles.categoryItem}
+                onPress={() => navigation.navigate('RecommendCategory', { category })}
+              >
+                <Text style={styles.iconText}>{categoryIcons[categories.indexOf(category)]}</Text>
+                <Text style={styles.categoryText}>{category}</Text>
+              </TouchableOpacity>
             ))}
           </View>
         )}
@@ -141,39 +161,59 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 15,
-    paddingVertical: 10,
+//     paddingVertical: 10,
     backgroundColor: '#fff',
   },
   pillCategoryBox: {
-    marginTop: 70,
+    marginTop: 30,
   },
   categoryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
   },
-  categoryText: {
+  categoryTitle: {
     fontSize: 18,
     color: 'black',
-    paddingBottom: 20,
     fontWeight: 'bold',
+    marginBottom: 30
+  },
+  categoryText: {
+    fontSize: 12,
+    color: 'black',
+    fontWeight: 'bold',
+    paddingBottom: 5,
   },
   lastRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginBottom: 10,
   },
+  categoryItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 5,
+    paddingHorizontal: 8,
+    backgroundColor: '#f2f2f2', 
+    borderRadius: 8,
+    marginRight: 10,
+  },
+  iconText: {
+    marginRight: 5,
+  },
   recommendBtn: {
-    marginTop: 60,
+    marginTop: 10,
+    marginBottom: 30,
     height: 50,
     borderRadius: 8,
-    backgroundColor: '#a4f87b',
+    backgroundColor: '#00FF00',
     justifyContent: 'center',
     alignItems: 'center',
   },
   moreRecommendText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
