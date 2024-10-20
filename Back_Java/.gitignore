@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Ignore Google Cloud service account key
+Back_Java/src/main/resources/serviceAccountKey.json
