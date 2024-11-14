@@ -3,9 +3,9 @@ import pymysql
 
 # MySQL 데이터베이스 연결 정보
 db_config = {
-    'host': 'j11e205.p.ssafy.io',
+    'host': 'REMOVED',
     'user': 'root',
-    'password': 'ssafypasswordj11e205',
+    'password': 'REMOVED',
     'database': 'SOS',
     'port' : 30306
 }

@@ -8,9 +8,9 @@ with open('effect_category.json', 'r', encoding='utf-8') as file:
 
 # MySQL 데이터베이스에 연결
 connection = pymysql.connect(
-    host='j11e205.p.ssafy.io',
+    host='REMOVED',
     user='root',
-    password='ssafypasswordj11e205',
+    password='REMOVED',
     database='SOS',
     port = 30306
 )

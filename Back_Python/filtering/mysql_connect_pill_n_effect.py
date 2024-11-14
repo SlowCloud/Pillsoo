@@ -3,9 +3,9 @@ import json
 
 # MySQL 연결 설정
 conn = mysql.connector.connect(
-    host="j11e205.p.ssafy.io",
+    host="REMOVED",
     user="root",
-    password="ssafypasswordj11e205",
+    password="REMOVED",
     database="SOS",
     port=30306
 )
